@@ -30,21 +30,21 @@ public class SpringTaskController {
 	@Inject
 	private ServerInfoMapper serverInfoMapper;
 
-	public static void main(String[] args) {
-		SpringTaskController action = new SpringTaskController();
-		try {
-			action.task();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args) {
+//		SpringTaskController action = new SpringTaskController();
+//		try {
+//			action.task();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 	/**
 	 * 与用户设置的使用率比较 spirng 调度
 	 * 
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "1 * *  * * ? ")
+//	@Scheduled(cron = "1 * *  * * ? ")
 	public void task() throws Exception {
 		ServerInfoFormMap usage = SystemInfo.usage(new Sigar());
 		String cpuUsage = usage.get("cpuUsage")+"";// CPU使用率
