@@ -270,7 +270,8 @@ public class ResourcesController extends BaseController {
 	@ResponseBody
 	@RequestMapping("findByButtom")
 	public List<ButtomFormMap> findByButtom(){
-		return resourcesMapper.findByWhere(new ButtomFormMap());
+		List<ButtomFormMap> buttomFormMapList = resourcesMapper.findByWhere(new ButtomFormMap());
+		return buttomFormMapList;
 	}
 	
 	/**

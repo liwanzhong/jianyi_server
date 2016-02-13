@@ -57,9 +57,9 @@ function toBut(b){
 function showBut(){
 	$("#divbut").css("display","block");
 	var url = rootPath + '/resources/findByButtom.shtml';
-	var data = CommnUtil.ajax(url, null,"json");
-	if (data != null) {
-		var bb = $("#but");
+		var data = CommnUtil.ajax(url, null,"json");
+		if (data != null) {
+			var bb = $("#but");
 		bb.html('');
 		for ( var i = 0; i < data.length; i++) {
 			bb.append("<span onclick=\"toBut(this)\" id=\"span_"+data[i].id+"\">"+ data[i].buttom+"</span>");

@@ -189,33 +189,40 @@
 							 data-color="#333333">
 							<!-- nav -->
 							<nav class="nav-primary hidden-xs">
-								<ul class="nav">
+								<ul class="nav" id="left_menu_ul_itemsid">
 									<c:forEach var="key" items="${list}" varStatus="s">
 										<!-- <li class="active"> 某一项展开-->
-										<li <c:if test="${s.index==0}">class="active"</c:if>><a
-												href="javascript:void(0)"
-												<c:if test="${s.index==0}">class="active"</c:if>> <c:if
-												test="${s.index==0}">
-											<i class="fa fa-dashboard icon"> <b class="bg-danger"></b>
-											</i>
-										</c:if> <c:if test="${s.index==1}">
-											<i class="fa fa-pencil-square icon"> <b
-													class="bg-warning"></b>
-											</i>
-										</c:if> <c:if test="${s.index==2}">
-											<i class="fa fa-columns icon"> <b class="bg-primary"></b>
-											</i>
-										</c:if> <c:if test="${s.index==3}">
-											<i class="fa fa-book icon"> <b class="bg-info"></b>
-											</i>
-										</c:if> <c:if test="${s.index==4}">
-											<i class="fa fa-th-list icon"> <b class="bg-success"></b>
-											</i>
-										</c:if> <span class="pull-right"> <i
-												class="fa fa-angle-down text"></i> <i
-												class="fa fa-angle-up text-active"></i>
-												</span> <span>${key.name}</span>
-										</a>
+										<li <c:if test="${s.index==0}">class="active"</c:if> onclick="showThisItems(this)">
+											<a href="javascript:void(0)"
+											   <c:if test="${s.index==0}">class="active"</c:if>>
+													<%--<c:if test="${s.index==0}">
+                                                        <i class="fa fa-dashboard icon"> <b class="bg-danger"></b>
+                                                        </i>
+                                                    </c:if>
+                                                    <c:if test="${s.index==1}">
+                                                        <i class="fa fa-pencil-square icon"> <b
+                                                                class="bg-warning"></b>
+                                                        </i>
+                                                    </c:if>
+                                                    <c:if test="${s.index==2}">
+                                                        <i class="fa fa-columns icon"> <b class="bg-primary"></b>
+                                                        </i>
+                                                    </c:if>
+                                                    <c:if test="${s.index==3}">
+                                                        <i class="fa fa-book icon"> <b class="bg-info"></b>
+                                                        </i>
+                                                    </c:if>
+                                                    <c:if test="${s.index==4}">
+                                                        <i class="fa fa-th-list icon"> <b class="bg-success"></b>
+                                                        </i>
+                                                    </c:if>--%>
+												<i class="fa fa-th-list icon"> <b class="bg-success"></b></i>
+												<span class="pull-right">
+													<i class="fa fa-angle-down text"></i>
+													<i class="fa fa-angle-up text-active"></i>
+												</span>
+												<span>${key.name}</span>
+											</a>
 
 											<ul class="nav lt">
 												<c:forEach var="kc" items="${key.children}">
@@ -225,7 +232,8 @@
 														</a>
 													</li>
 												</c:forEach>
-											</ul></li>
+											</ul>
+										</li>
 									</c:forEach>
 								</ul>
 							</nav>
@@ -302,6 +310,29 @@
 <!-- Bootstrap -->
 <div id="flotTip" style="display: none; position: absolute;"></div>
 
+<script>
+
+	function showThisItems(item){
+		/*var isopen=false;
+		if($(item).parent().hasClass("active")){
+			isopen=true;
+		}*/
+		// 隐藏其他的选项
+		$("#left_menu_ul_itemsid li").each(function(index,fitem){
+			if($(fitem).hasClass("active")){
+				$(fitem).removeClass("active")
+			}
+		});
+		/*if(isopen){
+			$(item).parent().removeClass("active")
+		}else{
+
+		}*/
+		$(item).addClass("active")
+
+	}
+
+</script>
 
 </body>
 </html>
