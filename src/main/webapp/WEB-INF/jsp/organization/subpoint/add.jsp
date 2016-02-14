@@ -4,7 +4,7 @@
 <html>
 <head>
 	<%@include file="/common/common.jspf"%>
-	<script type="text/javascript" src="${ctx}/js/organization/add.js">
+	<script type="text/javascript" src="${ctx}/js/organization/enterprise/add.js">
 
 	</script>
 	<style type="text/css">
@@ -27,38 +27,54 @@
 </head>
 <body>
 <div class="l_err" style="width: 100%; margin-top: 2px;"></div>
-<form id="form" name="form" class="form-horizontal" method="post"  action="${ctx}/enterprise/addEntity.shtml">
+<form id="form" name="form" class="form-horizontal" method="post"  action="${ctx}/sub_point/addEntity.shtml">
 	<section class="panel panel-default">
 		<div class="panel-body">
 			<div class="form-group">
 				<div class="col-sm-3">
-					<label class="control-label">企业名</label>
+					<label class="control-label">检测点名</label>
 				</div>
 				<div class="col-sm-9">
-					<input type="text" class="form-control"  placeholder="请输入企业名称" name="enterpriseFormMap.name" id="userName">
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">联系人</label>
-				<div class="col-sm-9">
-					<input type="text" class="form-control checkacc" placeholder="请输入联系人" name="enterpriseFormMap.contact_name" id="accountName">
+					<input type="text" class="form-control"  placeholder="请输入检测点名称" name="subEnterprisePointFormMap.name" id="userName">
 				</div>
 			</div>
 			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group">
 				<div class="col-sm-3">
-					<label class="control-label">手机号</label>
+					<label class="control-label">所属企业</label>
 				</div>
 				<div class="col-sm-9">
-					<input type="text" class="form-control"  placeholder="请输入联系人手机号" name="enterpriseFormMap.contact_phone" id="mobile">
+					<select name="subEnterprisePointFormMap.ent_id" class="form-control">
+						<c:forEach items="${enterpriseFormMap}" var="item">
+							<option value="${item.id}">${item.name}</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="form-group">
+				<div class="col-sm-3">
+					<label class="control-label">联系人</label>
+				</div>
+				<div class="col-sm-9">
+					<input type="text" class="form-control"  placeholder="请输入联系人" name="subEnterprisePointFormMap.contact_name" id="contact_name">
+				</div>
+			</div>
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="form-group">
+				<div class="col-sm-3">
+					<label class="control-label">联系电话</label>
+				</div>
+				<div class="col-sm-9">
+					<input type="text" class="form-control"  placeholder="请输入联系电话" name="subEnterprisePointFormMap.contact_phone" id="contact_phone">
 				</div>
 			</div>
 			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">是否有效</label>
 				<div class="col-sm-9">
-					<select  class="form-control" name="enterpriseFormMap.valid" >
+					<select  class="form-control" name="subEnterprisePointFormMap.valid" >
 						<option value="1">有效</option>
 						<option value="0">无效</option>
 					</select>
@@ -70,7 +86,7 @@
 					<label class="control-label">备注</label>
 				</div>
 				<div class="col-sm-9">
-					<textarea rows="5" cols="50" class="form-control" placeholder="企业备注信息" name="enterpriseFormMap.remark"></textarea>
+					<textarea rows="5" cols="50" class="form-control" placeholder="检测点备注信息" name="subEnterprisePointFormMap.remark"></textarea>
 				</div>
 			</div>
 

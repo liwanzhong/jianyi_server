@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<%@include file="/common/common.jspf"%>
-	<script type="text/javascript" src="${ctx}/js/organization/edit.js"></script>
+	<script type="text/javascript" src="${ctx}/js/organization/enterprise/edit.js"></script>
 
 	<style type="text/css">
 		.col-sm-3 {

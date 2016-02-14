@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.SubEnterprisePointMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+-- 		id, ent_id, name, address, contact_name, contact_phone, valid, insert_time, update_time,  remark
+ 	sub.id,
+    ei.name ent_name,
+    sub.name name,
+    sub.address,
+    sub.contact_name,
+    sub.contact_phone,
+    sub.valid,
+    sub.insert_time,
+    sub.update_time,
+    sub.remark
+	</sql>
+
+	<select id="findEnterprisePage" resultType="com.lanyuan.entity.SubEnterprisePointFormMap">
+		select
+		<include refid="selectId" />
+		FROM sub_enterprise_point sub
+		LEFT JOIN enterprise_info ei
+		ON sub.ent_id = ei.id
+		where 1 = 1
+		<if test="orderby != null">
+			${orderby}
+		</if>
+	</select>
+
+</mapper>

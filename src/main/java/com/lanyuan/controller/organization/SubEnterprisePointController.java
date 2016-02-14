@@ -4,16 +4,16 @@ package com.lanyuan.controller.organization;
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.EnterpriseFormMap;
-import com.lanyuan.entity.ResUserFormMap;
+import com.lanyuan.entity.SubEnterprisePointFormMap;
 import com.lanyuan.entity.UserFormMap;
 import com.lanyuan.entity.UserGroupsFormMap;
 import com.lanyuan.exception.SystemException;
 import com.lanyuan.mapper.EnterpriseMapper;
+import com.lanyuan.mapper.SubEnterprisePointMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
-import com.lanyuan.util.JsonUtils;
-import com.lanyuan.util.POIUtils;
 import com.lanyuan.util.PasswordHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -21,77 +21,67 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
- * 
+ *
  * @author lanyuan 2014-11-19
  * @Email: mmm333zzz520@163.com
  * @version 3.0v
  */
 @Controller
-@RequestMapping("/enterprise/")
-public class EnterpriseController extends BaseController {
+@RequestMapping("/sub_point/")
+public class SubEnterprisePointController extends BaseController {
 	@Inject
+	private SubEnterprisePointMapper subEnterprisePointMapper;
+
+	@Autowired
 	private EnterpriseMapper enterpriseMapper;
-	
+
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
 		model.addAttribute("res", findByRes());
-		return Common.BACKGROUND_PATH + "/organization/enterprise/list";
+		return Common.BACKGROUND_PATH + "/organization/subpoint/list";
 	}
 
 	@ResponseBody
 	@RequestMapping("findByPage")
 	public PageView findByPage( String pageNow,String pageSize,String column,String sort) throws Exception {
-		EnterpriseFormMap userFormMap = getFormMap(EnterpriseFormMap.class);
+		SubEnterprisePointFormMap userFormMap = getFormMap(SubEnterprisePointFormMap.class);
 		userFormMap=toFormMap(userFormMap, pageNow, pageSize,userFormMap.getStr("orderby"));
 		userFormMap.put("column", column);
 		userFormMap.put("sort", sort);
 		userFormMap.put("valid",1);
-		pageView.setRecords(enterpriseMapper.findEnterprisePage(userFormMap));//不调用默认分页,调用自已的mapper中findUserPage
+		pageView.setRecords(subEnterprisePointMapper.findEnterprisePage(userFormMap));//不调用默认分页,调用自已的mapper中findUserPage
 		return pageView;
 	}
-	
-	@RequestMapping("/export")
-	public void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String fileName = "企业列表";
-		EnterpriseFormMap userFormMap = findHasHMap(EnterpriseFormMap.class);
-		String exportData = userFormMap.getStr("exportData");// 列表头的json字符串
 
-		List<Map<String, Object>> listMap = JsonUtils.parseJSONList(exportData);
-
-		List<EnterpriseFormMap> lis = enterpriseMapper.findEnterprisePage(userFormMap);
-		POIUtils.exportToExcel(response, listMap, lis, fileName);
-	}
 
 	@RequestMapping("addUI")
 	public String addUI(Model model) throws Exception {
-		return Common.BACKGROUND_PATH + "/organization/enterprise/add";
+		// 加载所有企业信息
+		EnterpriseFormMap enterpriseFormMap=new EnterpriseFormMap();
+		enterpriseFormMap.put("orderby","order by id desc");
+		model.addAttribute("enterpriseFormMap",enterpriseMapper.findEnterprisePage(enterpriseFormMap));
+		return Common.BACKGROUND_PATH + "/organization/subpoint/add";
 	}
 
 	@ResponseBody
 	@RequestMapping("addEntity")
-	@SystemLog(module="系统管理",methods="企业管理，新增企业信息")//凡需要处理业务逻辑的.都需要记录操作日志
+	@SystemLog(module="系统管理",methods="添加检测点")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	public String addEntity(String txtGroupsSelect){
 		try {
 			SimpleDateFormat datetimeformat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			EnterpriseFormMap userFormMap = getFormMap(EnterpriseFormMap.class);
-			userFormMap.put("txtGroupsSelect", txtGroupsSelect);
+			SubEnterprisePointFormMap userFormMap = getFormMap(SubEnterprisePointFormMap.class);
 			userFormMap.put("insert_time",datetimeformat.format(new Date()));
 			userFormMap.put("update_time",datetimeformat.format(new Date()));
 
-			enterpriseMapper.addEntity(userFormMap);//新增后返回新增信息
+			subEnterprisePointMapper.addEntity(userFormMap);//新增后返回新增信息
 
 		} catch (Exception e) {
-			 throw new SystemException("添加账号异常");
+			throw new SystemException("添加检测点异常");
 		}
 		return "success";
 	}
@@ -99,11 +89,11 @@ public class EnterpriseController extends BaseController {
 	@ResponseBody
 	@RequestMapping("deleteEntity")
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	@SystemLog(module="系统管理",methods="删除企业")//凡需要处理业务逻辑的.都需要记录操作日志
+	@SystemLog(module="企业管理",methods="删除检测点")//凡需要处理业务逻辑的.都需要记录操作日志
 	public String deleteEntity() throws Exception {
 		String[] ids = getParaValues("ids");
 		for (String id : ids) {
-			enterpriseMapper.deleteByAttribute("id", id, EnterpriseFormMap.class);
+			subEnterprisePointMapper.deleteByAttribute("id", id, SubEnterprisePointFormMap.class);
 		}
 		return "success";
 	}
@@ -112,34 +102,34 @@ public class EnterpriseController extends BaseController {
 	public String editUI(Model model) throws Exception {
 		String id = getPara("id");
 		if(Common.isNotEmpty(id)){
-			model.addAttribute("enterprise", enterpriseMapper.findbyFrist("id", id, EnterpriseFormMap.class));
+			model.addAttribute("enterprise", subEnterprisePointMapper.findbyFrist("id", id, SubEnterprisePointFormMap.class));
 		}
-		return Common.BACKGROUND_PATH + "/organization/enterprise/edit";
+		return Common.BACKGROUND_PATH + "/organization/subpoint/edit";
 	}
 
 	@ResponseBody
 	@RequestMapping("editEntity")
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	@SystemLog(module="系统管理",methods="用户管理-修改用户")//凡需要处理业务逻辑的.都需要记录操作日志
+	@SystemLog(module="企业管理",methods="编辑检测点")//凡需要处理业务逻辑的.都需要记录操作日志
 	public String editEntity(String txtGroupsSelect) throws Exception {
 		UserFormMap userFormMap = getFormMap(UserFormMap.class);
 		userFormMap.put("txtGroupsSelect", txtGroupsSelect);
-		enterpriseMapper.editEntity(userFormMap);
-		enterpriseMapper.deleteByAttribute("userId", userFormMap.get("id")+"", UserGroupsFormMap.class);
+		subEnterprisePointMapper.editEntity(userFormMap);
+		subEnterprisePointMapper.deleteByAttribute("userId", userFormMap.get("id")+"", UserGroupsFormMap.class);
 		if(!Common.isEmpty(txtGroupsSelect)){
 			String[] txt = txtGroupsSelect.split(",");
 			for (String roleId : txt) {
 				UserGroupsFormMap userGroupsFormMap = new UserGroupsFormMap();
 				userGroupsFormMap.put("userId", userFormMap.get("id"));
 				userGroupsFormMap.put("roleId", roleId);
-				enterpriseMapper.addEntity(userGroupsFormMap);
+				subEnterprisePointMapper.addEntity(userGroupsFormMap);
 			}
 		}
 		return "success";
 	}
 	/**
 	 * 验证账号是否存在
-	 * 
+	 *
 	 * @author lanyuan Email：mmm333zzz520@163.com date：2014-2-19
 	 * @param name
 	 * @return
@@ -147,13 +137,12 @@ public class EnterpriseController extends BaseController {
 	@RequestMapping("isExist")
 	@ResponseBody
 	public boolean isExist(String name) {
-		UserFormMap account = enterpriseMapper.findbyFrist("accountName", name, UserFormMap.class);
+		UserFormMap account = subEnterprisePointMapper.findbyFrist("accountName", name, UserFormMap.class);
 		if (account == null) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
 
 }
