@@ -44,7 +44,7 @@
             <property name="immutable" value="true"/>
 
             <!-- 给Model添加一个父类 -->
-            <property name="rootClass" value="com.lanyuan.util.FormMap<String,Object>"/>
+            <property name="rootClass" value="com.lanyuan.util.FormMap"/>
 
             <!-- 是否对类CHAR类型的列的数据进行trim操作 -->
             <property name="trimStrings" value="true"/>
@@ -87,7 +87,7 @@
 
 
 
-        <table tableName="ly_buttom" schema="jianyi">
+        <table tableName="enterprise_info" schema="jianyi">
 
             <!-- optional   , only for mybatis3 runtime
                  自动生成的键值（identity,或者序列值）

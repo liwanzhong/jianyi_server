@@ -24,6 +24,8 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +43,7 @@ public class EnterpriseController extends BaseController {
 	
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
+		model.addAttribute("res", findByRes());
 		return Common.BACKGROUND_PATH + "/organization/list";
 	}
 
@@ -51,21 +54,15 @@ public class EnterpriseController extends BaseController {
 		userFormMap=toFormMap(userFormMap, pageNow, pageSize,userFormMap.getStr("orderby"));
 		userFormMap.put("column", column);
 		userFormMap.put("sort", sort);
-        pageView.setRecords(enterpriseMapper.findEnterprisePage(userFormMap));//不调用默认分页,调用自已的mapper中findUserPage
-        return pageView;
+		userFormMap.put("valid",1);
+		pageView.setRecords(enterpriseMapper.findEnterprisePage(userFormMap));//不调用默认分页,调用自已的mapper中findUserPage
+		return pageView;
 	}
 	
 	@RequestMapping("/export")
 	public void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String fileName = "企业列表";
 		EnterpriseFormMap userFormMap = findHasHMap(EnterpriseFormMap.class);
-		//exportData = 
-		// [{"colkey":"sql_info","name":"SQL语句","hide":false},
-		// {"colkey":"total_time","name":"总响应时长","hide":false},
-		// {"colkey":"avg_time","name":"平均响应时长","hide":false},
-		// {"colkey":"record_time","name":"记录时间","hide":false},
-		// {"colkey":"call_count","name":"请求次数","hide":false}
-		// ]
 		String exportData = userFormMap.getStr("exportData");// 列表头的json字符串
 
 		List<Map<String, Object>> listMap = JsonUtils.parseJSONList(exportData);
@@ -76,28 +73,23 @@ public class EnterpriseController extends BaseController {
 
 	@RequestMapping("addUI")
 	public String addUI(Model model) throws Exception {
-		return Common.BACKGROUND_PATH + "/system/user/add";
+		return Common.BACKGROUND_PATH + "/organization/add";
 	}
 
 	@ResponseBody
 	@RequestMapping("addEntity")
-	@SystemLog(module="系统管理",methods="用户管理-新增用户")//凡需要处理业务逻辑的.都需要记录操作日志
+	@SystemLog(module="系统管理",methods="企业管理，新增企业信息")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	public String addEntity(String txtGroupsSelect){
 		try {
+			SimpleDateFormat datetimeformat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			EnterpriseFormMap userFormMap = getFormMap(EnterpriseFormMap.class);
 			userFormMap.put("txtGroupsSelect", txtGroupsSelect);
+			userFormMap.put("insert_time",datetimeformat.format(new Date()));
+			userFormMap.put("update_time",datetimeformat.format(new Date()));
 
 			enterpriseMapper.addEntity(userFormMap);//新增后返回新增信息
-			if (!Common.isEmpty(txtGroupsSelect)) {
-				String[] txt = txtGroupsSelect.split(",");
-				UserGroupsFormMap userGroupsFormMap = new UserGroupsFormMap();
-				for (String roleId : txt) {
-					userGroupsFormMap.put("userId", userFormMap.get("id"));
-					userGroupsFormMap.put("roleId", roleId);
-					enterpriseMapper.addEntity(userGroupsFormMap);
-				}
-			}
+
 		} catch (Exception e) {
 			 throw new SystemException("添加账号异常");
 		}
@@ -107,13 +99,11 @@ public class EnterpriseController extends BaseController {
 	@ResponseBody
 	@RequestMapping("deleteEntity")
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	@SystemLog(module="系统管理",methods="用户管理-删除用户")//凡需要处理业务逻辑的.都需要记录操作日志
+	@SystemLog(module="系统管理",methods="删除企业")//凡需要处理业务逻辑的.都需要记录操作日志
 	public String deleteEntity() throws Exception {
 		String[] ids = getParaValues("ids");
 		for (String id : ids) {
-			enterpriseMapper.deleteByAttribute("userId", id, UserGroupsFormMap.class);
-			enterpriseMapper.deleteByAttribute("userId", id, ResUserFormMap.class);
-			enterpriseMapper.deleteByAttribute("id", id, UserFormMap.class);
+			enterpriseMapper.deleteByAttribute("id", id, EnterpriseFormMap.class);
 		}
 		return "success";
 	}
@@ -122,9 +112,9 @@ public class EnterpriseController extends BaseController {
 	public String editUI(Model model) throws Exception {
 		String id = getPara("id");
 		if(Common.isNotEmpty(id)){
-			model.addAttribute("user", enterpriseMapper.findbyFrist("id", id, UserFormMap.class));
+			model.addAttribute("enterprise", enterpriseMapper.findbyFrist("id", id, EnterpriseFormMap.class));
 		}
-		return Common.BACKGROUND_PATH + "/system/user/edit";
+		return Common.BACKGROUND_PATH + "/organization/edit";
 	}
 
 	@ResponseBody

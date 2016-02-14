@@ -6,29 +6,18 @@ $(function() {
 		pagId : 'paging',
 		l_column : [ {
 			colkey : "id",
-			name : "id",
+			name : "企业编号",
 		}, {
-			colkey : "userName",
+			colkey : "name",
 			name : "企业名称",
 			isSort:true,
 		}, {
-			colkey : "accountName",
-			name : "账号",
+			colkey : "contact_phone",
+			name : "联系电话",
 			isSort:true,
 		}, {
-			colkey : "roleName",
-			name : "所属角色"
-		}, {
-			colkey : "locked",
-			name : "账号状态",
-			width : '90px',
-			isSort:true
-		}, {
-			colkey : "description",
-			name : "描述"
-		}, {
-			colkey : "createTime",
-			name : "时间",
+			colkey : "insert_time",
+			name : "建立时间",
 			isSort:true,
 			renderData : function(rowindex,data, rowdata, column) {
 				return new Date(data).format("yyyy-MM-dd hh:mm:ss");
@@ -36,7 +25,7 @@ $(function() {
 		}, {
 			name : "操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				return "测试渲染函数";
+				return "<a href='#'>新增检测点</a>&nbsp;&nbsp;&nbsp;<a href='#'>查看企业</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除企业</a>";
 			}
 		} ],
 		jsonUrl : rootPath + '/enterprise/findByPage.shtml',
@@ -49,13 +38,13 @@ $(function() {
 			data : searchParams
 		});
 	});
-	$("#addAccount").click("click", function() {
+	$("#addFun").click("click", function() {
 		addAccount();
 	});
-	$("#editAccount").click("click", function() {
+	$("#editFun").click("click", function() {
 		editAccount();
 	});
-	$("#delAccount").click("click", function() {
+	$("#delFun").click("click", function() {
 		delAccount();
 	});
 	$("#permissions").click("click", function() {
