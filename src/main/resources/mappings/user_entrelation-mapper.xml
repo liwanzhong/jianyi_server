@@ -11,7 +11,7 @@
 		id, name, insert_time, update_time, valid, contact_name, contact_phone, remark
 	</sql>
 
-	<select id="findEnterprisePage" resultType="com.lanyuan.entity.EnterpriseFormMap">
+	<select id="findEnterprisePage" resultType="com.lanyuan.entity.UserEntrelationFormMap">
 		select
 		<include refid="selectId" />
 		from enterprise_info

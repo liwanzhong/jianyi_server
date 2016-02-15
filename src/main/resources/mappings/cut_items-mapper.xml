@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.CutItemMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache"
+/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+		cut_items.id,
+  		cut_items.name,
+  		cut_items.ref_check_big_item_id,
+  		cut_items.ref_check_small_item_id,
+  		cut_items.remark,
+  		cut_items.order_by
+	</sql>
+
+	<select id="findEnterprisePage" resultType="com.lanyuan.entity.CutItemFormMap">
+		select
+		<include refid="selectId" />
+		FROM cut_items
+		where 1 = 1
+		ORDER BY cut_items.order_by ASC
+	</select>
+
+</mapper>
