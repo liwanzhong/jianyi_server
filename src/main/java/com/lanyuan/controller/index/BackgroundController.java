@@ -15,6 +15,9 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lanyuan.entity.UserEntrelationFormMap;
+import com.lanyuan.mapper.UserEntrelationMapper;
+import com.lanyuan.util.CommonConstants;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.shiro.SecurityUtils;
@@ -59,6 +62,10 @@ public class BackgroundController extends BaseController {
 
 	@Inject
 	private UserLoginMapper userLoginMapper;
+
+
+	@Inject
+	private UserEntrelationMapper userEntrelationMapper;
 	
 	/**
 	 * @return
@@ -107,6 +114,13 @@ public class BackgroundController extends BaseController {
 			userLogin.put("loginIP", session.getHost());
 			userLoginMapper.addEntity(userLogin);
 			request.removeAttribute("error");
+			// 查询用户所属企业和门店，记录到session中
+
+			UserEntrelationFormMap userEntrelationFormMap=userEntrelationMapper.findbyFrist("user_id",session.getAttribute("userSessionId").toString(),UserEntrelationFormMap.class);
+			if(userEntrelationFormMap!=null){
+				session.setAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION,userEntrelationFormMap);
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			request.setAttribute("error", "登录异常，请联系管理员！");

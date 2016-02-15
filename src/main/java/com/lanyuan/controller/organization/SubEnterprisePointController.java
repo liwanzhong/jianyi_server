@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -55,6 +56,14 @@ public class SubEnterprisePointController extends BaseController {
 		userFormMap.put("valid",1);
 		pageView.setRecords(subEnterprisePointMapper.findEnterprisePage(userFormMap));//不调用默认分页,调用自已的mapper中findUserPage
 		return pageView;
+	}
+
+	@ResponseBody
+	@RequestMapping("findbyEntid")
+	public List<SubEnterprisePointFormMap> findbyEntid(String entid) throws Exception {
+		SubEnterprisePointFormMap userFormMap = new SubEnterprisePointFormMap();
+		userFormMap.put("entid",entid);
+		return subEnterprisePointMapper.findByEntid(userFormMap);
 	}
 
 

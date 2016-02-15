@@ -34,11 +34,16 @@ $(function() {
 				return new Date(data).format("yyyy-MM-dd hh:mm:ss");
 			}
 		}, {
-			name : "操作",
-			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				return "测试渲染函数";
-			}
-		} ],
+			name : "所属企业",
+			colkey : "enterprise_name",
+			isSort:true,
+
+		} , {
+			name : "所属分店",
+			colkey : "point_name",
+			isSort:true,
+
+		}],
 		jsonUrl : rootPath + '/user/findByPage.shtml',
 		checkbox : true,
 		serNumber : true
@@ -61,6 +66,9 @@ $(function() {
 	$("#permissions").click("click", function() {
 		permissions();
 	});
+	$("#build_entrelation").click(function(){
+		build_entrelation();
+	})
 });
 function editAccount() {
 	var cbox = grid.getSelectedCheckbox();
@@ -113,6 +121,22 @@ function permissions() {
 		title : "分配权限",
 		type : 2,
 		area : [ "700px", "80%" ],
+		content : url
+	});
+}
+
+
+function build_entrelation() {
+	var cbox = grid.getSelectedCheckbox();
+	if (cbox.length > 1 || cbox == "") {
+		layer.msg("请选择一个对象！");
+		return;
+	}
+	var url = rootPath + '/build_entrelation/build.shtml?userId='+cbox;
+	pageii = layer.open({
+		title : "分配所属企业",
+		type : 2,
+		area : [ "600px", "80%" ],
 		content : url
 	});
 }

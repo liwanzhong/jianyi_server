@@ -8,24 +8,31 @@
 	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
 	<!-- 以下与实体类的中字段一致 -->
 	<sql id="selectId">
-		id,
-		userName,
-		accountName,
+		ly_user.id,
+		ly_user.userName,
+		ly_user.accountName,
 		(select group_concat(name) from ly_role
 		where ly_role.id
 		in (SELECT roleId FROM ly_user_role WHERE
 		userId=ly_user.id) ) roleName,
-		password,
-		description,
-		locked,
-		credentialsSalt,
-		createTime
+		ly_user.password,
+		ly_user.description,
+		ly_user.locked,
+		ly_user.credentialsSalt,
+		ly_user.createTime,
+		enterprise_info.name as enterprise_name,
+  		sub_enterprise_point.name as point_name
 	</sql>
 
 	<select id="findUserPage" resultType="com.lanyuan.entity.UserFormMap">
 		select
 		<include refid="selectId" />
 		from ly_user
+		LEFT JOIN user_enterprise_relation
+		ON user_enterprise_relation.user_id = ly_user.id
+		LEFT JOIN enterprise_info
+		ON user_enterprise_relation.ent_id = enterprise_info.id
+		LEFT JOIN sub_enterprise_point ON user_enterprise_relation.sub_point_id=sub_enterprise_point.id
 		where 1 = 1
 		<if test="accountName != null and accountName != ''">
 		and accountName like '%${accountName}%'

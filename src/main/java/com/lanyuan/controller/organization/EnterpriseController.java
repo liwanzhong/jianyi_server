@@ -3,17 +3,13 @@ package com.lanyuan.controller.organization;
 
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
-import com.lanyuan.entity.EnterpriseFormMap;
-import com.lanyuan.entity.ResUserFormMap;
-import com.lanyuan.entity.UserFormMap;
-import com.lanyuan.entity.UserGroupsFormMap;
+import com.lanyuan.entity.*;
 import com.lanyuan.exception.SystemException;
 import com.lanyuan.mapper.EnterpriseMapper;
 import com.lanyuan.plugin.PageView;
-import com.lanyuan.util.Common;
-import com.lanyuan.util.JsonUtils;
-import com.lanyuan.util.POIUtils;
-import com.lanyuan.util.PasswordHelper;
+import com.lanyuan.util.*;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -44,6 +40,11 @@ public class EnterpriseController extends BaseController {
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
 		model.addAttribute("res", findByRes());
+
+		/*Session session = SecurityUtils.getSubject().getSession();
+		UserEntrelationFormMap userEntrelationFormMap = (UserEntrelationFormMap)session.getAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION);
+		System.out.println(userEntrelationFormMap);*/
+
 		return Common.BACKGROUND_PATH + "/organization/enterprise/list";
 	}
 
@@ -58,18 +59,15 @@ public class EnterpriseController extends BaseController {
 		pageView.setRecords(enterpriseMapper.findEnterprisePage(userFormMap));//不调用默认分页,调用自已的mapper中findUserPage
 		return pageView;
 	}
-	
-	@RequestMapping("/export")
-	public void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String fileName = "企业列表";
-		EnterpriseFormMap userFormMap = findHasHMap(EnterpriseFormMap.class);
-		String exportData = userFormMap.getStr("exportData");// 列表头的json字符串
 
-		List<Map<String, Object>> listMap = JsonUtils.parseJSONList(exportData);
 
-		List<EnterpriseFormMap> lis = enterpriseMapper.findEnterprisePage(userFormMap);
-		POIUtils.exportToExcel(response, listMap, lis, fileName);
+	@ResponseBody
+	@RequestMapping("findAll")
+	public List<EnterpriseFormMap> findAll( ) throws Exception {
+		EnterpriseFormMap userFormMap = getFormMap(EnterpriseFormMap.class);
+		return enterpriseMapper.findByWhere(userFormMap);
 	}
+	
 
 	@RequestMapping("addUI")
 	public String addUI(Model model) throws Exception {

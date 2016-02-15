@@ -21,6 +21,11 @@
     sub.remark
 	</sql>
 
+
+	<sql id="selectIdonly">
+ 		id, ent_id, name, address, contact_name, contact_phone, valid, insert_time, update_time,  remark
+	</sql>
+
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.SubEnterprisePointFormMap">
 		select
 		<include refid="selectId" />
@@ -31,6 +36,15 @@
 		<if test="orderby != null">
 			${orderby}
 		</if>
+	</select>
+
+
+	<select id="findByEntid" resultType="com.lanyuan.entity.SubEnterprisePointFormMap">
+		select
+		<include refid="selectIdonly" />
+		FROM sub_enterprise_point
+		where 1 = 1
+		and ent_id = ${entid}
 	</select>
 
 </mapper>
