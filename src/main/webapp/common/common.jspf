@@ -21,7 +21,7 @@ minimum-scale - 允许用户缩放到的最小比例
 maximum-scale - 允许用户缩放到的最大比例
 user-scalable - 用户是否可以手动缩放
 -->
-<link rel="stylesheet" href="${ctx}/notebook/notebook_files/font.css" type="text/css">
+<%--<link rel="stylesheet" href="${ctx}/notebook/notebook_files/font.css" type="text/css">
 <link rel="stylesheet" href="${ctx}/notebook/notebook_files/app.v1.css" type="text/css">
 <link rel="stylesheet" href="${ctx}/css/lanyuan.css" type="text/css">
 <!-- base start 重要部分不可删改-->
@@ -34,9 +34,27 @@ user-scalable - 用户是否可以手动缩放
 <script type="text/javascript" src="${ctx}/common/common.js"></script>
 <script type="text/javascript" src="${ctx}/js/jquery/underscore.js"></script>
 <script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
-<!--[if lt IE 9]> <script src="${ctx}/js/jquery/ie/html5shiv.js"></script> <script src="${ctx}/js/jquery/ie/respond.min.js"></script><![endif]-->
-<link href="${ctx}/js/date/bootstrap.min.css" rel="stylesheet">
-<link href="${ctx}/js/date/font-awesome.min.css" rel="stylesheet">
+<!--[if lt IE 9]> <script src="${ctx}/js/jquery/ie/html5shiv.js"></script> <script src="${ctx}/js/jquery/ie/respond.min.js"></script><![endif]-->--%>
+
+
+<link rel="stylesheet" href="${ctx}/notebook/notebook_files/font.css" type="text/css">
+<link rel="stylesheet" href="${ctx}/notebook/notebook_files/app.v1.css" type="text/css">
+<link rel="stylesheet" href="${ctx}/css/lanyuan.css" type="text/css">
+<!-- base start 重要部分不可删改-->
+<script type="text/javascript" src="${ctx}/notebook/notebook_files/app.v1.js"></script>
+<script type="text/javascript" src="${ctx}/notebook/notebook_files/app.plugin.js"></script>
+<script type="text/javascript" src="${ctx}/js/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="${ctx}/js/jquery/jquery-validation/jquery.validate.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/jquery/jquery-validation/messages_cn.js"></script>
+<script type="text/javascript" src="${ctx}/js/layer-v1.9.2/layer/layer.js"></script>
+<script type="text/javascript" src="${ctx}/common/common.js"></script>
+<script type="text/javascript" src="${ctx}/js/jquery/underscore.js"></script>
+<script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
+<!--[if lt IE 9]> <script src="/js/jquery/ie/html5shiv.js"></script> <script src="${ctx}/js/jquery/ie/respond.min.js"></script><![endif]-->
+
+
+<%--<link href="${ctx}/js/date/bootstrap.min.css" rel="stylesheet">
+<link href="${ctx}/js/date/font-awesome.min.css" rel="stylesheet">--%>
 <%-- 
     时间控件 -------- 可能导致样式问题,和某些js事件失效 如加上,,自行处理
 <link rel="stylesheet" type="text/css" media="all" href="${ctx}/js/date/daterangepicker-bs3.css" />

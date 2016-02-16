@@ -111,11 +111,11 @@ public class BaseController {
 	 *<b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp2015-04-01</b><br/> 
 	 *<b>version：</b><br/> 
 	 *<b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp3.0v</b>
-	 * @return Class<T>
-	 * @throws Exception
-	 */
+			* @return Class<T>
+	* @throws Exception
+	*/
 	public String[] getParaValues(String key){
-		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();  
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
 		return request.getParameterValues(key);
 	}
 	/*

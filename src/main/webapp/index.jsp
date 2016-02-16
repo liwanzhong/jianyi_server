@@ -3,6 +3,7 @@
 <head>
 
 	<%@include file="/common/common.jspf"%>
+	<script type="text/javascript" src="/js/system/user/updatePassword.js"></script>
 	<script type="text/javascript">
 		$(function() {
 			//修改时间2015年10月13日14:32:57
@@ -51,10 +52,11 @@
 			</a>
 		</div>
 		<ul class="nav navbar-nav hidden-xs">
-			<li class="dropdown"><a href="index.html#"
-									class="dropdown-toggle dker" data-toggle="dropdown"> <i
-					class="fa fa-building-o"></i> <span class="font-bold">Activity</span>
-			</a>
+			<li class="dropdown">
+				<a href="index.html#" class="dropdown-toggle dker" data-toggle="dropdown">
+					<i class="fa fa-building-o"></i>
+					<span class="font-bold">Activity</span>
+				</a>
 				<section
 						class="dropdown-menu aside-xl on animated fadeInLeft no-borders lt">
 					<div class="wrapper lter m-t-n-xs">
@@ -88,7 +90,8 @@
 							</div>
 						</div>
 					</div>
-				</section></li>
+				</section>
+			</li>
 			<li>
 				<div class="m-t m-l">
 					<a href="price.html"
@@ -160,7 +163,7 @@
 					</section>
 				</section></li>
 			<li class="dropdown">
-				<a href="index.shtml#" class="dropdown-toggle" data-toggle="dropdown">
+				<a href="index.html#" class="dropdown-toggle" data-toggle="dropdown">
 					<span class="thumb-sm avatar pull-left">
 					<img src="${ctx}/notebook/notebook_files/avatar.jpg">
 					</span> ${userFormMap.accountName} <b class="caret"></b>
@@ -181,7 +184,7 @@
 	<section>
 		<section class="hbox stretch">
 			<!-- .aside -->
-			<aside class="bg-dark lter aside-md hidden-print hidden-xs" id="nav">
+			<aside class="bg-light lter b-r aside-md hidden-print hidden-xs" id="nav">
 				<section class="vbox">
 					<section class="w-f scrollable">
 						<div class="slim-scroll" data-height="auto"
@@ -192,7 +195,7 @@
 								<ul class="nav" id="left_menu_ul_itemsid">
 									<c:forEach var="key" items="${list}" varStatus="s">
 										<!-- <li class="active"> 某一项展开-->
-										<li <c:if test="${s.index==0}">class="active"</c:if> onclick="showThisItems(this)">
+										<li <c:if test="${s.index==0}">class="active"</c:if>>
 											<a href="javascript:void(0)"
 											   <c:if test="${s.index==0}">class="active"</c:if>>
 													<%--<c:if test="${s.index==0}">
@@ -314,9 +317,9 @@
 
 	function showThisItems(item){
 		/*var isopen=false;
-		if($(item).parent().hasClass("active")){
-			isopen=true;
-		}*/
+		 if($(item).parent().hasClass("active")){
+		 isopen=true;
+		 }*/
 		// 隐藏其他的选项
 		$("#left_menu_ul_itemsid li").each(function(index,fitem){
 			if($(fitem).hasClass("active")){
@@ -324,10 +327,10 @@
 			}
 		});
 		/*if(isopen){
-			$(item).parent().removeClass("active")
-		}else{
+		 $(item).parent().removeClass("active")
+		 }else{
 
-		}*/
+		 }*/
 		$(item).addClass("active")
 
 	}

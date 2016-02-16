@@ -151,7 +151,7 @@
 		success : function(json) {
 			$("#cut_items_list").empty();
 			for (index in json) {
-				$("#cut_items_list").append('<input type="checkbox"   name="customCutItemFormMap.id" value="'+json[index].id+'">   '+json[index].name+'&nbsp;&nbsp;&nbsp;');
+				$("#cut_items_list").append('<input type="checkbox"   name="cut_item" value="'+json[index].id+'">   '+json[index].name+'&nbsp;&nbsp;&nbsp;');
 			}
 		}
 	});

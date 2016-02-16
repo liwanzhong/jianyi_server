@@ -9,7 +9,7 @@
 	<!-- 以下与实体类的中字段一致 -->
 	<sql id="selectId">
 		custom_info.id, custom_info.ent_id, custom_info.sub_ent_point_id, custom_info.show_in_ent, custom_info.username, custom_info.password, custom_info.name, custom_info.sex, custom_info.birthday,
-	custom_info.body_height, custom_info.weight, custom_info.bmi, custom_info.zw_code, custom_info.zw_pic, custom_info.mobile, custom_info.insert_time, custom_info.lastcheck_time, custom_info.update_time
+	custom_info.body_height, custom_info.weight, custom_info.bmi, custom_info.zw_code, custom_info.zw_pic, custom_info.mobile, custom_info.insert_time, custom_info.lastcheck_time, custom_info.update_time,custom_info.delete_tag
 	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.CustomInfoFormMap">
@@ -25,6 +25,7 @@
 		<if test="sub_point_id != null">
 			AND  custom_beloneto_ent.sub_point_id = ${sub_point_id}
 		</if>
+		AND custom_beloneto_ent.is_delete=0
 		<if test="orderby != null">
 			${orderby}
 		</if>

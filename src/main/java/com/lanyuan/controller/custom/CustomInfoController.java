@@ -12,17 +12,20 @@ import com.lanyuan.mapper.CutItemMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
 import com.lanyuan.util.CommonConstants;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -85,7 +88,7 @@ public class CustomInfoController extends BaseController {
 	@RequestMapping("addEntity")
 	@SystemLog(module="系统管理",methods="企业管理，新增企业信息")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	public String addEntity(String txtGroupsSelect){
+	public String addEntity(@RequestParam(value = "cut_item") String[] cutitems){
 		try {
 			Session session = SecurityUtils.getSubject().getSession();
 			UserEntrelationFormMap userEntrelationFormMap = (UserEntrelationFormMap)session.getAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION);
@@ -104,7 +107,7 @@ public class CustomInfoController extends BaseController {
 
 			customInfoMapper.addEntity(customInfoFormMap);//新增后返回新增信息
 
-			//todo 保存客户所属企业关系
+			// 保存客户所属企业关系
 			CustomBelonetoEntFormMap customBelonetoEntFormMap = getFormMap(CustomBelonetoEntFormMap.class);
 			customBelonetoEntFormMap.put("ent_id",userEntrelationFormMap.get("ent_id").toString());
 			customBelonetoEntFormMap.put("sub_point_id",userEntrelationFormMap.get("sub_point_id").toString());
@@ -112,8 +115,15 @@ public class CustomInfoController extends BaseController {
 			customBelonetoEntFormMap.put("custom_id",customInfoFormMap.get("id").toString());
 			customBelonetoEntMapper.addEntity(customBelonetoEntFormMap);
 
-			CustomCutItemFormMap customCutItemFormMap =getFormMap(CustomCutItemFormMap.class);
-			System.out.println(customCutItemFormMap);
+			if(cutitems!=null && cutitems.length>0){
+				for(int i=0;i<cutitems.length;i++){
+					CustomCutItemFormMap customCutItemFormMap =new CustomCutItemFormMap();
+					customCutItemFormMap.put("cut_item_id",cutitems[i]);
+					customCutItemFormMap.put("custom_id",customInfoFormMap.get("id").toString());
+					customCutItemMapper.addEntity(customCutItemFormMap);
+				}
+
+			}
 
 		} catch (Exception e) {
 			 throw new SystemException("添加客户异常["+e.getMessage()+"]");
@@ -128,7 +138,26 @@ public class CustomInfoController extends BaseController {
 	public String deleteEntity() throws Exception {
 		String[] ids = getParaValues("ids");
 		for (String id : ids) {
-			customInfoMapper.deleteByAttribute("id", id, CustomInfoFormMap.class);
+
+			Session session = SecurityUtils.getSubject().getSession();
+			UserEntrelationFormMap userEntrelationFormMap = (UserEntrelationFormMap)session.getAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION);
+
+			if(userEntrelationFormMap==null){
+				throw new SystemException("请切换为企业用户才可以添加客户!");
+			}
+
+			//删除的是企业的关联
+			CustomBelonetoEntFormMap customBelonetoEntFormMap = new CustomBelonetoEntFormMap();
+			customBelonetoEntFormMap.put("custom_id",id);
+			customBelonetoEntFormMap.put("ent_id",userEntrelationFormMap.get("ent_id").toString());
+			customBelonetoEntFormMap.put("sub_point_id",userEntrelationFormMap.get("sub_point_id").toString());
+			List<CustomBelonetoEntFormMap> customBelonetoEntFormMapList = customBelonetoEntMapper.findByNames(customBelonetoEntFormMap);
+
+			if(CollectionUtils.isNotEmpty(customBelonetoEntFormMapList)){
+				CustomBelonetoEntFormMap updateItem=customBelonetoEntFormMapList.get(0);
+				updateItem.put("is_delete",1);
+				customBelonetoEntMapper.editEntity(updateItem);
+			}
 		}
 		return "success";
 	}
