@@ -14,14 +14,17 @@
 				<label class="control-label">
 					<span class="h4 font-thin v-middle">会员手机:</span>
 				</label>
-				<input class="input-medium ui-autocomplete-input" id="name" name="enterpriseFormMap.name">
+				<input class="input-medium ui-autocomplete-input form-control" id="name" name="enterpriseFormMap.name">
 			</div>
 			<div class="form-group">
 				<label class="control-label">
 					<span class="h4 font-thin v-middle">会员来源:</span>
 				</label>
-				<select class="input-medium ui-autocomplete-input">
-					<option>sssssssssssssssssssssssssssssssss</option>
+				<select name="account" class="form-control">
+					<option>option 1</option>
+					<option>option 2</option>
+					<option>option 3</option>
+					<option>option 4</option>
 				</select>
 			</div>
 			<a href="javascript:void(0)" class="btn btn-default" id="search">查询</a>
