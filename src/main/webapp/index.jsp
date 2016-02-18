@@ -198,27 +198,6 @@
 										<li <c:if test="${s.index==0}">class="active"</c:if>>
 											<a href="javascript:void(0)"
 											   <c:if test="${s.index==0}">class="active"</c:if>>
-													<%--<c:if test="${s.index==0}">
-                                                        <i class="fa fa-dashboard icon"> <b class="bg-danger"></b>
-                                                        </i>
-                                                    </c:if>
-                                                    <c:if test="${s.index==1}">
-                                                        <i class="fa fa-pencil-square icon"> <b
-                                                                class="bg-warning"></b>
-                                                        </i>
-                                                    </c:if>
-                                                    <c:if test="${s.index==2}">
-                                                        <i class="fa fa-columns icon"> <b class="bg-primary"></b>
-                                                        </i>
-                                                    </c:if>
-                                                    <c:if test="${s.index==3}">
-                                                        <i class="fa fa-book icon"> <b class="bg-info"></b>
-                                                        </i>
-                                                    </c:if>
-                                                    <c:if test="${s.index==4}">
-                                                        <i class="fa fa-th-list icon"> <b class="bg-success"></b>
-                                                        </i>
-                                                    </c:if>--%>
 												<i class="fa fa-th-list icon"> <b class="bg-success"></b></i>
 												<span class="pull-right">
 													<i class="fa fa-angle-down text"></i>
@@ -226,14 +205,39 @@
 												</span>
 												<span>${key.name}</span>
 											</a>
-
+												<%--默认第一层为目录
+                                                最多支持三层
+                                                第二层判断是否是目录--%>
 											<ul class="nav lt">
 												<c:forEach var="kc" items="${key.children}">
-													<li class="active">
-														<a href="javascript:void(0)"
-														   class="active" nav-n="${key.name},${kc.name},${kc.resUrl}?id=${kc.id}"> <i class="fa fa-angle-right"></i> <span>${kc.name}</span>
-														</a>
-													</li>
+													<c:choose>
+														<c:when test="${kc.type == 1}">
+															<%--菜单链接 --%>
+															<li class="active">
+																<a href="javascript:void(0)" class="active" nav-n="${key.name},${kc.name},${kc.resUrl}?id=${kc.id}"> <i class="fa fa-angle-right"></i> <span>${kc.name}</span>
+																</a>
+															</li>
+														</c:when>
+														<c:otherwise>
+															<li class="active">
+																<a href="javascript:void(0)">
+																	<i class="fa fa-book icon"> <b class="bg-info"></b></i>
+																	<span class="pull-right"><i class="fa fa-angle-down text"></i><i class="fa fa-angle-up text-active"></i></span>
+																	<span>${kc.name}</span>
+																</a>
+
+																<ul class="nav lt">
+																	<c:forEach var="kchild" items="${kc.children}">
+																		<li class="active">
+																			<a href="javascript:void(0)" class="active" nav-n="${kchild.name},${kchild.name},${kchild.resUrl}?id=${kchild.id}"> <i class="fa fa-angle-right"></i> <span>${kchild.name}</span>
+																			</a>
+																		</li>
+																	</c:forEach>
+																</ul>
+															</li>
+														</c:otherwise>
+													</c:choose>
+
 												</c:forEach>
 											</ul>
 										</li>
