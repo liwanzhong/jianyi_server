@@ -39,7 +39,7 @@ public class CheckSmallItemController extends BaseController {
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
 		model.addAttribute("res", findByRes());
-		return Common.BACKGROUND_PATH + "/custom/info/list";
+		return Common.BACKGROUND_PATH + "/instrument/checksmallitem/list";
 	}
 
 	@ResponseBody
