@@ -39,8 +39,7 @@
 				<div class="main_input_box">
 						<span class="add-on bg_ly" style="background: #28b779"><img
 								src="${pageContext.servletContext.contextPath }/admin_files/account_1.png"
-								alt="请输入用户名.."></span><input type="text" placeholder="用户名..." name="username" value="admin"
-															 style="height: 32px; margin-bottom: 0px;"/>
+								alt="请输入用户名.."></span><input type="text" placeholder="用户名..." name="username"  style="height: 32px; margin-bottom: 0px;"/>
 				</div>
 			</div>
 		</div>
@@ -50,7 +49,7 @@
 						<span class="add-on bg_ly">
 							<img src="${pageContext.servletContext.contextPath }/admin_files/lock_1.png" alt="请输入密码..">
 						</span>
-					<input type="password" placeholder="密码..." name="password" value="123456" style="height: 32px; margin-bottom: 0px;"/>
+					<input type="password" placeholder="密码..." name="password"  style="height: 32px; margin-bottom: 0px;"/>
 				</div>
 			</div>
 		</div>
