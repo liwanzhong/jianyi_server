@@ -23,11 +23,15 @@ $(function() {
 				return new Date(data).format("yyyy-MM-dd hh:mm:ss");
 			}
 		}, {
+			colkey : "sub_point_count",
+			name : "检测点",
+			isSort:true
+		}, {
 			name : "操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				//return "<a href='http://www.baidu.com'>新增检测点</a>&nbsp;&nbsp;&nbsp;<a href='#'>查看企业</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除企业</a>";
-				console.log(rowdata.id)
-				return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a> &nbsp;&nbsp;&nbsp;<a class="btn btn-danger marR10" data-toggle="modal" onclick="showOtherPageInLocal('+rowdata.id+')">检测点管理</a>';
+				return "<a href='javascript:void(showOtherPageInLocal("+rowdata.id+"));'>新增检测点</a>&nbsp;&nbsp;&nbsp;<a href='#'>查看企业</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除企业</a>";
+				//console.log(rowdata.id)
+				//return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a> &nbsp;&nbsp;&nbsp;<a class="btn btn-danger marR10" data-toggle="modal" onclick="showOtherPageInLocal('+rowdata.id+')">检测点管理</a>';
 			}
 		} ],
 		jsonUrl : rootPath + '/enterprise/findByPage.shtml',

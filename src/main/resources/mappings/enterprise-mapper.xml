@@ -8,16 +8,19 @@
 	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
 	<!-- 以下与实体类的中字段一致 -->
 	<sql id="selectId">
-		id, name, insert_time, update_time, valid, contact_name, contact_phone, remark
+		enterprise_info.id, enterprise_info.name, enterprise_info.insert_time, enterprise_info.update_time, enterprise_info.valid, enterprise_info.contact_name, enterprise_info.contact_phone, enterprise_info.remark,(SELECT
+		COUNT(*) ct
+		FROM sub_enterprise_point
+		WHERE enterprise_info.id = sub_enterprise_point.ent_id) AS sub_point_count
 	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.EnterpriseFormMap">
 		select
 		<include refid="selectId" />
-		from enterprise_info
+		FROM enterprise_info
 		where 1 = 1
 		<if test="valid != null">
-			and valid=${valid}
+			and enterprise_info.valid=${valid}
 		</if>
 		<if test="orderby != null">
 			${orderby}
