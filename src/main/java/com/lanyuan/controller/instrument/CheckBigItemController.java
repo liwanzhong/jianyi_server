@@ -132,10 +132,10 @@ public class CheckBigItemController extends BaseController {
 
 
 	@ResponseBody
-	@RequestMapping("loadCutItems")
-	public List<CheckBigItemFormMap> loadCutItems(Model model) throws Exception {
-		CheckBigItemFormMap CheckBigItemFormMap = getFormMap(CheckBigItemFormMap.class);
-		return checkBigItemMapper.findByWhere(CheckBigItemFormMap);
+	@RequestMapping("loadAll")
+	public List<CheckBigItemFormMap> loadAll(Model model) throws Exception {
+		CheckBigItemFormMap checkBigItemFormMap = getFormMap(CheckBigItemFormMap.class);
+		return checkBigItemMapper.findByWhere(checkBigItemFormMap);
 	}
 
 	/**

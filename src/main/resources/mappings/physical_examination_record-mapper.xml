@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.PhysicalExaminationRecordMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+		 physical_examination_record.id, physical_examination_record.custom_id, physical_examination_record.ent_id, physical_examination_record.sub_point_id, physical_examination_record.instrument_id, physical_examination_record.status, physical_examination_record.report_gentime, physical_examination_record.report_path, physical_examination_record.check_time, physical_examination_record.update_time,
+		 custom_info.id as customid,custom_info.name as customname,custom_info.sex as customsex,custom_info.mobile as custommobile
+	</sql>
+
+	<select id="findEnterprisePage" resultType="com.lanyuan.entity.PhysicalExaminationRecordFormMap">
+		select
+		<include refid="selectId" />
+		FROM physical_examination_record
+		LEFT JOIN custom_info
+		ON physical_examination_record.custom_id = custom_info.id
+		where 1 = 1
+		<if test="orderby != null">
+			${orderby}
+		</if>
+	</select>
+
+
+	
+</mapper>

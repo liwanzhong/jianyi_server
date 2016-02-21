@@ -5,40 +5,41 @@ $(function() {
 	grid = lyGrid({
 		pagId : 'paging',
 		l_column : [ {
-			colkey : "id",
-			name : "检测项ID"
+			colkey : "customid",
+			name : "会员编号"
 		}, {
-			colkey : "big_item",
-			name : "所属检测大项",
+			colkey : "customname",
+			name : "会员姓名"
+		}, {
+			colkey : "customsex",
+			name : "会员性别"
+		}, {
+			colkey : "custommobile",
+			name : "会员手机"
+		}, {
+			colkey : "check_time",
+			name : "检测时间",
 			isSort:true
 		}, {
-			colkey : "name",
-			name : "检测小项名称",
+			colkey : "status",
+			name : "检测状态",
 			isSort:true
 		}, {
-			colkey : "is_show",
-			name : "是否显示",
-			isSort:true
-		}, {
-			colkey : "order_by",
-			name : "排序",
-			isSort:true
-		}, {
-			colkey : "update_time",
-			name : "最近一次更新",
-			isSort:true,
-			renderData : function(rowindex,data, rowdata, column) {
-				return new Date(data).format("yyyy-MM-dd hh:mm:ss");
+			name : "健康促进",
+			renderData : function( rowindex ,data, rowdata, colkeyn) {
+				//return "<a href='http://www.baidu.com'>新增检测点</a>&nbsp;&nbsp;&nbsp;<a href='#'>查看企业</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除企业</a>";
+				console.log(rowdata.id)
+				return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a>';
 			}
 		}, {
-			name : "操作",
+			name : "报告相关操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
 				//return "<a href='http://www.baidu.com'>新增检测点</a>&nbsp;&nbsp;&nbsp;<a href='#'>查看企业</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除企业</a>";
 				console.log(rowdata.id)
 				return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a>';
 			}
 		} ],
-		jsonUrl : rootPath + '/instrument/smallitem/findByPage.shtml',
+		jsonUrl : rootPath + '/examination/physicalExamination/findByPage.shtml',
 		checkbox : true,
 		serNumber : true
 	});
@@ -69,7 +70,7 @@ function editAccount() {
 		title : "编辑",
 		type : 2,
 		area : [ "600px", "80%" ],
-		content : rootPath + '/instrument/smallitem/editUI.shtml?id=' + cbox
+		content : rootPath + '/examination/physicalExamination/editUI.shtml?id=' + cbox
 	});
 }
 function addAccount() {
@@ -77,7 +78,7 @@ function addAccount() {
 		title : "新增",
 		type : 2,
 		area : [ "60%", "80%" ],
-		content : rootPath + '/instrument/smallitem/addUI.shtml'
+		content : rootPath + '/examination/physicalExamination/addUI.shtml'
 	});
 }
 function delAccount() {
@@ -87,7 +88,7 @@ function delAccount() {
 		return;
 	}
 	layer.confirm('是否删除？', function(index) {
-		var url = rootPath + '/instrument/smallitem/deleteEntity.shtml';
+		var url = rootPath + '/examination/physicalExamination/deleteEntity.shtml';
 		var s = CommnUtil.ajax(url, {
 			ids : cbox.join(",")
 		}, "json");

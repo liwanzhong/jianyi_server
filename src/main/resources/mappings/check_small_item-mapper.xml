@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.CheckSmallItemMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+		check_small_item.id, check_small_item.big_item_id, check_small_item.name, check_small_item.normal_value_type, check_small_item.min_value, check_small_item.max_value, check_small_item.trend, check_small_item.remark, check_small_item.is_show,
+    check_small_item.order_by, check_small_item.insert_time, check_small_item.update_time,check_big_item.name AS big_item
+	</sql>
+
+	<select id="findEnterprisePage" resultType="com.lanyuan.entity.CheckSmallItemFormMap">
+		select
+		<include refid="selectId" />
+		FROM check_small_item
+		LEFT JOIN check_big_item
+		ON check_small_item.big_item_id = check_big_item.id
+		where 1 = 1
+		<choose>
+			<when test="orderby != null">
+				${orderby} ,order_by ASC
+			</when>
+			<otherwise>
+				ORDER  BY order_by ASC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findLasyOrderItemCout" resultType="java.lang.Integer">
+		SELECT  order_by FROM  check_small_item ORDER BY order_by DESC limit 1;
+	</select>
+	
+</mapper>

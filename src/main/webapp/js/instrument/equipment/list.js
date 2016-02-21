@@ -6,30 +6,23 @@ $(function() {
 		pagId : 'paging',
 		l_column : [ {
 			colkey : "id",
-			name : "检测项ID"
+			name : "仪器id"
 		}, {
-			colkey : "big_item",
-			name : "所属检测大项",
+			colkey : "istmt_code",
+			name : "仪器机器码",
 			isSort:true
 		}, {
-			colkey : "name",
-			name : "检测小项名称",
+			colkey : "entname",
+			name : "仪器所属企业",
 			isSort:true
 		}, {
-			colkey : "is_show",
-			name : "是否显示",
+			colkey : "subentname",
+			name : "仪器所属分店",
 			isSort:true
 		}, {
-			colkey : "order_by",
-			name : "排序",
+			colkey : "remark",
+			name : "备注",
 			isSort:true
-		}, {
-			colkey : "update_time",
-			name : "最近一次更新",
-			isSort:true,
-			renderData : function(rowindex,data, rowdata, column) {
-				return new Date(data).format("yyyy-MM-dd hh:mm:ss");
-			}
 		}, {
 			name : "操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
@@ -38,7 +31,7 @@ $(function() {
 				return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a>';
 			}
 		} ],
-		jsonUrl : rootPath + '/instrument/smallitem/findByPage.shtml',
+		jsonUrl : rootPath + '/instrument/equipment/findByPage.shtml',
 		checkbox : true,
 		serNumber : true
 	});
@@ -69,7 +62,7 @@ function editAccount() {
 		title : "编辑",
 		type : 2,
 		area : [ "600px", "80%" ],
-		content : rootPath + '/instrument/smallitem/editUI.shtml?id=' + cbox
+		content : rootPath + '/instrument/equipment/editUI.shtml?id=' + cbox
 	});
 }
 function addAccount() {
@@ -77,7 +70,7 @@ function addAccount() {
 		title : "新增",
 		type : 2,
 		area : [ "60%", "80%" ],
-		content : rootPath + '/instrument/smallitem/addUI.shtml'
+		content : rootPath + '/instrument/equipment/addUI.shtml'
 	});
 }
 function delAccount() {
@@ -87,7 +80,7 @@ function delAccount() {
 		return;
 	}
 	layer.confirm('是否删除？', function(index) {
-		var url = rootPath + '/instrument/smallitem/deleteEntity.shtml';
+		var url = rootPath + '/instrument/equipment/deleteEntity.shtml';
 		var s = CommnUtil.ajax(url, {
 			ids : cbox.join(",")
 		}, "json");

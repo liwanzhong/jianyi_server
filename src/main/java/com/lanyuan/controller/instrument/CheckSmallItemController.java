@@ -3,16 +3,12 @@ package com.lanyuan.controller.instrument;
 
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
-import com.lanyuan.entity.CutItemFormMap;
-import com.lanyuan.entity.UserEntrelationFormMap;
+import com.lanyuan.entity.CheckSmallItemFormMap;
 import com.lanyuan.entity.UserGroupsFormMap;
 import com.lanyuan.exception.SystemException;
-import com.lanyuan.mapper.CutItemMapper;
+import com.lanyuan.mapper.CheckSmallItemMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
-import com.lanyuan.util.CommonConstants;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -22,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -34,7 +29,7 @@ import java.util.List;
 @RequestMapping("/instrument/smallitem/")
 public class CheckSmallItemController extends BaseController {
 	@Inject
-	private CutItemMapper cutItemMapper;
+	private CheckSmallItemMapper checkSmallItemMapper;
 
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
@@ -45,23 +40,12 @@ public class CheckSmallItemController extends BaseController {
 	@ResponseBody
 	@RequestMapping("findByPage")
 	public PageView findByPage( String pageNow,String pageSize,String column,String sort) throws Exception {
-		CutItemFormMap cutItemFormMap = getFormMap(CutItemFormMap.class);
-		cutItemFormMap=toFormMap(cutItemFormMap, pageNow, pageSize,cutItemFormMap.getStr("orderby"));
-		cutItemFormMap.put("column", column);
-		cutItemFormMap.put("sort", sort);
-		//todo 获取当前登录用户的企业和检测点
-		Session session = SecurityUtils.getSubject().getSession();
-		UserEntrelationFormMap userEntrelationFormMap = (UserEntrelationFormMap)session.getAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION);
+		CheckSmallItemFormMap checkSmallItemFormMap = getFormMap(CheckSmallItemFormMap.class);
+		checkSmallItemFormMap=toFormMap(checkSmallItemFormMap, pageNow, pageSize,checkSmallItemFormMap.getStr("orderby"));
+		checkSmallItemFormMap.put("column", column);
+		checkSmallItemFormMap.put("sort", sort);
 
-		if(userEntrelationFormMap!=null){//为空表示是系统管理用户,不为空表示是企业的用户
-			Integer ent_id = userEntrelationFormMap.getInt("ent_id");
-			Integer sub_point_id = userEntrelationFormMap.getInt("sub_point_id");
-
-			cutItemFormMap.put("ent_id",ent_id);
-			cutItemFormMap.put("sub_point_id",sub_point_id);
-		}
-
-		pageView.setRecords(cutItemMapper.findEnterprisePage(cutItemFormMap));//不调用默认分页,调用自已的mapper中findUserPage
+		pageView.setRecords(checkSmallItemMapper.findEnterprisePage(checkSmallItemFormMap));//不调用默认分页,调用自已的mapper中findUserPage
 		return pageView;
 	}
 
@@ -70,7 +54,7 @@ public class CheckSmallItemController extends BaseController {
 
 	@RequestMapping("addUI")
 	public String addUI(Model model) throws Exception {
-		return Common.BACKGROUND_PATH + "/custom/info/add";
+		return Common.BACKGROUND_PATH + "/instrument/checksmallitem/add";
 	}
 
 	@ResponseBody
@@ -80,15 +64,20 @@ public class CheckSmallItemController extends BaseController {
 	public String addEntity(String txtGroupsSelect){
 		try {
 			SimpleDateFormat datetimeformat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			CutItemFormMap CutItemFormMap = getFormMap(CutItemFormMap.class);
-			CutItemFormMap.put("txtGroupsSelect", txtGroupsSelect);
-			CutItemFormMap.put("insert_time",datetimeformat.format(new Date()));
-			CutItemFormMap.put("update_time",datetimeformat.format(new Date()));
+			CheckSmallItemFormMap CheckSmallItemFormMap = getFormMap(CheckSmallItemFormMap.class);
+			CheckSmallItemFormMap.put("txtGroupsSelect", txtGroupsSelect);
+			CheckSmallItemFormMap.put("insert_time",datetimeformat.format(new Date()));
+			CheckSmallItemFormMap.put("update_time",datetimeformat.format(new Date()));
+			CheckSmallItemFormMap.put("is_show",1);
 
-			cutItemMapper.addEntity(CutItemFormMap);//新增后返回新增信息
+			// 查询当前排序
+			Integer lastcheckbigitem_orderby = checkSmallItemMapper.findLasyOrderItemCout();
+			CheckSmallItemFormMap.put("order_by",(lastcheckbigitem_orderby==null?0:lastcheckbigitem_orderby)+1);
+
+			checkSmallItemMapper.addEntity(CheckSmallItemFormMap);//新增后返回新增信息
 
 		} catch (Exception e) {
-			 throw new SystemException("添加账号异常");
+			throw new SystemException("添加账号异常");
 		}
 		return "success";
 	}
@@ -100,7 +89,7 @@ public class CheckSmallItemController extends BaseController {
 	public String deleteEntity() throws Exception {
 		String[] ids = getParaValues("ids");
 		for (String id : ids) {
-			cutItemMapper.deleteByAttribute("id", id, CutItemFormMap.class);
+			checkSmallItemMapper.deleteByAttribute("id", id, CheckSmallItemFormMap.class);
 		}
 		return "success";
 	}
@@ -109,9 +98,9 @@ public class CheckSmallItemController extends BaseController {
 	public String editUI(Model model) throws Exception {
 		String id = getPara("id");
 		if(Common.isNotEmpty(id)){
-			model.addAttribute("enterprise", cutItemMapper.findbyFrist("id", id, CutItemFormMap.class));
+			model.addAttribute("enterprise", checkSmallItemMapper.findbyFrist("id", id, CheckSmallItemFormMap.class));
 		}
-		return Common.BACKGROUND_PATH + "/custom/info/edit";
+		return Common.BACKGROUND_PATH + "/instrument/checksmallitem/edit";
 	}
 
 	@ResponseBody
@@ -119,17 +108,17 @@ public class CheckSmallItemController extends BaseController {
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	@SystemLog(module="系统管理",methods="用户管理-修改用户")//凡需要处理业务逻辑的.都需要记录操作日志
 	public String editEntity(String txtGroupsSelect) throws Exception {
-		CutItemFormMap CutItemFormMap = getFormMap(CutItemFormMap.class);
-		CutItemFormMap.put("txtGroupsSelect", txtGroupsSelect);
-		cutItemMapper.editEntity(CutItemFormMap);
-		cutItemMapper.deleteByAttribute("userId", CutItemFormMap.get("id")+"", UserGroupsFormMap.class);
+		CheckSmallItemFormMap CheckSmallItemFormMap = getFormMap(CheckSmallItemFormMap.class);
+		CheckSmallItemFormMap.put("txtGroupsSelect", txtGroupsSelect);
+		checkSmallItemMapper.editEntity(CheckSmallItemFormMap);
+		checkSmallItemMapper.deleteByAttribute("userId", CheckSmallItemFormMap.get("id")+"", UserGroupsFormMap.class);
 		if(!Common.isEmpty(txtGroupsSelect)){
 			String[] txt = txtGroupsSelect.split(",");
 			for (String roleId : txt) {
 				UserGroupsFormMap userGroupsFormMap = new UserGroupsFormMap();
-				userGroupsFormMap.put("userId", CutItemFormMap.get("id"));
+				userGroupsFormMap.put("userId", CheckSmallItemFormMap.get("id"));
 				userGroupsFormMap.put("roleId", roleId);
-				cutItemMapper.addEntity(userGroupsFormMap);
+				checkSmallItemMapper.addEntity(userGroupsFormMap);
 			}
 		}
 		return "success";
@@ -138,16 +127,10 @@ public class CheckSmallItemController extends BaseController {
 
 
 
-	@ResponseBody
-	@RequestMapping("loadCutItems")
-	public List<CutItemFormMap> loadCutItems(Model model) throws Exception {
-		CutItemFormMap cutItemFormMap = getFormMap(CutItemFormMap.class);
-		return cutItemMapper.findByWhere(cutItemFormMap);
-	}
 
 	/**
 	 * 验证账号是否存在
-	 * 
+	 *
 	 * @author lanyuan Email：mmm333zzz520@163.com date：2014-2-19
 	 * @param name
 	 * @return
@@ -155,13 +138,13 @@ public class CheckSmallItemController extends BaseController {
 	@RequestMapping("isExist")
 	@ResponseBody
 	public boolean isExist(String name) {
-		CutItemFormMap account = cutItemMapper.findbyFrist("accountName", name, CutItemFormMap.class);
+		CheckSmallItemFormMap account = checkSmallItemMapper.findbyFrist("accountName", name, CheckSmallItemFormMap.class);
 		if (account == null) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 
 }
