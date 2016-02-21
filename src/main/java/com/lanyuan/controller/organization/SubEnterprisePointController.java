@@ -41,19 +41,21 @@ public class SubEnterprisePointController extends BaseController {
 	private EnterpriseMapper enterpriseMapper;
 
 	@RequestMapping("list")
-	public String listUI(Model model) throws Exception {
+	public String listUI(Model model,Long entid) throws Exception {
 		model.addAttribute("res", findByRes());
+		model.addAttribute("entid",entid);
 		return Common.BACKGROUND_PATH + "/organization/subpoint/list";
 	}
 
 	@ResponseBody
 	@RequestMapping("findByPage")
-	public PageView findByPage( String pageNow,String pageSize,String column,String sort) throws Exception {
+	public PageView findByPage( String pageNow,String pageSize,String column,String sort,Long entid) throws Exception {
 		SubEnterprisePointFormMap userFormMap = getFormMap(SubEnterprisePointFormMap.class);
 		userFormMap=toFormMap(userFormMap, pageNow, pageSize,userFormMap.getStr("orderby"));
 		userFormMap.put("column", column);
 		userFormMap.put("sort", sort);
 		userFormMap.put("valid",1);
+		userFormMap.put("entid",entid);
 		pageView.setRecords(subEnterprisePointMapper.findEnterprisePage(userFormMap));//不调用默认分页,调用自已的mapper中findUserPage
 		return pageView;
 	}

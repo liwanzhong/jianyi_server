@@ -1,9 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>	
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/organization/sub_point/list.js"></script>
+<div>
+	<a href="javascript:void(backtolastpage());">返回企业列表</a>
+</div>
 	<div class="m-b-md">
 		<form class="form-inline" role="form" id="searchForm" name="searchForm">
+			<input type="hidden" id="entid" name="endid" value="${entid}">
 			<div class="form-group">
 				<label class="control-label"> <span
 					class="h4 font-thin v-middle">检测点名称:</span></label> <input

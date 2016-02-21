@@ -32,7 +32,7 @@ $(function() {
 				return "<a href='#'>查看</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除</a>";
 			}
 		} ],
-		jsonUrl : rootPath + '/sub_point/findByPage.shtml',
+		jsonUrl : rootPath + '/sub_point/findByPage.shtml?entid='+$("#entid").val(),
 		checkbox : true,
 		serNumber : true
 	});
@@ -91,4 +91,16 @@ function delAccount() {
 			layer.msg('删除失败');
 		}
 	});
+}
+
+
+function backtolastpage(){
+	var html = '<li><i class="fa fa-home"></i>';
+	html+='<a href="index.shtml">Home</a></li>';
+	html+='<li><a href="javascript:void(0);">企业管理</a></li>';
+	html+='<li><a href="javascript:void(0);">企业管理</a></li>';
+	$("#topli").html(html);
+	var tb = $("#loadhtml");
+	tb.html(CommnUtil.loadingImg());
+	tb.load(rootPath+'/enterprise/list.shtml?id=50');
 }

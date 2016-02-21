@@ -1,6 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 		 pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%--<link href="${pageContext.request.contextPath}/js/date/bootstrap.min.css" rel="stylesheet">--%>
+<%--<link href="${pageContext.request.contextPath}/js/date/font-awesome.min.css" rel="stylesheet">--%>
+<%--<link rel="stylesheet" type="text/css" media="all" href="${pageContext.request.contextPath}/js/date/daterangepicker-bs3.css" />--%>
+<%--<script type="text/javascript" src="${pageContext.request.contextPath}/js/date/jquery-1.8.3.min.js"></script>--%>
+<%--<script type="text/javascript" src="${pageContext.request.contextPath}/js/date/bootstrap.min.js"></script>--%>
+<%--<script type="text/javascript" src="${pageContext.request.contextPath}/js/date/moment.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/date/daterangepicker.js"></script>--%>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/organization/enterprise/list.js"></script>
 <section class="panel panel-default">
 	<header class="panel-heading font-bold">
@@ -17,6 +24,12 @@
 				<div class="inline v-middle">
 					<div class="input-group input-s-sm">
 						<input type="text" class="input-sm form-control" placeholder="开始时间">
+						<%--<span class="add-on input-group-addon">
+							<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+						</span>--%>
+						<%--<input type="text" readonly style="width: 200px" name="reservation" id="reservation" class="form-control" value="2014-5-21 - 2014-6-21" />--%>
+
+							<%--<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span><input type="text" readonly style="width: 200px" name="birthday" id="birthday" class="form-control" value="03/18/2013" />--%>
 					</div>
 					<label class=" control-label">至</label>
 					<div class="input-group input-s-sm">
@@ -24,6 +37,16 @@
 					</div>
 				</div>
 			</div>
+			<%--<div class="control-group">
+				<div class="controls">
+					<div class="input-prepend input-group">
+						<span class="add-on input-group-addon">
+							<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+						</span>
+						<input type="text" readonly style="width: 200px" name="reservation" id="reservation" class="form-control" value="2014-5-21 - 2014-6-21" />
+					</div>
+				</div>
+			</div>--%>
 			<div class="form-group">
 				<button type="submit" class="btn btn-sm">查  询</button>
 			</div>

@@ -27,7 +27,7 @@ $(function() {
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
 				//return "<a href='http://www.baidu.com'>新增检测点</a>&nbsp;&nbsp;&nbsp;<a href='#'>查看企业</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除企业</a>";
 				console.log(rowdata.id)
-				return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a>';
+				return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a> &nbsp;&nbsp;&nbsp;<a class="btn btn-danger marR10" data-toggle="modal" onclick="showOtherPageInLocal('+rowdata.id+')">检测点管理</a>';
 			}
 		} ],
 		jsonUrl : rootPath + '/enterprise/findByPage.shtml',
@@ -90,4 +90,16 @@ function delAccount() {
 			layer.msg('删除失败');
 		}
 	});
+}
+
+
+function  showOtherPageInLocal(entid){
+	var html = '<li><i class="fa fa-home"></i>';
+	html+='<a href="index.shtml">Home</a></li>';
+	html+='<li><a href="javascript:void(0);">企业管理</a></li>';
+	html+='<li><a href="javascript:void(0);">检测点管理</a></li>';
+	$("#topli").html(html);
+	var tb = $("#loadhtml");
+	tb.html(CommnUtil.loadingImg());
+	tb.load(rootPath+'/sub_point/list.shtml?id=51&entid='+entid);
 }
