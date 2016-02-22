@@ -40,11 +40,6 @@ public class EnterpriseController extends BaseController {
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
 		model.addAttribute("res", findByRes());
-
-		/*Session session = SecurityUtils.getSubject().getSession();
-		UserEntrelationFormMap userEntrelationFormMap = (UserEntrelationFormMap)session.getAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION);
-		System.out.println(userEntrelationFormMap);*/
-
 		return Common.BACKGROUND_PATH + "/organization/enterprise/list";
 	}
 
@@ -57,6 +52,7 @@ public class EnterpriseController extends BaseController {
 		userFormMap.put("sort", sort);
 		userFormMap.put("valid",1);
 		pageView.setRecords(enterpriseMapper.findEnterprisePage(userFormMap));//不调用默认分页,调用自已的mapper中findUserPage
+
 		return pageView;
 	}
 

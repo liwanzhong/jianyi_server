@@ -6,15 +6,15 @@ $(function() {
 		pagId : 'paging',
 		l_column : [ {
 			colkey : "id",
-			name : "企业编号",
+			name : "企业编号"
 		}, {
 			colkey : "name",
 			name : "企业名称",
-			isSort:true,
+			isSort:true
 		}, {
 			colkey : "contact_phone",
 			name : "联系电话",
-			isSort:true,
+			isSort:true
 		}, {
 			colkey : "insert_time",
 			name : "建立时间",
@@ -30,7 +30,6 @@ $(function() {
 			name : "操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
 				return "<a href='javascript:void(showOtherPageInLocal("+rowdata.id+"));'>新增检测点</a>&nbsp;&nbsp;&nbsp;<a href='#'>查看企业</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除企业</a>";
-				//console.log(rowdata.id)
 				//return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a> &nbsp;&nbsp;&nbsp;<a class="btn btn-danger marR10" data-toggle="modal" onclick="showOtherPageInLocal('+rowdata.id+')">检测点管理</a>';
 			}
 		} ],
