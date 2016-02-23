@@ -14,29 +14,6 @@
 <meta name="viewport"
 	  content="width=device-width, initial-scale=1, maximum-scale=1">
 <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon">
-<!--
-width - viewport的宽度 height - viewport的高度
-initial-scale - 初始的缩放比例
-minimum-scale - 允许用户缩放到的最小比例
-maximum-scale - 允许用户缩放到的最大比例
-user-scalable - 用户是否可以手动缩放
--->
-<%--<link rel="stylesheet" href="${ctx}/notebook/notebook_files/font.css" type="text/css">
-<link rel="stylesheet" href="${ctx}/notebook/notebook_files/app.v1.css" type="text/css">
-<link rel="stylesheet" href="${ctx}/css/lanyuan.css" type="text/css">
-<!-- base start 重要部分不可删改-->
-<script type="text/javascript" src="${ctx}/js/jquery/jquery-1.8.3.js"></script>
-<script type="text/javascript" src="${ctx}/notebook/notebook_files/app.plugin.js"></script>
-<script type="text/javascript" src="${ctx}/js/jquery/jquery.form.js"></script>
-<script type="text/javascript" src="${ctx}/js/jquery/jquery-validation/jquery.validate.min.js"></script>
-<script type="text/javascript" src="${ctx}/js/jquery/jquery-validation/messages_cn.js"></script>
-<script type="text/javascript" src="${ctx}/js/layer-v1.9.2/layer/layer.js"></script>
-<script type="text/javascript" src="${ctx}/common/common.js"></script>
-<script type="text/javascript" src="${ctx}/js/jquery/underscore.js"></script>
-<script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
-<!--[if lt IE 9]> <script src="${ctx}/js/jquery/ie/html5shiv.js"></script> <script src="${ctx}/js/jquery/ie/respond.min.js"></script><![endif]-->--%>
-
-
 <link rel="stylesheet" href="${ctx}/notebook/notebook_files/font.css" type="text/css">
 <link rel="stylesheet" href="${ctx}/notebook/notebook_files/app.v1.css" type="text/css">
 <link rel="stylesheet" href="${ctx}/css/lanyuan.css" type="text/css">
@@ -51,6 +28,8 @@ user-scalable - 用户是否可以手动缩放
 <script type="text/javascript" src="${ctx}/js/jquery/underscore.js"></script>
 <script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
 <!--[if lt IE 9]> <script src="/js/jquery/ie/html5shiv.js"></script> <script src="${ctx}/js/jquery/ie/respond.min.js"></script><![endif]-->
+<script type="text/javascript" src="${ctx}/js/system/user/updatePassword.js"></script>
+
 
 
 <%--<link href="${ctx}/js/date/bootstrap.min.css" rel="stylesheet">
@@ -153,3 +132,37 @@ user-scalable - 用户是否可以手动缩放
 </script>
 <!-- 返回顶部 -->
 <script type="text/javascript" src="${ctx}/js/scrolltopcontrol.js"></script>
+
+<script type="text/javascript">
+	$(function() {
+		//修改时间2015年10月13日14:32:57
+		//修改在手机上点击菜单后菜单不关闭问题
+		//修改人赵雷
+		var winwidth = $("body").width();
+		if(winwidth<770){
+			$("#nav ul.lt li").click(function(){
+				$("#nav").removeClass("nav-off-screen");
+			});
+		}
+		//---------修改人赵雷完毕----------
+		var tb = $("#loadhtml");
+		tb.html(CommnUtil.loadingImg());
+		tb.load(rootPath+"/welcome.jsp");
+		$("[nav-n]").each(function () {
+			$(this).bind("click",function(){
+				var nav = $(this).attr("nav-n");
+				var sn = nav.split(",");
+				var html = '<li><i class="fa fa-home"></i>';
+				html+='<a href="index.shtml">Home</a></li>';
+				for(var i=0;i<2;i++){
+					html+='<li><a href="javascript:void(0)">'+sn[i]+'</a></li>';
+				}
+				$("#topli").html(html);
+				var tb = $("#loadhtml");
+				tb.html(CommnUtil.loadingImg());
+//					alert(rootPath+sn[2]);
+				tb.load(rootPath+sn[2]);
+			});
+		});
+	});
+</script>

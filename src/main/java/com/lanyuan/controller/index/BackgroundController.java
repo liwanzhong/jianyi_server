@@ -121,6 +121,24 @@ public class BackgroundController extends BaseController {
 				session.setAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION,userEntrelationFormMap);
 			}
 
+			//todo 查询用户权限菜单
+			// 获取登录的bean
+			UserFormMap userFormMap = (UserFormMap)Common.findUserSession(request);
+			ResFormMap resFormMap = new ResFormMap();
+			resFormMap.put("userId", userFormMap.get("id"));
+			List<ResFormMap> mps = resourcesMapper.findRes(resFormMap);
+			List<TreeObject> list = new ArrayList<TreeObject>();
+			for (ResFormMap map : mps) {
+				TreeObject ts = new TreeObject();
+				Common.flushObject(ts, map);
+				list.add(ts);
+			}
+			TreeUtil treeUtil = new TreeUtil();
+			List<TreeObject> ns = treeUtil.getChildTreeObjects(list, 0);
+			session.setAttribute("list", ns);
+			// 登陆的信息回传页面
+			session.setAttribute("userFormMap", userFormMap);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			request.setAttribute("error", "登录异常，请联系管理员！");
@@ -135,13 +153,12 @@ public class BackgroundController extends BaseController {
 	 */
 	@RequestMapping("index")
 	public String index(Model model) throws Exception {
-		// 获取登录的bean
+		/*// 获取登录的bean
 		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
 		UserFormMap userFormMap = (UserFormMap)Common.findUserSession(request);
 		ResFormMap resFormMap = new ResFormMap();
 		resFormMap.put("userId", userFormMap.get("id"));
 		List<ResFormMap> mps = resourcesMapper.findRes(resFormMap);
-		//List<ResFormMap> mps = resourcesMapper.findByWhere(new ResFormMap());
 		List<TreeObject> list = new ArrayList<TreeObject>();
 		for (ResFormMap map : mps) {
 			TreeObject ts = new TreeObject();
@@ -152,7 +169,7 @@ public class BackgroundController extends BaseController {
 		List<TreeObject> ns = treeUtil.getChildTreeObjects(list, 0);
 		model.addAttribute("list", ns);
 		// 登陆的信息回传页面
-		model.addAttribute("userFormMap", userFormMap);
+		model.addAttribute("userFormMap", userFormMap);*/
 		return "/index";
 	}
 
