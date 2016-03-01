@@ -7,9 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.DriverManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.lanyuan.entity.UserEntrelationFormMap;
 import com.lanyuan.mapper.UserEntrelationMapper;
 import com.lanyuan.util.CommonConstants;
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.shiro.SecurityUtils;
@@ -257,5 +256,8 @@ public class BackgroundController extends BaseController {
 
 		return "/install";
 	}
+
+
+
 
 }

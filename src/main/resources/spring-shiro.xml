@@ -78,9 +78,10 @@
 				/layer-v1.9.2/** = anon
 				/notebook/** = anon
 				/login.shtml = anon
+				/clientLogin.shtml = anon
 				/denied.jsp = anon
-				/install.shtml = anon
 				/lanyuan.shtml = anon
+				/citfc/client_call/*.shtml= anon
 			</value>
 		</property>
 	</bean>
