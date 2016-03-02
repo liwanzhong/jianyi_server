@@ -37,7 +37,7 @@ public class ClientCallController extends BaseController {
      * @return
      */
 	@ResponseBody
-	@RequestMapping(value = "login", method = RequestMethod.POST, produces = "text/json; charset=utf-8")
+	@RequestMapping(value = "login"/*, method = RequestMethod.POST*/, produces = "text/json; charset=utf-8")
 	public Map<String,Object> login(String username, String password,String mathcode, HttpServletRequest request) {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
