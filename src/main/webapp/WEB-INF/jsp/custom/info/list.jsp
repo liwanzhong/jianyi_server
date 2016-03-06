@@ -9,6 +9,7 @@
 	<section>
 		<section class="hbox stretch">
 			<!-- .aside -->
+			<c:set scope="page"  var="index_item" value="38"/>
 			<%@include file="/common/left.jsp"%>
 			<!-- /.aside -->
 			<section id="content">

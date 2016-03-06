@@ -9,7 +9,7 @@
 	<%@include file="/common/header.jsp"%>
 	<section>
 		<section class="hbox stretch">
-			<c:set scope="page"  var="index_item" value="41"/>
+			<c:set scope="page"  var="index_item" value="36"/>
 			<!-- .aside -->
 			<%@include file="/common/left.jsp"%>
 			<section id="content">
@@ -20,42 +20,46 @@
 						<li>企业列表管理</li>
 					</ul>
 					<section class="scrollable" style="margin-top: 35px;">
-
 						<section class="panel panel-default">
 							<header class="panel-heading font-bold">
 								查询面板
 							</header>
 							<div class="panel-body">
-								<form class="form-inline" role="form">
+								<form class="form-inline" role="form" id="searchForm" name="searchForm">
 									<div class="form-group">
 										<label class=" control-label">企业名称:</label>
-										<input type="text" class="input-sm form-control" id="exampleInputEmail2" placeholder="请输入企业名称">
+										<input type="text" class="input-sm form-control" id="enterpriseFormMap.name" name="enterpriseFormMap.name" placeholder="请输入企业名称">
 									</div>
 									<div class="form-group">
 										<label class=" control-label">建立时间:</label>
 										<div class="inline v-middle">
 											<div class="input-group input-s-sm">
-												<input type="text" class="input-sm form-control" placeholder="开始时间">
+												<input type="text" class="input-sm form-control" placeholder="开始时间" id="enterpriseFormMap.startTime" name="enterpriseFormMap.startTime">
 											</div>
 											<label class=" control-label">至</label>
 											<div class="input-group input-s-sm">
-												<input type="text" id="appendedInput" class="input-sm form-control" placeholder="开始时间">
+												<input type="text"  class="input-sm form-control" placeholder="结束时间"  id="enterpriseFormMap.endTime" name="enterpriseFormMap.endTime">
 											</div>
 										</div>
 									</div>
 									<div class="form-group">
-										<button type="submit" class="btn btn-sm">查  询</button>
+										<button type="button" id="search" class="btn btn-sm">查  询</button>
+										<%--<a href="javascript:void(0)" class="btn btn-sm" id="search">查询</a>--%>
 									</div>
 								</form>
+
 							</div>
 						</section>
 
 						<section class="panel panel-default">
 							<header class="panel-heading">
 								<div class="doc-buttons">
-									<c:forEach items="${res}" var="key">
+									<%--<c:forEach items="${res}" var="key">
 										${key.description}
-									</c:forEach>
+									</c:forEach>--%>
+									<button type="button" id="addFun" class="btn btn-primary marR10">新增</button>
+									<button type="button" id="editFun" class="btn btn-info marR10">编辑</button>
+									<button type="button" id="delFun" class="btn btn-danger marR10">删除</button>
 								</div>
 							</header>
 							<div class="table-responsive">

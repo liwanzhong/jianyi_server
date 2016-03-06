@@ -21,8 +21,7 @@
 
 							<script type="text/javascript" src="${pageContext.request.contextPath}/js/system/user/list.js"></script>
 							<div class="m-b-md">
-								<form class="form-inline" role="form" id="searchForm"
-									  name="searchForm">
+								<form class="form-inline" role="form" id="searchForm" name="searchForm">
 									<div class="form-group">
 										<label class="control-label"> <span
 												class="h4 font-thin v-middle">账号:</span></label>

@@ -22,6 +22,15 @@
 		<if test="valid != null">
 			and enterprise_info.valid=${valid}
 		</if>
+		<if test="name != null">
+			and enterprise_info.name LIKE '%${name}%'
+		</if>
+		<if test="insert_start != null">
+			and enterprise_info.insert_time &gt;  ${insert_start}
+		</if>
+		<if test="insert_end != null">
+			and enterprise_info.insert_time &lt;  ${insert_end}
+		</if>
 		<if test="orderby != null">
 			${orderby}
 		</if>

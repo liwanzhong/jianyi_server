@@ -9,14 +9,15 @@
 	<section>
 		<section class="hbox stretch">
 			<!-- .aside -->
+			<c:set scope="page"  var="index_item" value="36"/>
 			<%@include file="/common/left.jsp"%>
 			<!-- /.aside -->
 			<section id="content">
 				<section id="id_vbox" class="vbox">
 					<ul class="breadcrumb no-border no-radius b-b b-light" id="topli">
-						<li>wwwwwwwww</li>
-						<li>wwwwwwwww</li>
-						<li>wwwwwwwww</li>
+						<li><i class="fa fa-home"></i><a href="${ctx}/index.shtml">Home</a></li>
+						<li>企业管理</li>
+						<li>监测点管理</li>
 					</ul>
 					<section class="scrollable" style="margin-top: 35px;">
 						<div>
@@ -45,9 +46,12 @@
 							</div>
 							<header class="panel-heading">
 								<div class="doc-buttons">
-									<c:forEach items="${res}" var="key">
+									<%--<c:forEach items="${res}" var="key">
 										${key.description}
-									</c:forEach>
+									</c:forEach>--%>
+									<button type="button" id="addFun" class="btn btn-primary marR10">新增</button>
+									<button type="button" id="editFun" class="btn btn-info marR10">编辑</button>
+									<button type="button" id="delFun" class="btn btn-danger marR10">删除</button>
 								</div>
 							</header>
 							<div class="table-responsive">

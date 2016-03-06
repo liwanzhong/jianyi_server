@@ -45,13 +45,15 @@ public class EnterpriseController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("findByPage")
-	public PageView findByPage( String pageNow,String pageSize,String column,String sort) throws Exception {
-		EnterpriseFormMap userFormMap = getFormMap(EnterpriseFormMap.class);
-		userFormMap=toFormMap(userFormMap, pageNow, pageSize,userFormMap.getStr("orderby"));
-		userFormMap.put("column", column);
-		userFormMap.put("sort", sort);
-		userFormMap.put("valid",1);
-		pageView.setRecords(enterpriseMapper.findEnterprisePage(userFormMap));//不调用默认分页,调用自已的mapper中findUserPage
+	public PageView findByPage( String pageNow,String pageSize,String column,String sort,String startDay,String endDay) throws Exception {
+		EnterpriseFormMap enterpriseFormMap = getFormMap(EnterpriseFormMap.class);
+		enterpriseFormMap=toFormMap(enterpriseFormMap, pageNow, pageSize,enterpriseFormMap.getStr("orderby"));
+		enterpriseFormMap.put("column", column);
+		enterpriseFormMap.put("sort", sort);
+		enterpriseFormMap.put("valid",1);
+		enterpriseFormMap.put("insert_start",startDay);
+		enterpriseFormMap.put("insert_end",endDay);
+		pageView.setRecords(enterpriseMapper.findEnterprisePage(enterpriseFormMap));//不调用默认分页,调用自已的mapper中findUserPage
 
 		return pageView;
 	}

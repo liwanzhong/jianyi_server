@@ -6,19 +6,19 @@ $(function() {
 		pagId : 'paging',
 		l_column : [ {
 			colkey : "id",
-			name : "检测点编号",
+			name : "检测点编号"
 		}, {
 			colkey : "name",
 			name : "检测点名称",
-			isSort:true,
+			isSort:true
 		}, {
 			colkey : "contact_phone",
 			name : "联系电话",
-			isSort:true,
+			isSort:true
 		}, {
 			colkey : "ent_name",
 			name : "所属企业",
-			isSort:true,
+			isSort:true
 		}, {
 			colkey : "insert_time",
 			name : "建立时间",
@@ -29,7 +29,8 @@ $(function() {
 		}, {
 			name : "操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				return "<a href='#'>查看</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除</a>";
+				return '<a href="javascript:void(view('+rowdata.id+'))" >查看检测点</a>&nbsp;&nbsp;&nbsp;' +
+					'<a href="javascript:void(delitem('+rowdata.id+'))" >删除监测点</a>'
 			}
 		} ],
 		jsonUrl : rootPath + '/sub_point/findByPage.shtml?entid='+$("#entid").val(),
@@ -65,6 +66,17 @@ function editAccount() {
 		content : rootPath + '/sub_point/editUI.shtml?id=' + cbox
 	});
 }
+
+function view(id) {
+	pageii = layer.open({
+		title : "查看监测点",
+		type : 2,
+		area : [ "60%", "80%" ],
+		content : rootPath + '/sub_point/editUI.shtml?id=' + id
+	});
+}
+
+
 function addAccount() {
 	pageii = layer.open({
 		title : "新增",
@@ -94,13 +106,19 @@ function delAccount() {
 }
 
 
-function backtolastpage(){
-	var html = '<li><i class="fa fa-home"></i>';
-	html+='<a href="index.shtml">Home</a></li>';
-	html+='<li><a href="javascript:void(0);">企业管理</a></li>';
-	html+='<li><a href="javascript:void(0);">企业管理</a></li>';
-	$("#topli").html(html);
-	var tb = $("#loadhtml");
-	tb.html(CommnUtil.loadingImg());
-	tb.load(rootPath+'/enterprise/list.shtml?id=50');
+function  delitem(id){
+	layer.confirm('是否删除？', function(index) {
+		var url = rootPath + '/sub_point/deleteEntity.shtml';
+		var s = CommnUtil.ajax(url, {
+			ids : id
+		}, "json");
+		if (s == "success") {
+			layer.msg('删除成功');
+			grid.loadData();
+		} else {
+			layer.msg('删除失败');
+		}
+	});
 }
+
+
