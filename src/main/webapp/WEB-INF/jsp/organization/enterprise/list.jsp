@@ -9,9 +9,9 @@
 	<%@include file="/common/header.jsp"%>
 	<section>
 		<section class="hbox stretch">
+			<c:set scope="page"  var="index_item" value="41"/>
 			<!-- .aside -->
 			<%@include file="/common/left.jsp"%>
-			<!-- /.aside -->
 			<section id="content">
 				<section id="id_vbox" class="vbox">
 					<ul class="breadcrumb no-border no-radius b-b b-light">

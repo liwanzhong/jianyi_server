@@ -11,7 +11,7 @@
                         <c:forEach var="key" items="${sessionScope.list}" varStatus="s">
                             <c:if test="${key.ishide == 0}">
                                 <!-- <li class="active"> 某一项展开-->
-                                <li <c:if test="${s.index==0}">class="active"</c:if>>
+                                <li <c:if test="${key.id==index_item or s.index == 0}">class="active"</c:if>>
                                     <a href="javascript:void(0)"
                                        <c:if test="${s.index==0}">class="active"</c:if>>
                                         <i class="fa fa-th-list icon"> <b class="bg-success"></b></i>
@@ -31,7 +31,6 @@
                                                     <c:when test="${kc.type == 1}">
                                                         <%--菜单链接 --%>
                                                         <li class="active">
-                                                            <%--<a href="javascript:void(0)" class="active" nav-n="${key.name},${kc.name},${kc.resUrl}?id=${kc.id}"> <i class="fa fa-angle-right"></i> <span>${kc.name}</span></a>--%>
                                                                 <a href="${ctx}${kc.resUrl}?id=${kc.id}" class="active">
                                                                     <i class="fa fa-angle-right"></i>
                                                                     <span>${kc.name}</span>
@@ -41,16 +40,18 @@
                                                     <c:otherwise>
                                                         <li class="active">
                                                             <a href="javascript:void(0)">
-                                                                <i class="fa fa-book icon"> <b class="bg-info"></b></i>
-                                                                <span class="pull-right"><i class="fa fa-angle-down text"></i><i class="fa fa-angle-up text-active"></i></span>
+                                                                <%--<i class="fa fa-book icon"> <b class="bg-info"></b></i>--%>
+                                                                    <i class="fa fa-chevron-right"></i>
+                                                                <span class="pull-right">
+                                                                    <i class="fa fa-angle-down text"></i>
+                                                                    <i class="fa fa-angle-up text-active"></i>
+                                                                </span>
                                                                 <span>${kc.name}</span>
                                                             </a>
 
                                                             <ul class="nav lt">
                                                                 <c:forEach var="kchild" items="${kc.children}">
                                                                     <li class="active">
-                                                                        <%--<a href="javascript:void(0)" class="active" nav-n="${kchild.name},${kchild.name},${kchild.resUrl}?id=${kchild.id}"> <i class="fa fa-angle-right"></i> <span>${kchild.name}</span>
-                                                                        </a>--%>
                                                                             <a href="${ctx}${kchild.resUrl}?id=${kchild.id}" class="active">
                                                                                 <i class="fa fa-angle-right"></i>
                                                                                 <span>${kc.name}</span>
@@ -110,18 +111,6 @@
                     class="fa fa-angle-left text"></i> <i
                     class="fa fa-angle-right text-active"></i>
             </a>
-            <div class="btn-group hidden-nav-xs">
-                <button type="button" title="Chats"
-                        class="btn btn-icon btn-sm btn-dark" data-toggle="dropdown"
-                        data-target="#chat">
-                    <i class="fa fa-comment-o"></i>
-                </button>
-                <button type="button" title="Contacts"
-                        class="btn btn-icon btn-sm btn-dark" data-toggle="dropdown"
-                        data-target="#invite">
-                    <i class="fa fa-facebook"></i>
-                </button>
-            </div>
         </footer>
     </section>
 </aside>
