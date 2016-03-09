@@ -1,7 +1,11 @@
 package com.lanyuan.controller.citfc;
 
 import com.lanyuan.controller.index.BaseController;
+import com.lanyuan.entity.CustomInfoFormMap;
+import com.lanyuan.entity.UserEntrelationFormMap;
 import com.lanyuan.entity.UserFormMap;
+import com.lanyuan.mapper.CustomInfoMapper;
+import com.lanyuan.mapper.UserEntrelationMapper;
 import com.lanyuan.util.Common;
 import com.lanyuan.vo.CustomVO;
 import org.apache.commons.lang.StringUtils;
@@ -11,6 +15,7 @@ import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,6 +82,8 @@ public class ClientCallController extends BaseController {
 	}
 
 
+
+
 	/**
 	 * 客户端添加客户接口
 	 * @param customVO
@@ -95,7 +103,7 @@ public class ClientCallController extends BaseController {
 
 			//todo 查询用户是否存在
 
-			//todo 取出请求参数中的客户对象，设置客户所属企业，所属检测点，保存在系统中
+
 
 
 			//todo 返回已经保存的对象给前台
@@ -109,28 +117,54 @@ public class ClientCallController extends BaseController {
 	}
 
 
+	@Autowired
+	private CustomInfoMapper customInfoMapper;
+
+
+	@Autowired
+	private UserEntrelationMapper userEntrelationMapper;
+
 	/**
 	 * 查询客户信息（通过客户名称）
-	 * @param customName
-	 * @param mathcode
-	 * @param oper
+	 * @param customName 客户名称
+	 * @param phone 手机号
+	 * @param meathcode 机器码
+	 * @param userid 用户id
      * @return
      */
 	@ResponseBody
 	@RequestMapping(value = "querycustom", method = RequestMethod.POST, produces = "text/json; charset=utf-8")
-	public Map<String,Object> queryCustom(String customName,String mathcode,Long oper) {
+	public Map<String,Object> queryCustom(String customName,String phone,String meathcode,Long userid) {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
 		try {
-			if (StringUtils.isBlank(customName) || StringUtils.isBlank(mathcode) || oper == null){
-				throw new Exception("参数异常!");
+			if (StringUtils.isBlank(customName) && StringUtils.isBlank(phone)){
+				throw new Exception("参数异常[客户名称或者手机号必须]!");
 			}
 
+			//获取企业id和检测点id
+
+			UserEntrelationFormMap userEntrelationFormMap = userEntrelationMapper.findbyFrist("user_id",userid+"", UserEntrelationFormMap.class);
+			if(userEntrelationFormMap==null){
+				throw new Exception("无此系统用户!");
+			}
+
+
 			//todo 通过客户名称，所属企业和检测点查询所有同名的用户
+			CustomInfoFormMap customInfoFormMap = new CustomInfoFormMap();
+			if(StringUtils.isNotBlank(phone)){
+				customInfoFormMap.set("mobile",phone);
+			}
+			if(StringUtils.isNotBlank(customName)){
+				customInfoFormMap.set("name",customName);
+			}
+			customInfoFormMap.set("ent_id",userEntrelationFormMap.get("ent_id").toString());
+			customInfoFormMap.set("sub_point_id",userEntrelationFormMap.get("sub_point_id").toString());
+			List<CustomInfoFormMap> customInfoFormMapList =  customInfoMapper.findEnterprisePage(customInfoFormMap);
 
 
 			//todo 返回列表给客户端展示
-
+			retMap.put("data",customInfoFormMapList);
 			retMap.put("status",1);
 		} catch (Exception e) {
 			e.printStackTrace();

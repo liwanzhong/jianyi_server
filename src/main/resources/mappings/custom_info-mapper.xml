@@ -25,6 +25,12 @@
 		<if test="sub_point_id != null">
 			AND  custom_beloneto_ent.sub_point_id = ${sub_point_id}
 		</if>
+		<if test="name != null">
+			AND custom_info.name = '${name}'
+		</if>
+		<if test="mobile != null">
+			AND custom_info.mobile = '${mobile}'
+		</if>
 		AND custom_beloneto_ent.is_delete=0
 		<if test="orderby != null">
 			${orderby}

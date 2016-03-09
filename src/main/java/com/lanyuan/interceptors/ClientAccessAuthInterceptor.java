@@ -35,7 +35,7 @@ public class ClientAccessAuthInterceptor implements HandlerInterceptor {
                     Map.Entry<String, String> e = it.next();
                     String key =  e.getKey();
                     String value =  e.getValue();
-                    value = new String(value.getBytes("ISO-8859-1"), "UTF-8");
+//                    value = new String(value.getBytes("ISO-8859-1"), "UTF-8");
                     valideData.put(key, value);
                 }
             }
