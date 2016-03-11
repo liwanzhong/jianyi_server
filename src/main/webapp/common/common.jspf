@@ -27,20 +27,16 @@
 <script type="text/javascript" src="${ctx}/common/common.js"></script>
 <script type="text/javascript" src="${ctx}/js/jquery/underscore.js"></script>
 <script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
-<!--[if lt IE 9]> <script src="/js/jquery/ie/html5shiv.js"></script> <script src="${ctx}/js/jquery/ie/respond.min.js"></script><![endif]-->
+<!--[if lt IE 9]> <script src="/js/jquery/ie/html5shiv.js"></script>
+<script src="/js/jquery/ie/respond.min.js"></script>
+<![endif]-->
 <script type="text/javascript" src="${ctx}/js/system/user/updatePassword.js"></script>
 
+<link rel="stylesheet" type="text/css" href="${ctx}/js/datetimepicker/css/bootstrap-datetimepicker.min.css" />
+<script type="text/javascript" src="${ctx}/js/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 
 
-<%--<link href="${ctx}/js/date/bootstrap.min.css" rel="stylesheet">
-<link href="${ctx}/js/date/font-awesome.min.css" rel="stylesheet">--%>
-<%-- 
-    时间控件 -------- 可能导致样式问题,和某些js事件失效 如加上,,自行处理
-<link rel="stylesheet" type="text/css" media="all" href="${ctx}/js/date/daterangepicker-bs3.css" />
-<script type="text/javascript" src="${ctx}/js/date/bootstrap.min.js"></script>
-<script type="text/javascript" src="${ctx}/js/date/moment.js"></script>
-<script type="text/javascript" src="${ctx}/js/date/daterangepicker.js"></script>
-<script type="text/javascript" src="${ctx}/js/system/user/updatePassword.js"></script> --%>
 <style type="text/css">
 	.l_err{
 		background: none repeat scroll 0 0 #FFFCC7;

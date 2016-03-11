@@ -34,11 +34,33 @@
 										<label class=" control-label">建立时间:</label>
 										<div class="inline v-middle">
 											<div class="input-group input-s-sm">
-												<input type="text" class="input-sm form-control" placeholder="开始时间" id="enterpriseFormMap.startTime" name="enterpriseFormMap.startTime">
+												<input type="text" class="input-sm form-control  form_datetime" readonly placeholder="开始时间" id="enterpriseFormMap_startTime" name="enterpriseFormMap.startTime" style="background-color:#fff;cursor:pointer">
+												<script type="text/javascript">
+													$("#enterpriseFormMap_startTime").datetimepicker({
+														language:'zh-CN',//汉化
+														format: 'yyyy-mm-dd',//选择日期后，文本框显示的日期格式
+														weekStart: 1,//一周的第一天
+														forceParse: 0,//强制解析输入框中的值
+														todayHighlight: 1,//今天高亮
+														minView: "month", //选择日期后，不会再跳转去选择时分秒
+														autoclose:true //选择日期后自动关闭
+													});
+												</script>
 											</div>
 											<label class=" control-label">至</label>
 											<div class="input-group input-s-sm">
-												<input type="text"  class="input-sm form-control" placeholder="结束时间"  id="enterpriseFormMap.endTime" name="enterpriseFormMap.endTime">
+												<input type="text"  class="input-sm form-control form_datetime" readonly placeholder="结束时间"  id="enterpriseFormMap_endTime" name="enterpriseFormMap.endTime"  style="background-color:#fff;cursor:pointer">
+												<script type="text/javascript">
+													$("#enterpriseFormMap_endTime").datetimepicker({
+														language:'zh-CN',//汉化
+														format: 'yyyy-mm-dd',//选择日期后，文本框显示的日期格式
+														weekStart: 1,//一周的第一天
+														forceParse: 0,//强制解析输入框中的值
+														todayHighlight: 1,//今天高亮
+														minView: "month", //选择日期后，不会再跳转去选择时分秒
+														autoclose:true //选择日期后自动关闭
+													});
+												</script>
 											</div>
 										</div>
 									</div>
