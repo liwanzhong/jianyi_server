@@ -7,6 +7,7 @@ $(function() {
 		l_column : [ {
 			colkey : "id",
 			name : "检测项ID",
+			hide:true
 		}, {
 			colkey : "name",
 			name : "检测大项名称",
@@ -14,7 +15,6 @@ $(function() {
 		}, {
 			colkey : "is_show",
 			name : "是否显示",
-			isSort:true,
 			renderData : function(rowindex,data, rowdata, column) {
 				var ischeck=false;
 				if(data==1){
@@ -25,7 +25,10 @@ $(function() {
 		}, {
 			colkey : "order_by",
 			name : "排序",
-			isSort:true
+			isSort:true,
+			renderData : function(rowindex,data, rowdata, column) {
+				return '<input type="text" value="'+data+'" class="input-sm form-control">';
+			}
 
 		}, {
 			colkey : "update_time",
@@ -38,7 +41,8 @@ $(function() {
 			name : "操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
 				console.log(rowdata.id)
-				return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a>编辑  查看小项  新增小项  占比系数  升降级配置';
+				//return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a>编辑  查看小项  新增小项  占比系数  升降级配置';
+				return '<a href="/instrument/smallitem/list.shtml?big_item_id='+rowdata.id+'">检测小项</a>&nbsp;&nbsp;<a href="#">检测项关联配置</a>';
 			}
 		} ],
 		jsonUrl : rootPath + '/instrument/bigitem/findByPage.shtml',

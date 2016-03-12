@@ -28,12 +28,15 @@ import java.util.Date;
 @Controller
 @RequestMapping("/instrument/smallitem/")
 public class CheckSmallItemController extends BaseController {
+
+
 	@Inject
 	private CheckSmallItemMapper checkSmallItemMapper;
 
 	@RequestMapping("list")
-	public String listUI(Model model) throws Exception {
-		model.addAttribute("res", findByRes());
+	public String listUI(Model model,Long big_item_id) throws Exception {
+//		model.addAttribute("res", findByRes());
+		model.addAttribute("big_item_id",big_item_id);
 		return Common.BACKGROUND_PATH + "/instrument/checksmallitem/list";
 	}
 
@@ -44,7 +47,6 @@ public class CheckSmallItemController extends BaseController {
 		checkSmallItemFormMap=toFormMap(checkSmallItemFormMap, pageNow, pageSize,checkSmallItemFormMap.getStr("orderby"));
 		checkSmallItemFormMap.put("column", column);
 		checkSmallItemFormMap.put("sort", sort);
-
 		pageView.setRecords(checkSmallItemMapper.findEnterprisePage(checkSmallItemFormMap));//不调用默认分页,调用自已的mapper中findUserPage
 		return pageView;
 	}

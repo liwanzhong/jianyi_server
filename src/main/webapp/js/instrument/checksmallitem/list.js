@@ -6,39 +6,48 @@ $(function() {
 		pagId : 'paging',
 		l_column : [ {
 			colkey : "id",
-			name : "检测项ID"
-		}, {
-			colkey : "big_item",
-			name : "所属检测大项",
-			isSort:true
+			name : "id",
+			hide:true
 		}, {
 			colkey : "name",
 			name : "检测小项名称",
 			isSort:true
 		}, {
-			colkey : "is_show",
-			name : "是否显示",
+			colkey : "min_value",
+			name : "检测标准[基准值（n1）]",
 			isSort:true
 		}, {
-			colkey : "order_by",
-			name : "排序",
+			colkey : "max_value",
+			name : "检测标准[衰退值（n2）]",
+			isSort:true
+		}, {
+			colkey : "in_value",
+			name : "区间值(n=n2-n1)",
+			isSort:true
+		}, {
+			colkey : "check_min",
+			name : "实际检测范围（从）",
+			isSort:true
+		}, {
+			colkey : "check_max",
+			name : "实际检测范围(到)",
+			isSort:true
+		}, {
+			colkey : "quanzhong",
+			name : "权重系数",
 			isSort:true
 		}, {
 			colkey : "update_time",
-			name : "最近一次更新",
-			isSort:true,
-			renderData : function(rowindex,data, rowdata, column) {
-				return new Date(data).format("yyyy-MM-dd hh:mm:ss");
-			}
+			name : "更新时间",
+			isSort:true
 		}, {
 			name : "操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				//return "<a href='http://www.baidu.com'>新增检测点</a>&nbsp;&nbsp;&nbsp;<a href='#'>查看企业</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除企业</a>";
-				console.log(rowdata.id)
-				return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a>';
+				return '<a href="#">评分标准配置</a>';
 			}
 		} ],
-		jsonUrl : rootPath + '/instrument/smallitem/findByPage.shtml',
+		jsonUrl : rootPath + '/instrument/smallitem/findByPage.shtml?checkSmallItemFormMap.big_item_id='+$("#big_item_id").val(),
+		//jsonUrl : rootPath + '/instrument/bigitem/findByPage.shtml',
 		checkbox : true,
 		serNumber : true
 	});

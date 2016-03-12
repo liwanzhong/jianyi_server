@@ -14,11 +14,12 @@
 			<section id="content">
 				<section id="id_vbox" class="vbox">
 					<ul class="breadcrumb no-border no-radius b-b b-light" id="topli">
+						<li><i class="fa fa-home"></i><a href="${ctx}/index.shtml">Home</a></li>
+						<li>仪器管理</li>
+						<li>检测项配置-（检测小项配置）</li>
 					</ul>
 					<section class="scrollable" style="margin-top: 35px;">
 						<div>
-
-
 							<script type="text/javascript" src="${pageContext.request.contextPath}/js/instrument/checksmallitem/list.js"></script>
 							<section class="panel panel-default">
 								<header class="panel-heading font-bold">
@@ -52,11 +53,12 @@
 							<section class="panel panel-default">
 								<header class="panel-heading">
 									<div class="doc-buttons">
-										<c:forEach items="${res}" var="key">
-											${key.description}
-										</c:forEach>
+										<button type="button" id="addFun" class="btn btn-primary marR10">新增</button>
+										<button type="button" id="editFun" class="btn btn-info marR10">编辑</button>
+										<button type="button" id="delFun" class="btn btn-danger marR10">删除</button>
 									</div>
 								</header>
+								<input type="hidden" value="${big_item_id}" id="big_item_id">
 								<div class="table-responsive">
 									<div id="paging" class="pagclass"></div>
 								</div>
