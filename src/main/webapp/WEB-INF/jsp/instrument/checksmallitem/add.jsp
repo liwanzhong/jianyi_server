@@ -39,95 +39,75 @@
 				</div>
 			</div>
 			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="form-group" >
+				<label class="col-sm-3 control-label">检测指标</label>
+				<div class="col-sm-9"></div>
+			</div>
+			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group">
-				<div class="col-sm-3">
-					<label class="control-label">所属检测大项</label>
-				</div>
+				<label class="col-sm-3 control-label"></label>
 				<div class="col-sm-9">
-					<%--<input type="text" class="form-control"  placeholder="请输入检测小项名称" name="checkSmallItemFormMap.name" id="name">--%>
-					<select class="form-control" id="allBelong" name="checkSmallItemFormMap.big_item_id">
-
-					</select>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">基准值（n1）</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control " placeholder="基准值（n1）" onblur="caula()" id="jizhunzhi" name="checkSmallItemFormMap.min_value">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">衰退值（n2）</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control " placeholder="衰退值（n2）" onblur="caula()" id="shuituizhi" name="checkSmallItemFormMap.min_value">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="form-group" >
+				<label class="col-sm-3 control-label">区间值</label>
+				<div class="col-sm-9">
 					<script type="text/javascript">
-						$(document).ready(function(){
-							$.ajax({
-								type : "POST",
-								data : {
-
-								},
-								url : rootPath + '/instrument/bigitem/loadAll.shtml',
-								dataType : 'json',
-								success : function(json) {
-									$("#allBelong").empty();
-									for (index in json) {
-										$("#allBelong").append('<option value="'+json[index].id+'">'+json[index].name+'</option>');
-									}
-								}
-							});
-
-						});
+						function caula(){
+							var n1 = $("#jizhunzhi").val();
+							var n2 = $("#shuituizhi").val();
+							if(n1==null || n1 == ''){
+								n1 = 0;
+							}
+							if(n2==null || n2 == ''){
+								n2 = 0;
+							}
+							$("#qujianzhi").text(n2 - n1);
+						}
 					</script>
+					<label class="control-label" style="color: red" id="qujianzhi">0.00</label>
+					<label class="control-label">区间值（n）：n=n2-n1</label>
 				</div>
 			</div>
 			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">正常值类型</label>
-				<div class="col-sm-9">
-					<select class="form-control" onchange="showselectedInput(this.value)" name="checkSmallItemFormMap.normal_value_type">
-						<option value="1">固定值</option>
-						<option value="2">范围值</option>
-					</select>
+				<div class="col-sm-3">
+					<label class="control-label">实际检测范围</label>
 				</div>
-				<script type="text/javascript">
-					function  showselectedInput(item){
-						$("#normalvalue_1").css("display","none");
-						$("#normalvalue_2").css("display","none");
-						$("#normalvalue_"+item).css("display","block");
-					}
-				</script>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group" id="normalvalue_1">
-				<label class="col-sm-3 control-label">检正常值</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control " placeholder="请输入检正常值" name="checkSmallItemFormMap.min_value">
-				</div>
-			</div>
-			<div class="form-group"  id="normalvalue_2" style="display: none">
-				<label class="col-sm-3 control-label">检正常值</label>
-				<div class="col-sm-9 row">
-					<div class="col-sm-4">
-						<input type="text" class="form-control " placeholder="请输入检正常值" name="checkSmallItemFormMap.min_value">
-					</div>
-					<div class="col-sm-2">
-						至
-					</div>
-					<div class="col-sm-4">
-						<input type="text" class="form-control " placeholder="请输入检正常值" name="checkSmallItemFormMap.max_value">
+					<div class="form-group">
+						<div class="col-sm-5">
+							<input type="text" class="form-control " placeholder="最小范围值" name="checkSmallItemFormMap.min_value">
+						</div>
+						<div class="col-sm-2" align="center">
+							<label class="control-label">至</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control " placeholder="最大范围值" name="checkSmallItemFormMap.min_value">
+						</div>
 					</div>
 				</div>
 			</div>
 			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group">
 				<div class="col-sm-3">
-					<label class="control-label">走向</label>
+					<label class="control-label">权重系数</label>
 				</div>
 				<div class="col-sm-9">
-					<select class="form-control" name="checkSmallItemFormMap.trend">
-						<option value="1">正向</option>
-						<option value="-1">反向</option>
-						<option value="-2">阴性</option>
-						<option value="2">阳性</option>
-					</select>
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group">
-				<div class="col-sm-3">
-					<label class="control-label">检测意义</label>
-				</div>
-				<div class="col-sm-9">
-					<textarea rows="5" cols="50" class="form-control" placeholder="请输入检测意义" name="checkSmallItemFormMap.remark"></textarea>
+					<input type="text" class="form-control " placeholder="权重系数" name="checkSmallItemFormMap.min_value">
 				</div>
 			</div>
 

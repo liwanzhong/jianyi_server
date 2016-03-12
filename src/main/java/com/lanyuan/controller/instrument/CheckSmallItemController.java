@@ -35,7 +35,6 @@ public class CheckSmallItemController extends BaseController {
 
 	@RequestMapping("list")
 	public String listUI(Model model,Long big_item_id) throws Exception {
-//		model.addAttribute("res", findByRes());
 		model.addAttribute("big_item_id",big_item_id);
 		return Common.BACKGROUND_PATH + "/instrument/checksmallitem/list";
 	}

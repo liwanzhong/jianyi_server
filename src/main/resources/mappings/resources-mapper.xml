@@ -50,8 +50,7 @@
 	</select>
 
 	<!-- 根据账号Id获取该用户的权限 -->
-	<select id="findUserResourcess" parameterType="String"
-		resultType="com.lanyuan.entity.ResFormMap">
+	<select id="findUserResourcess" parameterType="String" resultType="com.lanyuan.entity.ResFormMap">
 		SELECT
 		<include refid="selectId" />
 		from ly_resources where id in(

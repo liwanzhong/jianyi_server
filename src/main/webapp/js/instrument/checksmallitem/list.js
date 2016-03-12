@@ -83,7 +83,7 @@ function editAccount() {
 }
 function addAccount() {
 	pageii = layer.open({
-		title : "新增",
+		title : "新增检测小项",
 		type : 2,
 		area : [ "60%", "80%" ],
 		content : rootPath + '/instrument/smallitem/addUI.shtml'
