@@ -9,50 +9,45 @@ $(function() {
 			name : "id",
 			hide:true
 		}, {
-			colkey : "name",
-			name : "检测小项名称",
+			colkey : "age_min",
+			name : "年龄从",
 			isSort:true
 		}, {
-			colkey : "min_value",
-			name : "检测标准[基准值（n1）]",
+			colkey : "age_max",
+			name : "年龄到",
 			isSort:true
 		}, {
-			colkey : "max_value",
-			name : "检测标准[衰退值（n2）]",
-			isSort:true
+			colkey : "pingfen_min",
+			name : "原评分范围最小"
 		}, {
-			colkey : "in_value",
-			name : "区间值(n=n2-n1)",
-			isSort:true,
-			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				return (rowdata.max_value-rowdata.min_value);
-			}
+			colkey : "pingfen_max",
+			name : "原评分范围最大"
 		}, {
-			colkey : "check_min",
-			name : "实际检测范围（从）",
-			isSort:true
+			colkey : "tz_pingfen_min",
+			name : "调整后评分范围最小值"
 		}, {
-			colkey : "check_max",
-			name : "实际检测范围(到)",
-			isSort:true
+			colkey : "tz_pingfen_max",
+			name : "调整后评分范围最大值"
 		}, {
-			colkey : "quanzhong",
-			name : "权重系数",
-			isSort:true
+			colkey : "rout_min",
+			name : "评分调整概率从"
+		}, {
+			colkey : "rout_max",
+			name : "评分调整概率到"
 		}, {
 			colkey : "update_time",
-			name : "更新时间",
+			name : "最后更新时间",
 			isSort:true,
 			renderData : function(rowindex,data, rowdata, column) {
 				return new Date(data).format("yyyy-MM-dd hh:mm:ss");
 			}
-		}, {
+		}/*, {
 			name : "操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
 				return '<a href="#">评分标准配置</a>';
 			}
-		} ],
-		jsonUrl : rootPath + '/instrument/pingfen_rout/findByPage.shtml?checkSmallItemFormMap.big_item_id='+$("#big_item_id").val(),
+		} */],
+		jsonUrl : rootPath + '/instrument/pingfen_rout/findByPage.shtml?cfPingfenRoutFormMap.small_id='+$("#small_id").val(),
 		checkbox : true,
 		serNumber : true
 	});
@@ -88,10 +83,10 @@ function editAccount() {
 }
 function addAccount() {
 	pageii = layer.open({
-		title : "新增检测小项",
+		title : "新增评分概率",
 		type : 2,
 		area : [ "60%", "80%" ],
-		content : rootPath + '/instrument/pingfen_rout/addUI.shtml?big_item_id='+$("#big_item_id").val()
+		content : rootPath + '/instrument/pingfen_rout/addUI.shtml?small_id='+$("#small_id").val()
 	});
 }
 function delAccount() {

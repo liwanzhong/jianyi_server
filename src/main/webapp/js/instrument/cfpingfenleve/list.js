@@ -10,49 +10,27 @@ $(function() {
 			hide:true
 		}, {
 			colkey : "name",
-			name : "检测小项名称",
+			name : "评分等级名称",
 			isSort:true
 		}, {
-			colkey : "min_value",
-			name : "检测标准[基准值（n1）]",
-			isSort:true
-		}, {
-			colkey : "max_value",
-			name : "检测标准[衰退值（n2）]",
-			isSort:true
-		}, {
-			colkey : "in_value",
-			name : "区间值(n=n2-n1)",
-			isSort:true,
-			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				return (rowdata.max_value-rowdata.min_value);
+			name : "分数范围",
+			renderData : function(rowindex,data, rowdata, column) {
+				return rowdata.pingfen_min+"--"+rowdata.pingfen_max;
 			}
-		}, {
-			colkey : "check_min",
-			name : "实际检测范围（从）",
-			isSort:true
-		}, {
-			colkey : "check_max",
-			name : "实际检测范围(到)",
-			isSort:true
-		}, {
-			colkey : "quanzhong",
-			name : "权重系数",
-			isSort:true
 		}, {
 			colkey : "update_time",
 			name : "更新时间",
-			isSort:true,
 			renderData : function(rowindex,data, rowdata, column) {
 				return new Date(data).format("yyyy-MM-dd hh:mm:ss");
 			}
 		}, {
-			name : "操作",
-			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				return '<a href="/instrument/pingfen_rout/list.shtml?check_small_item_id='+rowdata.id+'">评分标准配置</a>';
+			colkey : "show_color",
+			name : "颜色展示",
+			renderData : function(rowindex,data, rowdata, column) {
+				return '<span style="background-color: '+data+';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
 			}
-		} ],
-		jsonUrl : rootPath + '/instrument/smallitem/findByPage.shtml?checkSmallItemFormMap.big_item_id='+$("#big_item_id").val(),
+		}],
+		jsonUrl : rootPath + '/instrument/pingfen_leve/findByPage.shtml',
 		checkbox : true,
 		serNumber : true
 	});
@@ -83,15 +61,15 @@ function editAccount() {
 		title : "编辑",
 		type : 2,
 		area : [ "600px", "80%" ],
-		content : rootPath + '/instrument/smallitem/editUI.shtml?id=' + cbox
+		content : rootPath + '/instrument/pingfen_leve/editUI.shtml?id=' + cbox
 	});
 }
 function addAccount() {
 	pageii = layer.open({
-		title : "新增检测小项",
+		title : "新增评分等级",
 		type : 2,
 		area : [ "60%", "80%" ],
-		content : rootPath + '/instrument/smallitem/addUI.shtml?big_item_id='+$("#big_item_id").val()
+		content : rootPath + '/instrument/pingfen_leve/addUI.shtml'
 	});
 }
 function delAccount() {
@@ -101,7 +79,7 @@ function delAccount() {
 		return;
 	}
 	layer.confirm('是否删除？', function(index) {
-		var url = rootPath + '/instrument/smallitem/deleteEntity.shtml';
+		var url = rootPath + '/instrument/pingfen_leve/deleteEntity.shtml';
 		var s = CommnUtil.ajax(url, {
 			ids : cbox.join(",")
 		}, "json");

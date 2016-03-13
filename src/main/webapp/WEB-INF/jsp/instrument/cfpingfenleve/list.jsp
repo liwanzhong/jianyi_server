@@ -16,11 +16,11 @@
 					<ul class="breadcrumb no-border no-radius b-b b-light" id="topli">
 						<li><i class="fa fa-home"></i><a href="${ctx}/index.shtml">Home</a></li>
 						<li>仪器管理</li>
-						<li>检测项配置-（检测小项配置）</li>
+						<li>评分管理-（评分等级）</li>
 					</ul>
 					<section class="scrollable" style="margin-top: 35px;">
 						<div>
-							<script type="text/javascript" src="${pageContext.request.contextPath}/js/instrument/cfpingfenrout/list.js"></script>
+							<script type="text/javascript" src="${pageContext.request.contextPath}/js/instrument/cfpingfenleve/list.js"></script>
 							<section class="panel panel-default">
 								<header class="panel-heading font-bold">
 									查询面板

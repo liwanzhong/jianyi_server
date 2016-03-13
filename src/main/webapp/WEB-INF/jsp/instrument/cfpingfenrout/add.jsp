@@ -29,75 +29,22 @@
 <div class="l_err" style="width: 100%; margin-top: 2px;"></div>
 <form id="form" name="form" class="form-horizontal" method="post"  action="${ctx}/instrument/pingfen_rout/addEntity.shtml">
 	<section class="panel panel-default">
-		<input type="hidden" value="${big_item_id}"  name="checkSmallItemFormMap.big_item_id">
+		<input type="hidden" value="${small_id}"  name="cfPingfenRoutFormMap.small_id">
 		<div class="panel-body">
 			<div class="form-group">
 				<div class="col-sm-3">
-					<label class="control-label">检测小项名称</label>
-				</div>
-				<div class="col-sm-9">
-					<input type="text" class="form-control"  placeholder="请输入检测小项名称" name="checkSmallItemFormMap.name" id="name">
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group" >
-				<label class="col-sm-3 control-label">检测指标</label>
-				<div class="col-sm-9"></div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label"></label>
-				<div class="col-sm-9">
-					<div class="form-group">
-						<label class="col-sm-3 control-label">基准值（n1）</label>
-						<div class="col-sm-9">
-							<input type="text" class="form-control " placeholder="基准值（n1）" onblur="caula()" id="jizhunzhi" name="checkSmallItemFormMap.min_value">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">衰退值（n2）</label>
-						<div class="col-sm-9">
-							<input type="text" class="form-control " placeholder="衰退值（n2）" onblur="caula()" id="shuituizhi" name="checkSmallItemFormMap.max_value">
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group" >
-				<label class="col-sm-3 control-label">区间值</label>
-				<div class="col-sm-9">
-					<script type="text/javascript">
-						function caula(){
-							var n1 = $("#jizhunzhi").val();
-							var n2 = $("#shuituizhi").val();
-							if(n1==null || n1 == ''){
-								n1 = 0;
-							}
-							if(n2==null || n2 == ''){
-								n2 = 0;
-							}
-							$("#qujianzhi").text(n2 - n1);
-						}
-					</script>
-					<label class="control-label" style="color: red" id="qujianzhi">0.00</label>
-					<label class="control-label">区间值（n）：n=n2-n1</label>
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group">
-				<div class="col-sm-3">
-					<label class="control-label">实际检测范围</label>
+					<label class="control-label">年龄范围</label>
 				</div>
 				<div class="col-sm-9">
 					<div class="form-group">
 						<div class="col-sm-5">
-							<input type="text" class="form-control " placeholder="最小范围值" name="checkSmallItemFormMap.check_min">
+							<input type="text" class="form-control " placeholder="最小年龄" name="cfPingfenRoutFormMap.age_min">
 						</div>
 						<div class="col-sm-2" align="center">
 							<label class="control-label">至</label>
 						</div>
 						<div class="col-sm-5">
-							<input type="text" class="form-control " placeholder="最大范围值" name="checkSmallItemFormMap.check_max">
+							<input type="text" class="form-control " placeholder="最大年龄" name="cfPingfenRoutFormMap.age_max">
 						</div>
 					</div>
 				</div>
@@ -105,12 +52,56 @@
 			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group">
 				<div class="col-sm-3">
-					<label class="control-label">权重系数</label>
+					<label class="control-label">原评分范围</label>
 				</div>
 				<div class="col-sm-9">
-					<input type="text" class="form-control " placeholder="权重系数" name="checkSmallItemFormMap.quanzhong">
+					<select class="form-control" name="cfPingfenRoutFormMap.pingfen">
+						<option>请选择</option>
+						<option value="1">0-59.99</option>
+						<option value="2">60-69.99</option>
+						<option value="3">70-79.99</option>
+						<option value="4">80-89.99</option>
+						<option value="5">90-100</option>
+					</select>
 				</div>
 			</div>
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="form-group">
+				<div class="col-sm-3">
+					<label class="control-label">调整后评分范围</label>
+				</div>
+				<div class="col-sm-9">
+					<select class="form-control" name="cfPingfenRoutFormMap.tz_pingfen">
+						<option>请选择</option>
+						<option value="1">0-59.99</option>
+						<option value="2">60-69.99</option>
+						<option value="3">70-79.99</option>
+						<option value="4">80-89.99</option>
+						<option value="5">90-100</option>
+					</select>
+				</div>
+			</div>
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="form-group">
+				<div class="col-sm-3">
+					<label class="control-label">评分调整概率</label>
+				</div>
+				<div class="col-sm-9">
+					<div class="form-group">
+						<div class="col-sm-5">
+							<input type="text" class="form-control " placeholder="评分调整概率最小值" name="cfPingfenRoutFormMap.rout_min">
+						</div>
+						<div class="col-sm-2" align="center">
+							<label class="control-label">至</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control " placeholder="评分调整概率最大值" name="cfPingfenRoutFormMap.rout_max">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="line line-dashed line-lg pull-in"></div>
+
 
 		</div>
 		<footer class="panel-footer text-right bg-light lter">

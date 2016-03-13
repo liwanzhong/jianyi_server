@@ -3,10 +3,10 @@ package com.lanyuan.controller.instrument;
 
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
-import com.lanyuan.entity.CfPingfenRoutFormMap;
+import com.lanyuan.entity.CfPingfenLeveFormMap;
 import com.lanyuan.entity.UserGroupsFormMap;
 import com.lanyuan.exception.SystemException;
-import com.lanyuan.mapper.CfPingfenRoutMapper;
+import com.lanyuan.mapper.CfPingfenLeveMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
 import org.springframework.stereotype.Controller;
@@ -26,28 +26,28 @@ import java.util.Date;
  * @version 3.0v
  */
 @Controller
-@RequestMapping("/instrument/pingfen_rout/")
-public class CfPingfenRoutController extends BaseController {
+@RequestMapping("/instrument/pingfen_leve/")
+public class CfPingfenLeveController extends BaseController {
 
 
 
 	@Inject
-	private CfPingfenRoutMapper cfPingfenRoutMapper;
+	private CfPingfenLeveMapper cfPingfenLeveMapper;
 
 	@RequestMapping("list")
 	public String listUI(Model model,Long check_small_item_id) throws Exception {
 		model.addAttribute("small_id",check_small_item_id);
-		return Common.BACKGROUND_PATH + "/instrument/cfpingfenrout/list";
+		return Common.BACKGROUND_PATH + "/instrument/cfpingfenleve/list";
 	}
 
 	@ResponseBody
 	@RequestMapping("findByPage")
 	public PageView findByPage( String pageNow,String pageSize,String column,String sort) throws Exception {
-		CfPingfenRoutFormMap cfPingfenRoutFormMap = getFormMap(CfPingfenRoutFormMap.class);
-		cfPingfenRoutFormMap=toFormMap(cfPingfenRoutFormMap, pageNow, pageSize,cfPingfenRoutFormMap.getStr("orderby"));
-		cfPingfenRoutFormMap.put("column", column);
-		cfPingfenRoutFormMap.put("sort", sort);
-		pageView.setRecords(cfPingfenRoutMapper.findEnterprisePage(cfPingfenRoutFormMap));//不调用默认分页,调用自已的mapper中findUserPage
+		CfPingfenLeveFormMap CfPingfenLeveFormMap = getFormMap(CfPingfenLeveFormMap.class);
+		CfPingfenLeveFormMap=toFormMap(CfPingfenLeveFormMap, pageNow, pageSize,CfPingfenLeveFormMap.getStr("orderby"));
+		CfPingfenLeveFormMap.put("column", column);
+		CfPingfenLeveFormMap.put("sort", sort);
+		pageView.setRecords(cfPingfenLeveMapper.findEnterprisePage(CfPingfenLeveFormMap));//不调用默认分页,调用自已的mapper中findUserPage
 		return pageView;
 	}
 
@@ -57,7 +57,7 @@ public class CfPingfenRoutController extends BaseController {
 	@RequestMapping("addUI")
 	public String addUI(Model model,Long small_id) throws Exception {
 		model.addAttribute("small_id",small_id);
-		return Common.BACKGROUND_PATH + "/instrument/cfpingfenrout/add";
+		return Common.BACKGROUND_PATH + "/instrument/cfpingfenleve/add";
 	}
 
 	@ResponseBody
@@ -67,12 +67,12 @@ public class CfPingfenRoutController extends BaseController {
 	public String addEntity(){
 		try {
 			SimpleDateFormat datetimeformat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			CfPingfenRoutFormMap cfPingfenRoutFormMap = getFormMap(CfPingfenRoutFormMap.class);
-			cfPingfenRoutFormMap.put("update_time",datetimeformat.format(new Date()));
+			CfPingfenLeveFormMap CfPingfenLeveFormMap = getFormMap(CfPingfenLeveFormMap.class);
+			CfPingfenLeveFormMap.put("update_time",datetimeformat.format(new Date()));
 
 			Double pingfen_min=null;
 			Double pingfen_max=null;
-			int pingfen = Integer.parseInt(cfPingfenRoutFormMap.get("pingfen").toString());
+			int pingfen = Integer.parseInt(CfPingfenLeveFormMap.get("pingfen").toString());
 			switch (pingfen){
 				case 1:
 					pingfen_min = 0d;
@@ -99,7 +99,7 @@ public class CfPingfenRoutController extends BaseController {
 
 			Double tz_pingfen_min=null;
 			Double tz_pingfen_max=null;
-			int tz_pingfen = Integer.parseInt(cfPingfenRoutFormMap.get("tz_pingfen").toString());
+			int tz_pingfen = Integer.parseInt(CfPingfenLeveFormMap.get("tz_pingfen").toString());
 			switch (tz_pingfen){
 				case 1:
 					tz_pingfen_min = 0d;
@@ -123,12 +123,12 @@ public class CfPingfenRoutController extends BaseController {
 					break;
 			}
 
-			cfPingfenRoutFormMap.put("pingfen_min",pingfen_min);
-			cfPingfenRoutFormMap.put("pingfen_max",pingfen_max);
-			cfPingfenRoutFormMap.put("tz_pingfen_min",tz_pingfen_min);
-			cfPingfenRoutFormMap.put("tz_pingfen_max",tz_pingfen_max);
+			CfPingfenLeveFormMap.put("pingfen_min",pingfen_min);
+			CfPingfenLeveFormMap.put("pingfen_max",pingfen_max);
+			CfPingfenLeveFormMap.put("tz_pingfen_min",tz_pingfen_min);
+			CfPingfenLeveFormMap.put("tz_pingfen_max",tz_pingfen_max);
 
-			cfPingfenRoutMapper.addEntity(cfPingfenRoutFormMap);//新增后返回新增信息
+			cfPingfenLeveMapper.addEntity(CfPingfenLeveFormMap);//新增后返回新增信息
 
 		} catch (Exception e) {
 			throw new SystemException("新增评分概率异常");
@@ -143,7 +143,7 @@ public class CfPingfenRoutController extends BaseController {
 	public String deleteEntity() throws Exception {
 		String[] ids = getParaValues("ids");
 		for (String id : ids) {
-			cfPingfenRoutMapper.deleteByAttribute("id", id, CfPingfenRoutFormMap.class);
+			cfPingfenLeveMapper.deleteByAttribute("id", id, CfPingfenLeveFormMap.class);
 		}
 		return "success";
 	}
@@ -152,9 +152,9 @@ public class CfPingfenRoutController extends BaseController {
 	public String editUI(Model model) throws Exception {
 		String id = getPara("id");
 		if(Common.isNotEmpty(id)){
-			model.addAttribute("enterprise", cfPingfenRoutMapper.findbyFrist("id", id, CfPingfenRoutFormMap.class));
+			model.addAttribute("enterprise", cfPingfenLeveMapper.findbyFrist("id", id, CfPingfenLeveFormMap.class));
 		}
-		return Common.BACKGROUND_PATH + "/instrument/cfpingfenrout/edit";
+		return Common.BACKGROUND_PATH + "/instrument/cfpingfenleve/edit";
 	}
 
 	@ResponseBody
@@ -162,17 +162,17 @@ public class CfPingfenRoutController extends BaseController {
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	@SystemLog(module="系统管理",methods="用户管理-修改用户")//凡需要处理业务逻辑的.都需要记录操作日志
 	public String editEntity(String txtGroupsSelect) throws Exception {
-		CfPingfenRoutFormMap CfPingfenRoutFormMap = getFormMap(CfPingfenRoutFormMap.class);
-		CfPingfenRoutFormMap.put("txtGroupsSelect", txtGroupsSelect);
-		cfPingfenRoutMapper.editEntity(CfPingfenRoutFormMap);
-		cfPingfenRoutMapper.deleteByAttribute("userId", CfPingfenRoutFormMap.get("id")+"", UserGroupsFormMap.class);
+		CfPingfenLeveFormMap CfPingfenLeveFormMap = getFormMap(CfPingfenLeveFormMap.class);
+		CfPingfenLeveFormMap.put("txtGroupsSelect", txtGroupsSelect);
+		cfPingfenLeveMapper.editEntity(CfPingfenLeveFormMap);
+		cfPingfenLeveMapper.deleteByAttribute("userId", CfPingfenLeveFormMap.get("id")+"", UserGroupsFormMap.class);
 		if(!Common.isEmpty(txtGroupsSelect)){
 			String[] txt = txtGroupsSelect.split(",");
 			for (String roleId : txt) {
 				UserGroupsFormMap userGroupsFormMap = new UserGroupsFormMap();
-				userGroupsFormMap.put("userId", CfPingfenRoutFormMap.get("id"));
+				userGroupsFormMap.put("userId", CfPingfenLeveFormMap.get("id"));
 				userGroupsFormMap.put("roleId", roleId);
-				cfPingfenRoutMapper.addEntity(userGroupsFormMap);
+				cfPingfenLeveMapper.addEntity(userGroupsFormMap);
 			}
 		}
 		return "success";
@@ -192,7 +192,7 @@ public class CfPingfenRoutController extends BaseController {
 	@RequestMapping("isExist")
 	@ResponseBody
 	public boolean isExist(String name) {
-		CfPingfenRoutFormMap account = cfPingfenRoutMapper.findbyFrist("accountName", name, CfPingfenRoutFormMap.class);
+		CfPingfenLeveFormMap account = cfPingfenLeveMapper.findbyFrist("accountName", name, CfPingfenLeveFormMap.class);
 		if (account == null) {
 			return true;
 		} else {
