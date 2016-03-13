@@ -26,8 +26,8 @@ import java.util.Date;
  * @version 3.0v
  */
 @Controller
-@RequestMapping("/instrument/smallitem/")
-public class CheckSmallItemController extends BaseController {
+@RequestMapping("/instrument/pingfen_rout/")
+public class CfPingfenRoutController extends BaseController {
 
 
 

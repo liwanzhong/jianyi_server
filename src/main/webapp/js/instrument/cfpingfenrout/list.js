@@ -52,7 +52,7 @@ $(function() {
 				return '<a href="#">评分标准配置</a>';
 			}
 		} ],
-		jsonUrl : rootPath + '/instrument/smallitem/findByPage.shtml?checkSmallItemFormMap.big_item_id='+$("#big_item_id").val(),
+		jsonUrl : rootPath + '/instrument/pingfen_rout/findByPage.shtml?checkSmallItemFormMap.big_item_id='+$("#big_item_id").val(),
 		checkbox : true,
 		serNumber : true
 	});
@@ -83,7 +83,7 @@ function editAccount() {
 		title : "编辑",
 		type : 2,
 		area : [ "600px", "80%" ],
-		content : rootPath + '/instrument/smallitem/editUI.shtml?id=' + cbox
+		content : rootPath + '/instrument/pingfen_rout/editUI.shtml?id=' + cbox
 	});
 }
 function addAccount() {
@@ -91,7 +91,7 @@ function addAccount() {
 		title : "新增检测小项",
 		type : 2,
 		area : [ "60%", "80%" ],
-		content : rootPath + '/instrument/smallitem/addUI.shtml?big_item_id='+$("#big_item_id").val()
+		content : rootPath + '/instrument/pingfen_rout/addUI.shtml?big_item_id='+$("#big_item_id").val()
 	});
 }
 function delAccount() {
@@ -101,7 +101,7 @@ function delAccount() {
 		return;
 	}
 	layer.confirm('是否删除？', function(index) {
-		var url = rootPath + '/instrument/smallitem/deleteEntity.shtml';
+		var url = rootPath + '/instrument/pingfen_rout/deleteEntity.shtml';
 		var s = CommnUtil.ajax(url, {
 			ids : cbox.join(",")
 		}, "json");

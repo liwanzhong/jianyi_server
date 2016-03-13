@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.CheckSmallItemMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+		csi.id,
+  csi.big_item_id,
+  csi.name,
+  csi.min_value,
+  csi.max_value,
+  csi.in_value,
+  csi.check_min,
+  csi.check_max,
+  csi.quanzhong,
+  csi.insert_time,
+  csi.update_time
+	</sql>
+
+	<select id="findEnterprisePage" resultType="com.lanyuan.entity.CheckSmallItemFormMap">
+		select
+		<include refid="selectId" />
+		FROM check_small_item csi
+		where 1 = 1
+		<if test="big_item_id != null">
+			AND csi.big_item_id = ${big_item_id}
+		</if>
+		<if test="orderby != null">
+			${orderby}
+		</if>
+	</select>
+
+	<select id="findLasyOrderItemCout" resultType="java.lang.Integer">
+		SELECT  order_by FROM  check_small_item ORDER BY order_by DESC limit 1;
+	</select>
+
+</mapper>

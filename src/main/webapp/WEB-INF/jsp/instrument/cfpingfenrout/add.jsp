@@ -4,7 +4,7 @@
 <html>
 <head>
 	<%@include file="/common/common.jspf"%>
-	<script type="text/javascript" src="${ctx}/js/instrument/checksmallitem/add.js">
+	<script type="text/javascript" src="${ctx}/js/instrument/cfpingfenrout/add.js">
 
 	</script>
 	<style type="text/css">
@@ -27,7 +27,7 @@
 </head>
 <body>
 <div class="l_err" style="width: 100%; margin-top: 2px;"></div>
-<form id="form" name="form" class="form-horizontal" method="post"  action="${ctx}/instrument/smallitem/addEntity.shtml">
+<form id="form" name="form" class="form-horizontal" method="post"  action="${ctx}/instrument/pingfen_rout/addEntity.shtml">
 	<section class="panel panel-default">
 		<input type="hidden" value="${big_item_id}"  name="checkSmallItemFormMap.big_item_id">
 		<div class="panel-body">
