@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lanyuan.mapper.CustomInfoMapper">
 	<!--mybatis ehcache缓存配置 -->
 	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache"
@@ -8,33 +8,44 @@
 	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
 	<!-- 以下与实体类的中字段一致 -->
 	<sql id="selectId">
-		custom_info.id, custom_info.ent_id, custom_info.sub_ent_point_id, custom_info.show_in_ent, custom_info.username, custom_info.password, custom_info.name, custom_info.sex, custom_info.birthday,
-	custom_info.body_height, custom_info.weight, custom_info.bmi, custom_info.zw_code, custom_info.zw_pic, custom_info.mobile, custom_info.insert_time, custom_info.lastcheck_time, custom_info.update_time,custom_info.delete_tag
+  cbe.id belong_to_id,
+  cbe.ent_id,
+  cbe.sub_point_id,
+  cbe.insert_time,
+  cbe.last_check_time,
+  ci.id custom_id,
+  ci.idcard,
+  ci.mobile,
+  ci.name,
+  ci.sex,
+  ci.birthday,
+  ci.body_height,
+  ci.weight
 	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.CustomInfoFormMap">
 		select
 		<include refid="selectId" />
-		FROM custom_info
-		LEFT JOIN custom_beloneto_ent
-		ON custom_beloneto_ent.custom_id = custom_info.id
+		FROM custom_beloneto_ent cbe
+		LEFT JOIN custom_info ci
+		ON cbe.custom_id = ci.id
 		where 1 = 1
 		<if test="ent_id != null">
-			AND  custom_beloneto_ent.ent_id = ${ent_id}
+			AND  cbe.ent_id = ${ent_id}
 		</if>
 		<if test="sub_point_id != null">
-			AND  custom_beloneto_ent.sub_point_id = ${sub_point_id}
+			AND  cbe.sub_point_id = ${sub_point_id}
 		</if>
 		<if test="name != null">
-			AND custom_info.name = '${name}'
+			AND ci.name = '${name}'
 		</if>
 		<if test="mobile != null">
-			AND custom_info.mobile = '${mobile}'
+			AND ci.mobile = '${mobile}'
 		</if>
-		AND custom_beloneto_ent.is_delete=0
+		AND cbe.isdelete=0
 		<if test="orderby != null">
 			${orderby}
 		</if>
 	</select>
-	
+
 </mapper>
