@@ -6,11 +6,11 @@ $(function() {
 		pagId : 'paging',
 		l_column : [ {
 			colkey : "id",
-			name : "会员编号",
+			name : "会员编号"
 		}, {
 			colkey : "name",
 			name : "会员姓名",
-			isSort:true,
+			isSort:true
 		}, {
 			colkey : "sex",
 			name : "会员性别",
@@ -21,7 +21,7 @@ $(function() {
 		}, {
 			colkey : "mobile",
 			name : "会员手机",
-			isSort:true,
+			isSort:true
 		}, {
 			colkey : "bmi",
 			name : "BMI",
@@ -100,6 +100,7 @@ function addAccount() {
 }
 function delAccount() {
 	var cbox = grid.getSelectedCheckbox();
+	console.log(grid);
 	if (cbox == "") {
 		layer.msg("请选择删除项！！");
 		return;

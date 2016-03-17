@@ -13,7 +13,7 @@
   cbe.sub_point_id,
   cbe.insert_time,
   cbe.last_check_time,
-  ci.id custom_id,
+  ci.id,
   ci.idcard,
   ci.mobile,
   ci.name,

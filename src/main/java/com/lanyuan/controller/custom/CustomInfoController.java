@@ -89,6 +89,7 @@ public class CustomInfoController extends BaseController {
 	@SystemLog(module="会员管理",methods="验证会员信息")//凡需要处理业务逻辑的.都需要记录操作日志
 	public Map<String,Object> verify(@RequestParam(value = "cardid") String cardid){
 		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("cardid",cardid);
 		try {
 
 			Session session = SecurityUtils.getSubject().getSession();
@@ -111,6 +112,7 @@ public class CustomInfoController extends BaseController {
 				CustomBelonetoEntFormMap findNameT = new CustomBelonetoEntFormMap();
 				findNameT.put("ent_id",userEntrelationFormMap.get("ent_id").toString());
 				findNameT.put("sub_ent_point_id",userEntrelationFormMap.get("sub_point_id").toString());
+				findNameT.put("custom_id",customInfoFormMap.get("id"));
 				findNameT.put("isdelete",0);
 				List<CustomBelonetoEntFormMap> customBelonetoEntFormMapList = customBelonetoEntMapper.findByNames(findNameT);
 				if(CollectionUtils.isNotEmpty(customBelonetoEntFormMapList)){
@@ -133,9 +135,8 @@ public class CustomInfoController extends BaseController {
 
 
 	@RequestMapping("addUI")
-	public String addUI(Model model,String customid) throws Exception {
-		if(customid!=null){
-
+	public String addUI(Model model,String customid,String idcard) throws Exception {
+		if(StringUtils.isNotBlank(customid)){
 			Session session = SecurityUtils.getSubject().getSession();
 			UserEntrelationFormMap userEntrelationFormMap = (UserEntrelationFormMap)session.getAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION);
 
@@ -156,6 +157,7 @@ public class CustomInfoController extends BaseController {
 			CustomInfoFormMap customInfoFormMap = customInfoMapper.findbyFrist("id",customid,CustomInfoFormMap.class);
 			model.addAttribute("customInfoFormMap",customInfoFormMap);
 		}
+		model.addAttribute("idcard",idcard);
 		return Common.BACKGROUND_PATH + "/custom/info/add-custom";
 	}
 
@@ -174,13 +176,19 @@ public class CustomInfoController extends BaseController {
 
 			SimpleDateFormat datetimeformat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			CustomInfoFormMap customInfoFormMap = getFormMap(CustomInfoFormMap.class);
-			customInfoFormMap.put("insert_time",datetimeformat.format(new Date()));
-			customInfoFormMap.put("update_time",datetimeformat.format(new Date()));
-			customInfoFormMap.put("ent_id",userEntrelationFormMap.get("ent_id").toString());
-			customInfoFormMap.put("sub_ent_point_id",userEntrelationFormMap.get("sub_point_id").toString());
-			customInfoFormMap.put("show_in_ent",0);
+			if(customInfoFormMap.get("id")!=null){
+				customInfoFormMap.put("update_time",datetimeformat.format(new Date()));
+				customInfoMapper.editEntity(customInfoFormMap);
+			}else{
+				customInfoFormMap.put("insert_time",datetimeformat.format(new Date()));
+				customInfoFormMap.put("update_time",datetimeformat.format(new Date()));
+				customInfoFormMap.put("ent_id",userEntrelationFormMap.get("ent_id").toString());
+				customInfoFormMap.put("sub_ent_point_id",userEntrelationFormMap.get("sub_point_id").toString());
+				customInfoFormMap.put("show_in_ent",0);
+				customInfoFormMap.put("isvalid",1);
+				customInfoMapper.addEntity(customInfoFormMap);//新增后返回新增信息
+			}
 
-			customInfoMapper.addEntity(customInfoFormMap);//新增后返回新增信息
 
 			// 保存客户所属企业关系
 			CustomBelonetoEntFormMap customBelonetoEntFormMap = getFormMap(CustomBelonetoEntFormMap.class);
@@ -188,6 +196,7 @@ public class CustomInfoController extends BaseController {
 			customBelonetoEntFormMap.put("sub_point_id",userEntrelationFormMap.get("sub_point_id").toString());
 			customBelonetoEntFormMap.put("insert_time",datetimeformat.format(new Date()));
 			customBelonetoEntFormMap.put("custom_id",customInfoFormMap.get("id").toString());
+			customBelonetoEntFormMap.put("isdelete",0);
 			customBelonetoEntMapper.addEntity(customBelonetoEntFormMap);
 
 			if(cutitems!=null && cutitems.length>0){
@@ -197,7 +206,6 @@ public class CustomInfoController extends BaseController {
 					customCutItemFormMap.put("custom_id",customInfoFormMap.get("id").toString());
 					customCutItemMapper.addEntity(customCutItemFormMap);
 				}
-
 			}
 
 		} catch (Exception e) {
@@ -230,7 +238,7 @@ public class CustomInfoController extends BaseController {
 
 			if(CollectionUtils.isNotEmpty(customBelonetoEntFormMapList)){
 				CustomBelonetoEntFormMap updateItem=customBelonetoEntFormMapList.get(0);
-				updateItem.put("is_delete",1);
+				updateItem.put("isdelete",1);
 				customBelonetoEntMapper.editEntity(updateItem);
 			}
 		}

@@ -29,7 +29,7 @@
 								<form class="form-inline" role="form" id="verifyForm" name="verifyForm">
 									<div class="form-group">
 										<label class=" control-label">身份证号:</label>
-										<input type="text" class="input-sm form-control" id="cardid" name="cardid" placeholder="请输入客户身份证号">
+										<input type="text" class="input-sm form-control" id="cardid" name="cardid" placeholder="请输入会员身份证号">
 									</div>
 									<div class="form-group">
 										<button type="button" class="btn btn-info marR10" onclick="verifyCustom()">验  证</button>
@@ -50,13 +50,13 @@
 												case -1:
 													break;
 												case 0:
-													$("#nextStepTips").append('<a class="btn btn-primary marR10" href="${ctx}/custom/info/addUI.shtml">需要新建会员，新建</a>');
+													$("#nextStepTips").append('<a class="btn btn-primary marR10" href="${ctx}/custom/info/addUI.shtml?customid=&idcard='+data.cardid+'">需要新建会员，新建</a>');
 													break;
 												case 1:
-													$("#nextStepTips").append('<a class="btn btn-primary marR10" href="${ctx}/custom/info/addUI.shtml?customid=">已验证存在客户，绑定</a>');
+													$("#nextStepTips").append('<a class="btn btn-primary marR10" href="${ctx}/custom/info/addUI.shtml?customid='+data.data.id+'&idcard='+data.cardid+'">已验证存在客户，绑定</a>');
 													break;
 												case 2:
-													$("#nextStepTips").append('<a class="btn btn-primary marR10" href="#">已经绑定关系,返回</a>');
+													$("#nextStepTips").append('<a class="btn btn-primary marR10" href="javascript:void(history.go(-1));">已经绑定关系,返回</a>');
 													break;
 											}
 										}

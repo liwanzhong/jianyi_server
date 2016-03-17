@@ -25,6 +25,7 @@
 						<section class="panel panel-default">
 							<div class="l_err" style="width: 100%; margin-top: 2px;"></div>
 							<form id="form" name="form" class="form-horizontal" method="post"  action="${ctx}/custom/info/addEntity.shtml">
+								<input type="hidden" name="customInfoFormMap.id" value="${customInfoFormMap.id}">
 								<section class="panel panel-default">
 									<div class="panel-body">
 										<div class="form-group">
@@ -32,7 +33,7 @@
 												<label class="control-label">会员身份证</label>
 											</div>
 											<div class="col-sm-9">
-												<input type="text" class="form-control"   name="customInfoFormMap.idcard" readonly>
+												<input type="text" class="form-control"   name="customInfoFormMap.idcard" readonly value="${idcard}">
 											</div>
 										</div>
 										<div class="line line-dashed line-lg pull-in"></div>
@@ -43,25 +44,28 @@
 												<label class="control-label">会员姓名</label>
 											</div>
 											<div class="col-sm-9">
-												<input type="text" class="form-control"  placeholder="请输入会员姓名" name="customInfoFormMap.name" id="name">
+												<input type="text" class="form-control"  placeholder="请输入会员姓名" name="customInfoFormMap.name" value="${customInfoFormMap.name}" id="name">
 											</div>
 										</div>
-										<div class="line line-dashed line-lg pull-in"></div>
-										<div class="form-group">
-											<label class="col-sm-3 control-label">登录账号</label>
-											<div class="col-sm-9">
-												<input type="text" class="form-control checkacc" placeholder="请输入登录账号" name="customInfoFormMap.username" id="username">
+										<c:if test="${customInfoFormMap.id == null}">
+											<div class="line line-dashed line-lg pull-in"></div>
+											<div class="form-group">
+												<label class="col-sm-3 control-label">登录账号</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control checkacc" placeholder="请输入登录账号" name="customInfoFormMap.username" value="customInfoFormMap.username" id="username">
+												</div>
 											</div>
-										</div>
-										<div class="line line-dashed line-lg pull-in"></div>
-										<div class="form-group">
-											<div class="col-sm-3">
-												<label class="control-label">登录密码</label>
+											<div class="line line-dashed line-lg pull-in"></div>
+											<div class="form-group">
+												<div class="col-sm-3">
+													<label class="control-label">登录密码</label>
+												</div>
+												<div class="col-sm-9">
+													<input type="password" class="form-control"  placeholder="请输入登录密码" name="customInfoFormMap.password" id="password">
+												</div>
 											</div>
-											<div class="col-sm-9">
-												<input type="password" class="form-control"  placeholder="请输入登录密码" name="customInfoFormMap.password" id="password">
-											</div>
-										</div>
+										</c:if>
+
 										<div class="line line-dashed line-lg pull-in"></div>
 
 										<div class="form-group">
@@ -69,8 +73,17 @@
 												<label class="control-label">会员性别</label>
 											</div>
 											<div class="col-sm-9">
-												<input type="radio"   name="customInfoFormMap.sex" value="1" checked>男
-												<input type="radio"   name="customInfoFormMap.sex" value="2">女
+												<c:choose>
+													<c:when test="${customInfoFormMap.sex == 1}">
+														<input type="radio"   name="customInfoFormMap.sex" value="1" checked>男
+														<input type="radio"   name="customInfoFormMap.sex" value="2">女
+													</c:when>
+													<c:otherwise>
+														<input type="radio"   name="customInfoFormMap.sex" value="1" >男
+														<input type="radio"   name="customInfoFormMap.sex" value="2" checked>女
+													</c:otherwise>
+												</c:choose>
+
 											</div>
 										</div>
 										<div class="line line-dashed line-lg pull-in"></div>
@@ -81,7 +94,7 @@
 												<label class="control-label">出生年月</label>
 											</div>
 											<div class="col-sm-9">
-												<input type="text" class="form-control"  placeholder="请输入出生年月" name="customInfoFormMap.birthday" id="birthday">
+												<input type="text" class="form-control"  placeholder="请输入出生年月" name="customInfoFormMap.birthday" value="${customInfoFormMap.birthday}" id="birthday">
 											</div>
 										</div>
 										<div class="line line-dashed line-lg pull-in"></div>
@@ -91,7 +104,7 @@
 												<label class="control-label">身高</label>
 											</div>
 											<div class="col-sm-9">
-												<input type="text" class="form-control"  placeholder="请输入身高(cm)" name="customInfoFormMap.body_height" id="body_height">
+												<input type="text" class="form-control"  placeholder="请输入身高(cm)" name="customInfoFormMap.body_height" value="${customInfoFormMap.body_height}" id="body_height">
 											</div>
 										</div>
 										<div class="line line-dashed line-lg pull-in"></div>
@@ -101,7 +114,7 @@
 												<label class="control-label">体重</label>
 											</div>
 											<div class="col-sm-9">
-												<input type="text" class="form-control"  placeholder="请输入体重(kg)" name="customInfoFormMap.weight" id="weight">
+												<input type="text" class="form-control"  placeholder="请输入体重(kg)" name="customInfoFormMap.weight" value="${customInfoFormMap.weight}" id="weight">
 											</div>
 										</div>
 										<div class="line line-dashed line-lg pull-in"></div>
@@ -123,7 +136,7 @@
 												<label class="control-label">会员手机</label>
 											</div>
 											<div class="col-sm-9">
-												<input type="text" class="form-control"  placeholder="请输入会员手机" name="customInfoFormMap.mobile" id="mobile">
+												<input type="text" class="form-control"  placeholder="请输入会员手机" name="customInfoFormMap.mobile" value="${customInfoFormMap.mobile}" id="mobile">
 											</div>
 										</div>
 										<div class="line line-dashed line-lg pull-in"></div>
@@ -134,7 +147,6 @@
 											<div class="col-sm-9" id="cut_items_list">
 											</div>
 										</div>
-
 
 
 									</div>
