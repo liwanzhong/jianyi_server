@@ -6,7 +6,7 @@
 <head>
 	<jsp:include page="inc.jsp"></jsp:include>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>主页</title>
+	<title>检测管理系统</title>
 	<script type="text/javascript">
 		var index_layout;
 		var index_tabs;
