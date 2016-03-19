@@ -1,10 +1,13 @@
 package com.lanyuan.controller.system;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.lanyuan.vo.Tree;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -75,6 +78,9 @@ public class ResourcesController extends BaseController {
 		List<TreeObject> ns = treeUtil.getChildTreeObjects(list, 0, "　");
 		return ns;
 	}
+
+
+
 
 	/**
 	 * @param model
