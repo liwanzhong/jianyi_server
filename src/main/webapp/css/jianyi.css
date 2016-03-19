@@ -1,0 +1,32 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*头部导航*/
+
+/*背景色*/
+#header-bgc{background-color:#2c9684;}
+
+/*左侧字体颜色*/
+#logo-font{ color:#fff;}
+
+/*右侧通知背景色*/
+#inform-bgc{ background-color:#2c9684;}
+
+
+/*右侧用户信息鼠标上移时背景色*/
+.bg-dark.dker,.bg-dark .dker{background-color: #2C9684;}
+.bg-dark .nav>li>a:hover,.bg-dark .nav>li>a:focus{color: #fff;background-color:#69cbb0;}
+
+/*会员信息管理*/ 
+#searchForm{margin-top:1em;}
+#searchForm .control-label{float: left;margin-top: 8px;}
+#searchForm .form-control{float: right;width:65%;}
+#searchForm .form-group{width: 260px;}
+
+/*左侧导航*/
+#left_menu_ul_itemsid>li.active li.active span{font-weight:700; padding-left:10px;}
+#left_menu_ul_itemsid>li.active li.active li.active a span{font-weight:normal; padding-left:20px;}
+
+
+
+
