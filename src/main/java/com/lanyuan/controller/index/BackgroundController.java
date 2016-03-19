@@ -169,7 +169,8 @@ public class BackgroundController extends BaseController {
 		model.addAttribute("list", ns);
 		// 登陆的信息回传页面
 		model.addAttribute("userFormMap", userFormMap);*/
-		return "/index";
+//		return "/index";
+		return "/main";
 	}
 
 	@RequestMapping("menu")
