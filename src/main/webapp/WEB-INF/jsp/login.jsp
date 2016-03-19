@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<jsp:include page="inc.jsp"></jsp:include>
+	<jsp:include page="../../inc.jsp"></jsp:include>
 	<meta charset="utf-8">
 	<title>用户登录</title>
 	<meta name="keywords" content="">
