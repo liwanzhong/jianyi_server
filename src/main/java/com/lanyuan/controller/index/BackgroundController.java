@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.lanyuan.entity.UserEntrelationFormMap;
 import com.lanyuan.mapper.UserEntrelationMapper;
 import com.lanyuan.util.CommonConstants;
+import com.lanyuan.util.constant.GlobalConstant;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -114,10 +115,20 @@ public class BackgroundController extends BaseController {
 
 			// 查询用户所属企业和门店，记录到session中
 
-			UserEntrelationFormMap userEntrelationFormMap=userEntrelationMapper.findbyFrist("user_id",session.getAttribute("userSessionId").toString(),UserEntrelationFormMap.class);
+			/*UserEntrelationFormMap userEntrelationFormMap=userEntrelationMapper.findbyFrist("user_id",session.getAttribute("userSessionId").toString(),UserEntrelationFormMap.class);
 			if(userEntrelationFormMap!=null){
 				session.setAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION,userEntrelationFormMap);
+			}*/
+			UserFormMap userFormMap = (UserFormMap)Common.findUserSession(request);
+			ResFormMap resFormMap = new ResFormMap();
+			resFormMap.put("userId", userFormMap.get("id"));
+			List<ResFormMap> mps = resourcesMapper.findRes(resFormMap);
+			List<String> list = new ArrayList<String>();
+			for (ResFormMap map : mps) {
+				String resourUrl = map.get("resUrl").toString();
+				list.add(resourUrl);
 			}
+			session.setAttribute(GlobalConstant.RESOURCES_SESSION_KEY, list);
 
 
 			retMap.put("status",1);

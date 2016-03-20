@@ -1,89 +1,104 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<%@include file="/common/common.jspf"%>
-<script type="text/javascript" src="${ctx}/js/system/user/edit.js"></script>
-
-<style type="text/css">
-.col-sm-3 {
-	width: 15%;
-	float: left;
-}
-
-.col-sm-9 {
-	width: 85%;
-	float: left;
-}
-</style>
-</head>
-<body>
-	<div class="l_err" style="width: 100%; margin-top: 2px;"></div>
-	<form id="form" name="form" class="form-horizontal" method="post"
-		action="${ctx}/user/editEntity.shtml">
-		<input type="hidden" class="form-control checkacc"
-			value="${user.id}" name="userFormMap.id" id="id">
-		<section class="panel panel-default">
-		<div class="panel-body">
-			<div class="form-group">
-				<label class="col-sm-3 control-label">用户名</label>
-				<div class="col-sm-9">
-					<input type="text" class="form-control"
-						placeholder="请输入用户名" value="${user.userName}"
-						name="userFormMap.userName" id="userName">
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">账号</label>
-				<div class="col-sm-9">
-					<input type="text" class="form-control checkacc"
-						placeholder="请输入账号" value="${user.accountName}"
-						name="userFormMap.accountName" id="accountName" readonly="readonly">
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div id="selGroup"
-				data-url="/role/selRole.shtml?roleFormMap.userId=${user.id}"></div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">是否禁用</label>
-				<div class="col-sm-9">
-					<div class="btn-group m-r">
-						<button data-toggle="dropdown"
-							class="btn btn-sm btn-default dropdown-toggle">
-							<span class="dropdown-label"><c:if
-									test="${user.locked eq 1}">是</c:if>
-								<c:if test="${user.locked eq 0}">否</c:if></span> <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu dropdown-select">
-							<li class="active"><a href="#"><input type="radio"
-									name="userFormMap.locked" value="1"
-									<c:if test="${user.locked eq 1}"> checked="checked"</c:if>>是</a></li>
-							<li class=""><a href="#"><input type="radio"
-									name="userFormMap.locked" value="0"
-									<c:if test="${user.locked eq 0}"> checked="checked"</c:if>>否</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">描述</label>
-				<div class="col-sm-9">
-					<input type="text" class="form-control" placeholder="请输入账号描述"
-						value="${user.description}" name="userFormMap.description" id="description">
-				</div>
-			</div>
-		</div>
-		<footer class="panel-footer text-right bg-light lter">
-		<button type="submit" class="btn btn-success btn-s-xs">保存</button>
-		</footer> </section>
-	</form>
-	<script type="text/javascript">
-	onloadurl();
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<script type="text/javascript">
+	$(function() {
+	
+		$('#organizationId').combotree({
+			url : '${ctx}/organization/tree',
+			parentField : 'pid',
+			lines : true,
+			panelHeight : 'auto',
+			value : '${user.organizationId}'
+		});
+		
+		$('#roleIds').combotree({
+			url : '${ctx}/role/tree',
+			parentField : 'pid',
+			lines : true,
+			panelHeight : 'auto',
+			multiple : true,
+			required: true,
+			cascadeCheck : false,
+			value : $.stringToList('${user.roleIds}')
+		});
+		
+		$('#userEditForm').form({
+			url : '${ctx}/user/edit',
+			onSubmit : function() {
+				progressLoad();
+				var isValid = $(this).form('validate');
+				if (!isValid) {
+					progressClose();
+				}
+				return isValid;
+			},
+			success : function(result) {
+				progressClose();
+				result = $.parseJSON(result);
+				if (result.success) {
+					parent.$.modalDialog.openner_dataGrid.datagrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
+					parent.$.modalDialog.handler.dialog('close');
+				} else {
+					parent.$.messager.alert('错误', result.msg, 'error');
+				}
+			}
+		});
+		$("#sex").val('${user.sex}');
+		$("#usertype").val('${user.usertype}');
+		$("#state").val('${user.state}');
+	});
 </script>
-</body>
-</html>
+<div class="easyui-layout" data-options="fit:true,border:false">
+	<div data-options="region:'center',border:false" title="" style="overflow: hidden;padding: 3px;">
+		<form id="userEditForm" method="post">
+			<div class="light-info" style="overflow: hidden;padding: 3px;">
+				<div>密码不修改请留空。</div>
+			</div>
+			<table class="grid">
+				<tr>
+					<td>登录名</td>
+					<td><input name="id" type="hidden"  value="${user.id}">
+					<input name="loginname" type="text" placeholder="请输入登录名称" class="easyui-validatebox" data-options="required:true" value="${user.loginname}"></td>
+					<td>姓名</td>
+					<td><input name="name" type="text" placeholder="请输入姓名" class="easyui-validatebox" data-options="required:true" value="${user.name}"></td>
+				</tr>
+				<tr>
+					<td>密码</td>
+					<td><input type="text" name="password"/></td>
+					<td>性别</td>
+					<td><select name="sex" id="sex"  class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+							<option value="0">男</option>
+							<option value="1">女</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td>年龄</td>
+					<td><input type="text" name="age" value="${user.age}" class="easyui-numberbox"/></td>
+					<td>用户类型</td>
+					<td><select id="usertype" name="usertype"  class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+							<option value="0">管理员</option>
+							<option value="1">用户</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td>部门</td>
+					<td><select id="organizationId" name="organizationId" style="width: 140px; height: 29px;" class="easyui-validatebox" data-options="required:true"></select></td>
+					<td>角色</td>
+					<td><input  id="roleIds" name="roleIds" style="width: 140px; height: 29px;"/></td>
+				</tr>
+				<tr>
+					<td>电话</td>
+					<td>
+						<input type="text" name="phone" class="easyui-numberbox" value="${user.phone}"/>
+					</td>
+					<td>用户类型</td>
+					<td><select id="state" name="state" value="${user.state}" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+							<option value="0">正常</option>
+							<option value="1">停用</option>
+					</select></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>

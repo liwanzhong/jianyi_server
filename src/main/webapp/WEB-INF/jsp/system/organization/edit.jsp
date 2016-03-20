@@ -7,15 +7,15 @@
 	$(function() {
 		
 		$('#pid').combotree({
-			url : '${ctx}/organization/tree?flag=false',
+			url : '${ctx}/organization/tree.shtml?flag=false',
 			parentField : 'pid',
 			lines : true,
 			panelHeight : 'auto',
-			value :'${organization.pid}'
+			value :'${organizationFormMap.pid}'
 		});
-		
+
 		$('#organizationEditForm').form({
-			url : '${ctx}/organization/edit',
+			url : '${ctx}/organization/update.shtml',
 			onSubmit : function() {
 				progressLoad();
 				var isValid = $(this).form('validate');
@@ -27,13 +27,13 @@
 			success : function(result) {
 				progressClose();
 				result = $.parseJSON(result);
-				if (result.success) {
+				if (result.status == 1) {
 					parent.$.modalDialog.openner_treeGrid.treegrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_treeGrid这个对象，是因为organization.jsp页面预定义好了
 					parent.$.modalDialog.handler.dialog('close');
 				}
 			}
 		});
-		
+
 	});
 </script>
 <div style="padding: 3px;">
@@ -41,19 +41,19 @@
 		<table class="grid">
 			<tr>
 				<td>编号</td>
-				<td><input name="id" type="hidden"  value="${organization.id}"><input name="code" type="text" value="${organization.code}" /></td>
+				<td><input name="organizationFormMap.id" type="hidden"  value="${organizationFormMap.id}"><input name="organizationFormMap.code" type="text" value="${organizationFormMap.code}" /></td>
 				<td>资源名称</td>
-				<td><input name="name" type="text" value="${organization.name}" placeholder="请输入部门名称" class="easyui-validatebox" data-options="required:true" ></td>
+				<td><input name="organizationFormMap.name" type="text" value="${organizationFormMap.name}" placeholder="请输入部门名称" class="easyui-validatebox" data-options="required:true" ></td>
 			</tr>
 			<tr>
 				<td>排序</td>
-				<td><input name="seq"  class="easyui-numberspinner" value="${organization.seq}" style="widtd: 140px; height: 29px;" required="required" data-options="editable:false"></td>
+				<td><input name="organizationFormMap.seq"  class="easyui-numberspinner" value="${organizationFormMap.seq}" style="widtd: 140px; height: 29px;" required="required" data-options="editable:false"></td>
 				<td>菜单图标</td>
-				<td ><input  name="icon" value="${organization.icon}"/></td>
+				<td ><input  name="organizationFormMap.icon" value="${organizationFormMap.icon}"/></td>
 			</tr>
 			<tr>
 				<td>地址</td>
-				<td colspan="3"><input  name="address" style="width: 300px;" value="${organization.address}"/></td>
+				<td colspan="3"><input  name="organizationFormMap.address" style="width: 300px;" value="${organizationFormMap.address}"/></td>
 			</tr>
 			<tr>
 				<td>上级资源</td>

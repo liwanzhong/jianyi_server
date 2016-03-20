@@ -1,97 +1,90 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<%@include file="/common/common.jspf"%>
-<script type="text/javascript" src="${ctx}/js/system/user/add.js">
-	
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<script type="text/javascript">
+
+
+	$(function() {
+		
+		$('#organizationId').combotree({
+			url : '${ctx}/organization/tree',
+			parentField : 'pid',
+			lines : true,
+			panelHeight : 'auto'
+		});
+		
+		$('#roleIds').combotree({
+		    url: '${ctx}/role/tree',
+		    multiple: true,
+		    required: true,
+		    panelHeight : 'auto'
+		});
+		
+		$('#userAddForm').form({
+			url : '${ctx}/user/add',
+			onSubmit : function() {
+				progressLoad();
+				var isValid = $(this).form('validate');
+				if (!isValid) {
+					progressClose();
+				}
+				return isValid;
+			},
+			success : function(result) {
+				progressClose();
+				result = $.parseJSON(result);
+				if (result.success) {
+					parent.$.modalDialog.openner_dataGrid.datagrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
+					parent.$.modalDialog.handler.dialog('close');
+				} else {
+					parent.$.messager.alert('提示', result.msg, 'warning');
+				}
+			}
+		});
+		
+	});
 </script>
-<style type="text/css">
-.col-sm-3 {
-	width: 15%;
-	float: left;
-	text-align: right;
-}
-
-.col-sm-9 {
-	width: 85%;
-	float: left;
-	text-align: left;
-}
-
-label[class^="btn btn-default"] {
-	margin-top: -4px;
-}
-</style>
-</head>
-<body>
-	<div class="l_err" style="width: 100%; margin-top: 2px;"></div>
-	<form id="form" name="form" class="form-horizontal" method="post"
-		action="${ctx}/user/addEntity.shtml">
-		<section class="panel panel-default">
-		<div class="panel-body">
-			<div class="form-group">
-				<div class="col-sm-3">
-					<label class="control-label">用户名</label>
-				</div>
-				<div class="col-sm-9">
-					<input type="text" class="form-control"
-						placeholder="请输入用户名" name="userFormMap.userName" id="userName">
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">账号</label>
-				<div class="col-sm-9">
-					<input type="text" class="form-control checkacc"
-						placeholder="请输入账号" name="userFormMap.accountName" id="accountName">
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">密码</label>
-				<div class="col-sm-9" style="color: red;">
-					默认密码为:123456789
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group" id="selRole" data-url="/role/selRole.shtml"></div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">是否禁用</label>
-				<div class="col-sm-9">
-					<div class="btn-group m-r">
-						<button data-toggle="dropdown"
-							class="btn btn-sm btn-default dropdown-toggle">
-							<span class="dropdown-label">是</span> <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu dropdown-select">
-							<li class=""><a href="#"><input type="radio"
-									name="userFormMap.locked" value="0" checked="checked">是</a></li>
-							<li class="active"><a href="#"><input type="radio"
-									name="userFormMap.locked" value="1">否</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">描述</label>
-				<div class="col-sm-9">
-					<input type="text" class="form-control" placeholder="请输入账号描述"
-						name="userFormMap.description" id="description">
-				</div>
-			</div>
-		</div>
-		<footer class="panel-footer text-right bg-light lter">
-		<button type="submit" class="btn btn-success btn-s-xs">提交</button>
-		</footer> </section>
-	</form>
-	<script type="text/javascript">
-	onloadurl();
-	</script>
-	<script type="text/javascript"
-		src="${ctx}/notebook/notebook_files/bootstrap-filestyle.min.js"></script>
-</body>
-</html>
+<div class="easyui-layout" data-options="fit:true,border:false">
+	<div data-options="region:'center',border:false" title="" style="overflow: hidden;padding: 3px;">
+		<form id="userAddForm" method="post">
+			<table class="grid">
+				<tr>
+					<td>登录名</td>
+					<td><input name="loginname" type="text" placeholder="请输入登录名称" class="easyui-validatebox" data-options="required:true" value=""></td>
+					<td>姓名</td>
+					<td><input name="name" type="text" placeholder="请输入姓名" class="easyui-validatebox" data-options="required:true" value=""></td>
+				</tr>
+				<tr>
+					<td>密码</td>
+					<td><input name="password" type="password" placeholder="请输入密码" class="easyui-validatebox" data-options="required:true"></td>
+					<td>性别</td>
+					<td><select name="sex" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+							<option value="0" selected="selected">男</option>
+							<option value="1" >女</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td>年龄</td>
+					<td><input type="text" name="age" class="easyui-numberbox"/></td>
+					<td>用户类型</td>
+					<td><select name="usertype" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+							<option value="0">管理员</option>
+							<option value="1" selected="selected">用户</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td>部门</td>
+					<td><select id="organizationId" name="organizationId" style="width: 140px; height: 29px;" class="easyui-validatebox" data-options="required:true"></select></td>
+					<td>角色</td>
+					<td><select id="roleIds"  name="roleIds"   style="width: 140px; height: 29px;"></select></td>
+				</tr>
+				<tr>
+					<td>电话</td>
+					<td colspan="3">
+						<input type="text" name="phone" class="easyui-numberbox"/>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>
