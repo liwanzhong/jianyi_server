@@ -5,14 +5,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<jsp:include page="../inc.jsp"></jsp:include>
+<jsp:include page="/inc.jsp"></jsp:include>
 <meta http-equiv="X-UA-Compatible" content="edge" />
-<c:if test="${fn:contains(sessionInfo.resourceList, '/user/edit')}">
+<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/user/edit.shtml')}">
 	<script type="text/javascript">
 		$.canEdit = true;
 	</script>
 </c:if>
-<c:if test="${fn:contains(sessionInfo.resourceList, '/user/delete')}">
+<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/user/delete.shtml')}">
 	<script type="text/javascript">
 	</script>
 </c:if>
@@ -24,79 +24,58 @@
 	$(function() {
 	
 		organizationTree = $('#organizationTree').tree({
-			url : '${ctx}/organization/tree',
+			url : '${ctx}/organization/tree.shtml',
 			parentField : 'pid',
 			lines : true,
 			onClick : function(node) {
-				dataGrid.datagrid('load', {
-				    organizationId: node.id
-				});
+				dataGrid.datagrid('load', { 'userFormMap.organizationId': node.id});
 			}
 		});
 	
 		dataGrid = $('#dataGrid').datagrid({
-			url : '${ctx}/user/dataGrid',
+			url : '${ctx}/user/dataGrid.shtml',
 			fit : true,
 			striped : true,
 			rownumbers : true,
 			pagination : true,
 			singleSelect : true,
 			idField : 'id',
-			sortName : 'createdatetime',
-			sortOrder : 'asc',
+			sortName : 'createTime',
+			sortOrder : 'desc',
 			pageSize : 50,
 			pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 			columns : [ [ {
-				width : '80',
-				title : '登录名',
-				field : 'loginname',
+				width : '120',
+				title : '姓名',
+				field : 'username',
 				sortable : true
 			}, {
-				width : '80',
-				title : '姓名',
-				field : 'name',
+				width : '120',
+				title : '用户名',
+				field : 'accountName',
 				sortable : true
 			},{
 				width : '80',
-				title : '部门ID',
-				field : 'organizationId',
+				title : '所属组织ID',
+				field : 'organization_id',
 				hidden : true
 			},{
-				width : '80',
-				title : '所属部门',
-				field : 'organizationName'
+				width : '120',
+				title : '所属组织',
+				field : 'organization_name'
+			},{
+				width : '180',
+				title : '用户权限',
+				field : 'roleName'
 			},{
 				width : '120',
 				title : '创建时间',
-				field : 'createdatetime',
-				sortable : true
-			},  {
-				width : '40',
-				title : '性别',
-				field : 'sex',
-				sortable : true,
-				formatter : function(value, row, index) {
-					switch (value) {
-					case 0:
-						return '男';
-					case 1:
-						return '女';
-					}
-				}
-			}, {
-				width : '40',
-				title : '年龄',
-				field : 'age',
-				sortable : true
-			},{
-				width : '60',
-				title : '电话',
-				field : 'phone',
+				field : 'createTime',
 				sortable : true
 			}, {
 				width : '60',
 				title : '用户类型',
-				field : 'usertype',
+				field : 'user_type',
 				sortable : true,
 				formatter : function(value, row, index) {
 					if(value==0){
@@ -108,45 +87,30 @@
 				}
 			},{
 				width : '60',
-				title : '是否默认',
-				field : 'isdefault',
-				sortable : true,
-				formatter : function(value, row, index) {
-					switch (value) {
-					case 0:
-						return '默认';
-					case 1:
-						return '否';
-					}
-				}
-			},{
-				width : '60',
 				title : '状态',
-				field : 'state',
+				field : 'status',
 				sortable : true,
 				formatter : function(value, row, index) {
 					switch (value) {
-					case 0:
-						return '正常';
 					case 1:
+						return '正常';
+					case 0:
 						return '停用';
 					}
 				}
+			},{
+				width : '180',
+				title : '描述',
+				field : 'description'
 			} , {
 				field : 'action',
 				title : '操作',
 				width : 100,
 				formatter : function(value, row, index) {
 					var str = '';
-					if(row.isdefault!=0){
-						if ($.canEdit) {
-							str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
-						}
-						if ($.canDelete) {
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-							str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >删除</a>', row.id);
-						}
-					}
+					str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
+					str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+					str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >删除</a>', row.id);
 					return str;
 				}
 			}] ],
@@ -159,7 +123,7 @@
 			title : '添加',
 			width : 500,
 			height : 300,
-			href : '${ctx}/user/addPage',
+			href : '${ctx}/user/addPage.shtml',
 			buttons : [ {
 				text : '添加',
 				handler : function() {
@@ -213,7 +177,7 @@
 			title : '编辑',
 			width : 500,
 			height : 300,
-			href : '${ctx}/user/editPage?id=' + id,
+			href : '${ctx}/user/editPage.shtml?id=' + id,
 			buttons : [ {
 				text : '编辑',
 				handler : function() {
@@ -240,9 +204,9 @@
 			<table>
 				<tr>
 					<th>姓名:</th>
-					<td><input name="name" placeholder="请输入用户姓名"/></td>
+					<td><input name="userFormMap.username" placeholder="请输入用户姓名"/></td>
 					<th>创建时间:</th>
-					<td><input name="createdatetimeStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" />至<input  name="createdatetimeEnd" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" />
+					<td><input name="userFormMap.createdatetimeStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" />至<input  name="userFormMap.createdatetimeEnd" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" />
 					<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" onclick="cleanFun();">清空</a></td>
 				</tr>
 			</table>
@@ -256,9 +220,10 @@
 		</ul>
 	</div>
 	<div id="toolbar" style="display: none;">
-		<c:if test="${fn:contains(sessionInfo.resourceList, '/user/add')}">
+		<%--<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/user/add.shtml')}">
 			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'">添加</a>
-		</c:if>
+		</c:if>--%>
+			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'">添加</a>
 	</div>
 </body>
 </html>

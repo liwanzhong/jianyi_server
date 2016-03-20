@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lanyuan.mapper.UserMapper">
 	<!--mybatis ehcache缓存配置 -->
 	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
@@ -8,38 +8,47 @@
 	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
 	<!-- 以下与实体类的中字段一致 -->
 	<sql id="selectId">
-		ly_user.id,
-		ly_user.userName,
-		ly_user.accountName,
-		(select group_concat(name) from ly_role
-		where ly_role.id
-		in (SELECT roleId FROM ly_user_role WHERE
-		userId=ly_user.id) ) roleName,
-		ly_user.password,
-		ly_user.description,
-		ly_user.locked,
-		ly_user.credentialsSalt,
-		ly_user.createTime,
-		enterprise_info.name as enterprise_name,
-  		sub_enterprise_point.name as point_name
+  lu.id,
+  lu.username,
+  lu.accountName,
+  lu.description,
+  lu.createTime,
+  lu.status,
+  lu.organization_id,
+  lu.user_type,
+  lo.name AS organization_name,
+  (SELECT
+      GROUP_CONCAT(name)
+    FROM ly_role ly_role
+    WHERE ly_role.id
+    IN (SELECT
+        roleId
+      FROM ly_user_role
+      WHERE userId = lu.id)) roleName
 	</sql>
 
 	<select id="findUserPage" resultType="com.lanyuan.entity.UserFormMap">
 		select
 		<include refid="selectId" />
-		from ly_user
-		LEFT JOIN user_enterprise_relation
-		ON user_enterprise_relation.user_id = ly_user.id
-		LEFT JOIN enterprise_info
-		ON user_enterprise_relation.ent_id = enterprise_info.id
-		LEFT JOIN sub_enterprise_point ON user_enterprise_relation.sub_point_id=sub_enterprise_point.id
+		FROM ly_user lu
+		LEFT JOIN ly_organization lo
+		ON lu.organization_id = lo.id
 		where 1 = 1
-		<if test="accountName != null and accountName != ''">
-		and accountName like '%${accountName}%'
+		<if test="organizationId != null">
+			and lu.organization_id = ${organizationId}
 		</if>
-		<if test="column != null">
-          order by ${column} ${sort}
-        </if>
+		<if test="username != null ">
+			and lu.userName='${username}'
+		</if>
+		<if test="createdatetimeStart != null">
+			and lu.createTime &gt;= '${createdatetimeStart}'
+		</if>
+		<if test="createdatetimeEnd != null">
+			and lu.createTime &lt;= '${createdatetimeStart}'
+		</if>
+		<if test="orderby != null">
+			order by ${orderby}
+		</if>
 	</select>
-	
+
 </mapper>

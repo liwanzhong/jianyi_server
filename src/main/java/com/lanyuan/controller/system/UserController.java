@@ -2,13 +2,19 @@ package com.lanyuan.controller.system;
 
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lanyuan.entity.OrganizationFormMap;
+import com.lanyuan.vo.Grid;
+import com.lanyuan.vo.Organization;
+import com.lanyuan.vo.PageFilter;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -29,7 +35,7 @@ import com.lanyuan.util.POIUtils;
 import com.lanyuan.util.PasswordHelper;
 
 /**
- * 
+ *
  * @author lanyuan 2014-11-19
  * @Email: mmm333zzz520@163.com
  * @version 3.0v
@@ -39,26 +45,46 @@ import com.lanyuan.util.PasswordHelper;
 public class UserController extends BaseController {
 	@Inject
 	private UserMapper userMapper;
-	
+
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
-		model.addAttribute("res", findByRes());
 		return Common.BACKGROUND_PATH + "/system/user/list";
 	}
 
-	@ResponseBody
-	@RequestMapping("findByPage")
-	public PageView findByPage( String pageNow,
-			String pageSize,String column,String sort) throws Exception {
-		UserFormMap userFormMap = getFormMap(UserFormMap.class);
-		userFormMap=toFormMap(userFormMap, pageNow, pageSize,userFormMap.getStr("orderby"));
-		userFormMap.put("column", column);
-		userFormMap.put("sort", sort);
-        pageView.setRecords(userMapper.findUserPage(userFormMap));//不调用默认分页,调用自已的mapper中findUserPage
-        return pageView;
+	@RequestMapping("addPage")
+	public String addPage(Model model) throws Exception {
+		return Common.BACKGROUND_PATH + "/system/user/add";
 	}
-	
-	@RequestMapping("/export")
+
+	@RequestMapping("editPage")
+	public String editPage(Model model) throws Exception {
+		return Common.BACKGROUND_PATH + "/system/user/edit";
+	}
+
+
+	@ResponseBody
+	@RequestMapping("dataGrid")
+	@SystemLog(module="用户管理",methods="加载用户列表")//凡需要处理业务逻辑的.都需要记录操作日志
+	@Transactional(readOnly=false)//需要事务操作必须加入此注解
+	public Grid dataGrid( PageFilter ph)throws Exception {
+		Grid grid = new Grid();
+
+		UserFormMap userFormMap = getFormMap(UserFormMap.class);
+		userFormMap.put("orderby",ph.getSort()+" "+ph.getOrder());
+		userFormMap=toFormMap(userFormMap,  String.valueOf(ph.getPage()), String.valueOf(ph.getRows()),userFormMap.getStr("orderby"));
+		List<UserFormMap> userFormMapList =userMapper.findUserPage(userFormMap);
+		if(CollectionUtils.isNotEmpty(userFormMapList)){
+			grid.setRows(userFormMapList);
+		}
+		PageView pageView = (PageView) userFormMap.get("paging");
+		grid.setTotal(pageView.getRowCount());
+		return grid;
+
+	}
+
+
+
+	/*@RequestMapping("/export")
 	public void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String fileName = "用户列表";
 		UserFormMap userFormMap = findHasHMap(UserFormMap.class);
@@ -75,18 +101,15 @@ public class UserController extends BaseController {
 
 		List<UserFormMap> lis = userMapper.findUserPage(userFormMap);
 		POIUtils.exportToExcel(response, listMap, lis, fileName);
-	}
+	}*/
 
-	@RequestMapping("addUI")
-	public String addUI(Model model) throws Exception {
-		return Common.BACKGROUND_PATH + "/system/user/add";
-	}
+
 
 	@ResponseBody
-	@RequestMapping("addEntity")
+	@RequestMapping("add")
 	@SystemLog(module="系统管理",methods="用户管理-新增用户")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	public String addEntity(String txtGroupsSelect){
+	public String add(String txtGroupsSelect){
 		try {
 			UserFormMap userFormMap = getFormMap(UserFormMap.class);
 			userFormMap.put("txtGroupsSelect", txtGroupsSelect);
@@ -104,16 +127,18 @@ public class UserController extends BaseController {
 				}
 			}
 		} catch (Exception e) {
-			 throw new SystemException("添加账号异常");
+			throw new SystemException("添加账号异常");
 		}
 		return "success";
 	}
 
+
+
 	@ResponseBody
-	@RequestMapping("deleteEntity")
+	@RequestMapping("delete")
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	@SystemLog(module="系统管理",methods="用户管理-删除用户")//凡需要处理业务逻辑的.都需要记录操作日志
-	public String deleteEntity() throws Exception {
+	public String delete() throws Exception {
 		String[] ids = getParaValues("ids");
 		for (String id : ids) {
 			userMapper.deleteByAttribute("userId", id, UserGroupsFormMap.class);
@@ -123,20 +148,15 @@ public class UserController extends BaseController {
 		return "success";
 	}
 
-	@RequestMapping("editUI")
-	public String editUI(Model model) throws Exception {
-		String id = getPara("id");
-		if(Common.isNotEmpty(id)){
-			model.addAttribute("user", userMapper.findbyFrist("id", id, UserFormMap.class));
-		}
-		return Common.BACKGROUND_PATH + "/system/user/edit";
-	}
+
+
+
 
 	@ResponseBody
-	@RequestMapping("editEntity")
+	@RequestMapping("edit")
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	@SystemLog(module="系统管理",methods="用户管理-修改用户")//凡需要处理业务逻辑的.都需要记录操作日志
-	public String editEntity(String txtGroupsSelect) throws Exception {
+	public String edit(String txtGroupsSelect) throws Exception {
 		UserFormMap userFormMap = getFormMap(UserFormMap.class);
 		userFormMap.put("txtGroupsSelect", txtGroupsSelect);
 		userMapper.editEntity(userFormMap);
@@ -152,9 +172,12 @@ public class UserController extends BaseController {
 		}
 		return "success";
 	}
+
+
+
 	/**
 	 * 验证账号是否存在
-	 * 
+	 *
 	 * @author lanyuan Email：mmm333zzz520@163.com date：2014-2-19
 	 * @param name
 	 * @return
@@ -169,13 +192,13 @@ public class UserController extends BaseController {
 			return false;
 		}
 	}
-	
+
 	//密码修改
 	@RequestMapping("updatePassword")
 	public String updatePassword(Model model) throws Exception {
 		return Common.BACKGROUND_PATH + "/system/user/updatePassword";
 	}
-	
+
 	//保存新密码
 	@RequestMapping("editPassword")
 	@ResponseBody
