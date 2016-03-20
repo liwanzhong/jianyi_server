@@ -22,4 +22,11 @@
 		in (SELECT roleId FROM ly_user_role WHERE
 		userId=#{userId})
 	</select>
+
+
+	<select id="findEnterprisePage" resultType="com.lanyuan.entity.RoleFormMap">
+		select
+		<include refid="selectId"/>
+		from ly_role
+	</select>
 </mapper>
