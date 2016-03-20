@@ -75,15 +75,17 @@ public class BackgroundController extends BaseController {
 		return "/login";
 	}
 
+	@ResponseBody
 	@RequestMapping(value = "login", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
-	public String login(String username, String password, HttpServletRequest request) {
+	public Map<String,Object> login(String username, String password, HttpServletRequest request) {
+		Map<String,Object> retMap =new HashMap<String, Object>();
+		retMap.put("status",0);
 		try {
 			if (!request.getMethod().equals("POST")) {
-				request.setAttribute("error", "支持POST方法提交！");
+				throw new Exception("支持POST方法提交");
 			}
 			if (Common.isEmpty(username) || Common.isEmpty(password)) {
-				request.setAttribute("error", "用户名或密码不能为空！");
-				return "/login";
+				throw new Exception("用户名或密码不能为空！");
 			}
 			// 想要得到 SecurityUtils.getSubject()　的对象．．访问地址必须跟ｓｈｉｒｏ的拦截地址内．不然后会报空指针
 			Subject user = SecurityUtils.getSubject();
@@ -95,16 +97,13 @@ public class BackgroundController extends BaseController {
 				user.login(token);
 			} catch (LockedAccountException lae) {
 				token.clear();
-				request.setAttribute("error", "用户已经被锁定不能登录，请与管理员联系！");
-				return "/login";
+				throw new Exception("用户已经被锁定不能登录，请与管理员联系！");
 			} catch (ExcessiveAttemptsException e) {
 				token.clear();
-				request.setAttribute("error", "账号：" + username + " 登录失败次数过多,锁定10分钟!");
-				return "/login";
+				throw new Exception("账号：" + username + " 登录失败次数过多,锁定10分钟!");
 			} catch (AuthenticationException e) {
 				token.clear();
-				request.setAttribute("error", "用户或密码不正确！");
-				return "/login";
+				throw new Exception("用户或密码不正确！");
 			}
 			UserLoginFormMap userLogin = new UserLoginFormMap();
 			Session session = SecurityUtils.getSubject().getSession();
@@ -112,7 +111,7 @@ public class BackgroundController extends BaseController {
 			userLogin.put("accountName", username);
 			userLogin.put("loginIP", session.getHost());
 			userLoginMapper.addEntity(userLogin);
-			request.removeAttribute("error");
+
 			// 查询用户所属企业和门店，记录到session中
 
 			UserEntrelationFormMap userEntrelationFormMap=userEntrelationMapper.findbyFrist("user_id",session.getAttribute("userSessionId").toString(),UserEntrelationFormMap.class);
@@ -120,30 +119,17 @@ public class BackgroundController extends BaseController {
 				session.setAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION,userEntrelationFormMap);
 			}
 
-			//todo 查询用户权限菜单
-			// 获取登录的bean
-			UserFormMap userFormMap = (UserFormMap)Common.findUserSession(request);
-			ResFormMap resFormMap = new ResFormMap();
-			resFormMap.put("userId", userFormMap.get("id"));
-			List<ResFormMap> mps = resourcesMapper.findRes(resFormMap);
-			List<TreeObject> list = new ArrayList<TreeObject>();
-			for (ResFormMap map : mps) {
-				TreeObject ts = new TreeObject();
-				Common.flushObject(ts, map);
-				list.add(ts);
-			}
-			TreeUtil treeUtil = new TreeUtil();
-			List<TreeObject> ns = treeUtil.getChildTreeObjects(list, 0);
-			session.setAttribute("list", ns);
-			// 登陆的信息回传页面
-			session.setAttribute("userFormMap", userFormMap);
+
+			retMap.put("status",1);
+			retMap.put("msg","success");
+
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			request.setAttribute("error", "登录异常，请联系管理员！");
-			return "/login";
+			retMap.put("msg",e.getMessage());
 		}
-		return "redirect:index.shtml";
+		return retMap;
 	}
 
 	/**
@@ -152,23 +138,6 @@ public class BackgroundController extends BaseController {
 	 */
 	@RequestMapping("index")
 	public String index(Model model) throws Exception {
-		/*// 获取登录的bean
-		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
-		UserFormMap userFormMap = (UserFormMap)Common.findUserSession(request);
-		ResFormMap resFormMap = new ResFormMap();
-		resFormMap.put("userId", userFormMap.get("id"));
-		List<ResFormMap> mps = resourcesMapper.findRes(resFormMap);
-		List<TreeObject> list = new ArrayList<TreeObject>();
-		for (ResFormMap map : mps) {
-			TreeObject ts = new TreeObject();
-			Common.flushObject(ts, map);
-			list.add(ts);
-		}
-		TreeUtil treeUtil = new TreeUtil();
-		List<TreeObject> ns = treeUtil.getChildTreeObjects(list, 0);
-		model.addAttribute("list", ns);
-		// 登陆的信息回传页面
-		model.addAttribute("userFormMap", userFormMap);*/
 		return "/index";
 	}
 
@@ -225,12 +194,24 @@ public class BackgroundController extends BaseController {
 				bos.close();
 		}
 	}
-	@RequestMapping(value = "logout", method = RequestMethod.GET)
-	public String logout() {
-		// 使用权限管理工具进行用户的退出，注销登录
-		SecurityUtils.getSubject().logout(); // session
-												// 会销毁，在SessionListener监听session销毁，清理权限缓存
-		return "redirect:login.shtml";
+
+	@ResponseBody
+	@RequestMapping(value = "logout", method = RequestMethod.POST)
+	public Map<String,Object> logout() {
+
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
+		try{
+			// 使用权限管理工具进行用户的退出，注销登录
+			SecurityUtils.getSubject().logout(); // session
+			// 会销毁，在SessionListener监听session销毁，清理权限缓存
+			retMap.put("status",1);
+		}catch (Exception ex){
+			ex.printStackTrace();
+			retMap.put("msg",ex.getMessage());
+		}
+
+		return retMap;
 	}
 
 

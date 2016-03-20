@@ -1,83 +1,96 @@
-<%@ page language="java" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<html lang="en"	class="app js no-touch no-android chrome no-firefox no-iemobile no-ie no-ie10 no-ie11 no-ios no-ios7 ipad">
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<!DOCTYPE html>
+<html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
-	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
-	<link href="/favicon.ico" type="image/x-icon" rel=icon>
-	<link href="/favicon.ico" type="image/x-icon" rel="shortcut icon">
-	<meta name="renderer" content="webkit">
-	<title>登录－简医管理系统</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet"	href="${pageContext.servletContext.contextPath }/admin_files/min.css">
-	<link rel="stylesheet"	href="${pageContext.servletContext.contextPath }/admin_files/login.css">
-	<link	href="${pageContext.servletContext.contextPath }/admin_files/css.css"	rel="stylesheet" type="text/css">
-	<!--[if lt IE 9]>
-	<script src="${ctx}/js/jquery/ie/html5shiv.js"></script>
-	<script src="${ctx}/js/jquery/ie/respond.min.js"></script>
-	<![endif]-->
+	<jsp:include page="/inc.jsp"></jsp:include>
+	<meta charset="utf-8">
+	<title>用户登录</title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+	<link href="${ctx}/css/css/base.css" rel="stylesheet" type="text/css">
+	<link href="${ctx}/css/css/login.css" rel="stylesheet" type="text/css">
+
+	<script>
+
+		var sessionInfo_userId = '${sessionScope.userSession.id}';
+		if (sessionInfo_userId) {//如果登录,直接跳转到index页面
+			window.location.href='${ctx}/index.shtml';
+		}
+
+		$(function() {
+
+			$('#loginform').form({
+				url:'${ctx}/login.shtml',
+				onSubmit : function() {
+					progressLoad();
+					var isValid = $(this).form('validate');
+					if(!isValid){
+						progressClose();
+					}
+					return isValid;
+				},
+				success:function(result){
+					result = $.parseJSON(result);
+					progressClose();
+					if (result.status == 1) {
+						window.location.href='${ctx}/index.shtml';
+					}else{
+						$.messager.show({
+							title:'提示',
+							msg:'<div class="light-info"><div class="light-tip icon-tip"></div><div>'+result.msg+'</div></div>',
+							showType:'show'
+						});
+					}
+				}
+			});
+		});
+
+		function submitForm(){
+			$('#loginform').submit();
+		}
+
+		function clearForm(){
+			$('#loginform').form('clear');
+		}
+
+		//回车登录
+		function enterlogin(){
+			if (event.keyCode == 13){
+				event.returnValue=false;
+				event.cancel = true;
+				$('#loginform').submit();
+			}
+		}
+
+	</script>
 </head>
-<body onload="javascript:to_top()"
-	  style="background-image: url('${pageContext.servletContext.contextPath }/admin_files/9.jpg');margin-top:0px;background-repeat:no-repeat;background-size: 100% auto;">
-<div id="loginbox" style="padding-top: 10%;">
-	<form id="loginform" name="loginform" class="form-vertical"
-		  style="background-color: rgba(0, 0, 0, 0.5) !important; background: #000; filter: alpha(opacity = 50); *background: #000; *filter: alpha(opacity = 50); /*黑色透明背景结束*/ color: #FFF; bottom: 0px; right: 0px; border: 1px solid #000;"
-		  action="${pageContext.servletContext.contextPath }/login.shtml"
-		  method="post">
-		<div class="control-group normal_text">
-			<table style="width: 100%">
-				<tr>
-					<td align="left"><img src="${pageContext.servletContext.contextPath }/admin_files/logo_left.png" alt="Logo"></td>
-					<td align="center" style="font-weight: bold;color: gray;">登录管理系统</td>
-					<td align="right"><img src="${pageContext.servletContext.contextPath }/admin_files/logo_left.png" alt="Logo"></td>
-				</tr>
-			</table>
-		</div>
-		<div class="control-group">
-			<div class="controls">
-				<div class="main_input_box">
-						<span class="add-on bg_ly" style="background: #28b779"><img
-								src="${pageContext.servletContext.contextPath }/admin_files/account_1.png"
-								alt="请输入用户名.."></span><input type="text" placeholder="用户名..." name="username"  style="height: 32px; margin-bottom: 0px;"/>
-				</div>
+<body onkeydown="enterlogin();">
+<div class="login">
+	<form  method="post" id="loginform">
+		<div class="logo"></div>
+		<div class="login_form">
+			<div class="user">
+				<input class="text_value" type="text" name="username" data-options="required:true" value="admin"/>
+				<input class="text_value" type="password" name="password" value="123456" />
 			</div>
+			<button class="button"  type="button" onclick="submitForm()">登录</button>
 		</div>
-		<div class="control-group">
-			<div class="controls">
-				<div class="main_input_box">
-						<span class="add-on bg_ly">
-							<img src="${pageContext.servletContext.contextPath }/admin_files/lock_1.png" alt="请输入密码..">
-						</span>
-					<input type="password" placeholder="密码..." name="password"  style="height: 32px; margin-bottom: 0px;"/>
-				</div>
-			</div>
-		</div>
-		<div class="form-actions">
-				<%--<span class="pull-left" style="width: 33%">
-					<a href="#" class="flip-link btn btn-info" id="to-recover">忘记密码？</a>
-				</span>
-					<span class="pull-left" style="width: 33%">
-						<a href="install.shtml" class="flip-link btn btn-danger" id="to-recover">一键初始化系统</a>
-					</span>--%>
-					 <span class="pull-right">
-						 <a type="submit" href="javascript:checkUserForm()" class="btn btn-success">登&nbsp;&nbsp;录</a>
-					 </span>
-		</div>
+		<div id="tip"></div>
 	</form>
 </div>
-<script type="text/javascript">
-	if ("${error}" != "") {
-		alert("${error}");
-	};
-	function checkUserForm() {
-		document.loginform.submit();
-	}
-	function to_top(){
-		if(window != top){
-			top.location.href=location.href;
-		}
-	}
-</script>
+
+<!--[if lte IE 7]>
+<div id="ie6-warning"><p>您正在使用 低版本浏览器，在本页面可能会导致部分功能无法使用。建议您升级到 <a href="http://www.microsoft.com/china/windows/internet-explorer/" target="_blank">Internet Explorer 8</a> 或以下浏览器：
+	<a href="http://www.mozillaonline.com/" target="_blank">Firefox</a> / <a href="http://www.google.com/chrome/?hl=zh-CN" target="_blank">Chrome</a> / <a href="http://www.apple.com.cn/safari/" target="_blank">Safari</a> / <a href="http://www.operachina.com/" target="_blank">Opera</a></p></div>
+<![endif]-->
+
+<style>
+	/*ie6提示*/
+	#ie6-warning{width:100%;position:absolute;top:0;left:0;background:#fae692;padding:5px 0;font-size:12px}
+	#ie6-warning p{width:960px;margin:0 auto;}
+</style>
 </body>
 </html>

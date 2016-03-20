@@ -1,67 +1,174 @@
-<%@ page language="java" pageEncoding="UTF-8"%>
-
-<html lang="en" class="app">
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<!DOCTYPE html>
+<html>
 <head>
-	<%@include file="/common/common.jspf"%>
+	<jsp:include page="inc.jsp"></jsp:include>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>人体机能检测评估管理平台</title>
+	<script type="text/javascript">
+		var index_layout;
+		var index_tabs;
+		var index_tabsMenu;
+		var layout_west_tree;
+		var layout_west_tree_url = '';
+
+		var sessionInfo_userId = '${sessionScope.userSessionId}';
+		if (sessionInfo_userId) {//如果没有登录,直接跳转到登录页面
+			layout_west_tree_url = '${ctx}/resources/tree.shtml';
+		}else{
+			window.location.href='${ctx}/login.shtml';
+		}
+		$(function() {
+			index_layout = $('#index_layout').layout({
+				fit : true
+			});
+
+			index_tabs = $('#index_tabs').tabs({
+				fit : true,
+				border : false,
+				tools : [{
+					iconCls : 'icon-home',
+					handler : function() {
+						index_tabs.tabs('select', 0);
+					}
+				}, {
+					iconCls : 'icon-refresh',
+					handler : function() {
+						var index = index_tabs.tabs('getTabIndex', index_tabs.tabs('getSelected'));
+						index_tabs.tabs('getTab', index).panel('open').panel('refresh');
+					}
+				}, {
+					iconCls : 'icon-del',
+					handler : function() {
+						var index = index_tabs.tabs('getTabIndex', index_tabs.tabs('getSelected'));
+						var tab = index_tabs.tabs('getTab', index);
+						if (tab.panel('options').closable) {
+							index_tabs.tabs('close', index);
+						}
+					}
+				} ]
+			});
+
+			layout_west_tree = $('#layout_west_tree').tree({
+				url : layout_west_tree_url,
+				parentField : 'pid',
+				lines : true,
+				onClick : function(node) {
+					if (node.attributes && node.attributes.url) {
+						var url = '${ctx}' + node.attributes.url;
+						addTab({
+							url : url,
+							title : node.text,
+							iconCls : node.iconCls
+						});
+					}
+				}
+			});
+		});
+
+		function addTab(params) {
+			var iframe = '<iframe src="' + params.url + '" frameborder="0" style="border:0;width:100%;height:99.5%;"></iframe>';
+			var t = $('#index_tabs');
+			var opts = {
+				title : params.title,
+				closable : true,
+				iconCls : params.iconCls,
+				content : iframe,
+				border : false,
+				fit : true
+			};
+			if (t.tabs('exists', opts.title)) {
+				t.tabs('select', opts.title);
+			} else {
+				t.tabs('add', opts);
+			}
+		}
+
+		function logout(){
+			$.messager.confirm('提示','确定要退出?',function(r){
+				if (r){
+					progressLoad();
+					$.post( '${ctx}/logout.shtml', function(result) {
+						if(result.status == 1){
+							progressClose();
+							window.location.href='${ctx}/login.shtml';
+						}else{
+							$.messager.show({
+								title:'提示',
+								msg:'<div class="light-info"><div class="light-tip icon-tip"></div><div>'+result.msg+'</div></div>',
+								showType:'show'
+							});
+						}
+					}, 'json');
+				}
+			});
+		}
+
+
+		function editUserPwd() {
+			parent.$.modalDialog({
+				title : '修改密码',
+				width : 400,
+				height : 300,
+				href : '${ctx}/user/updatePassword.shtml',
+				buttons : [ {
+					text : '修改',
+					handler : function() {
+						var f = parent.$.modalDialog.handler.find('#editUserPwdForm');
+						f.submit();
+					}
+				} ]
+			});
+		}
+
+
+	</script>
 </head>
 <body>
-<section class="vbox">
-	<%@include file="/common/header.jsp"%>
-	<section>
-		<section class="hbox stretch">
-			<!-- .aside -->
-			<%@include file="/common/left.jsp"%>
-			<!-- /.aside -->
-			<section id="content">
-				<section id="id_vbox" class="vbox">
-					<ul class="breadcrumb no-border no-radius b-b b-light" id="topli">
-					</ul>
-					<section class="scrollable" style="margin-top: 35px;">
-						<div>
+<div id="loading" style="position: fixed;top: -50%;left: -50%;width: 200%;height: 200%;background: #fff;z-index: 100;overflow: hidden;">
+	<img src="${ctx}/css/images/ajax-loader.gif" style="position: absolute;top: 0;left: 0;right: 0;bottom: 0;margin: auto;"/>
+</div>
+<div id="index_layout">
+	<div data-options="region:'north',border:false" style=" overflow: hidden;" >
+		<div id="header">
+			<span style="float: right; padding-right: 20px;">欢迎 <b>${sessionScope.userSession.name}</b>&nbsp;&nbsp; <a href="javascript:void(0)" onclick="editUserPwd()" style="color: #fff">修改密码</a>&nbsp;&nbsp;<a href="javascript:void(0)" onclick="logout()" style="color: #fff">安全退出</a>
+        	&nbsp;&nbsp;&nbsp;&nbsp;
+    		</span>
+			<span class="header"></span>
+		</div>
+	</div>
+	<div data-options="region:'west',split:true" title="主导航" style="width: 160px; overflow: hidden;overflow-y:auto;">
+		<div class="well well-small" style="padding: 5px 5px 5px 5px;">
+			<ul id="layout_west_tree"></ul>
+		</div>
+	</div>
+	<div data-options="region:'center'" style="overflow: hidden;">
+		<div id="index_tabs" style="overflow: hidden;">
+			<div title="首页" data-options="border:false" style="overflow: hidden;">
+				<div style="padding:10px 0 10px 10px">
+					<h2>系统介绍</h2>
+					<div class="light-info">
+						<div class="light-tip icon-tip"></div>
+						<div>人体机能检测评估管理平台</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div data-options="region:'south',border:false" style="height: 30px;line-height:30px; overflow: hidden;text-align: center;background-color: #eee" >版权所有@人体机能检测评估管理平台 </div>
+</div>
 
-							<div class="col-md-6">
-								<div class="alert alert-danger">
-									<div style="font-size: 17px;">
-										<iframe width="100%" scrolling="no" height="100%" frameborder="0"	allowtransparency="true"
-												src="http://i.tianqi.com/index.php?c=code&id=19&bgc=%23FFFFFF&bdc=%23&icon=1&temp=1&num=2"></iframe>
-									</div>
-								</div>
-							</div>
+<!--[if lte IE 7]>
+<div id="ie6-warning"><p>您正在使用 低版本浏览器，在本页面可能会导致部分功能无法使用。建议您升级到 <a href="http://www.microsoft.com/china/windows/internet-explorer/" target="_blank">Internet Explorer 8</a> 或以下浏览器：
+	<a href="http://www.mozillaonline.com/" target="_blank">Firefox</a> / <a href="http://www.google.com/chrome/?hl=zh-CN" target="_blank">Chrome</a> / <a href="http://www.apple.com.cn/safari/" target="_blank">Safari</a> / <a href="http://www.operachina.com/" target="_blank">Opera</a></p></div>
+<![endif]-->
 
-
-							<div class="col-md-6">
-								<div class="alert alert-success">
-									<h3>系统公告</h3>
-									<table style="width: 100%;">
-										<tr>
-											<td style="font-size: 17px; color: blue; width: 150px;"valign="top">
-												1.
-											</td>
-										</tr>
-										<tr>
-											<td style="font-size: 17px; color: blue; width: 150px;"valign="top">
-												2.
-											</td>
-										</tr>
-										<tr>
-											<td style="font-size: 17px; color: blue; width: 150px;"valign="top">
-												3.
-											</td>
-										</tr>
-									</table>
-								</div>
-							</div>
-						</div>
-					</section>
-				</section>
-			</section>
-			<aside class="bg-light lter b-l aside-md hide" id="notes">
-				<div class="wrapper">Notification</div>
-			</aside>
-		</section>
-	</section>
-</section>
-<!-- Bootstrap -->
-<div id="flotTip" style="display: none; position: absolute;"></div>
+<style>
+	/*ie6提示*/
+	#ie6-warning{width:100%;position:absolute;top:0;left:0;background:#fae692;padding:5px 0;font-size:12px}
+	#ie6-warning p{width:960px;margin:0 auto;}
+</style>
 </body>
 </html>

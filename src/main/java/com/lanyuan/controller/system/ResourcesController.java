@@ -1,10 +1,14 @@
 package com.lanyuan.controller.system;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.lanyuan.vo.Tree;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -58,6 +62,41 @@ public class ResourcesController extends BaseController {
 		resFormMap = new ResFormMap();
 		resFormMap.put("treelists", ns);
 		return resFormMap;
+	}
+
+
+
+	@ResponseBody
+	@RequestMapping("tree")
+	public List<Tree> treelists(Model model) {
+		ResFormMap resFormMap = getFormMap(ResFormMap.class);
+		String order = " order by level asc";
+		resFormMap.put("$orderby", order);
+		List<ResFormMap> mps = resourcesMapper.findByNames(resFormMap);
+		List<Tree> list = new ArrayList<Tree>();
+		for (ResFormMap map : mps) {
+			if(!StringUtils.equalsIgnoreCase(map.get("type").toString(),"2")){
+				Tree tree = new Tree();
+				tree.setId(map.get("id").toString());
+				if (map.get("parentId") != null && !StringUtils.equalsIgnoreCase(map.get("parentId").toString(),"0")) {
+					tree.setPid(map.get("parentId").toString());
+				} else {
+					tree.setState("closed");
+				}
+				tree.setText(map.get("name").toString());
+				if(null!=map.get("icon")){
+					tree.setIconCls(map.get("icon").toString());
+				}
+				if(StringUtils.equalsIgnoreCase(map.get("type").toString(),"1")){
+					Map<String, Object> attr = new HashMap<String, Object>();
+					attr.put("url", map.get("resUrl").toString());
+					tree.setAttributes(attr);
+				}
+				list.add(tree);
+			}
+
+		}
+		return list;
 	}
 
 	@ResponseBody
