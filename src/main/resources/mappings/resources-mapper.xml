@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lanyuan.mapper.ResourcesMapper">
 	<!--mybatis ehcache缓存配置 -->
 	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
@@ -21,6 +21,20 @@
 		icon,
 		description
 	</sql>
+
+	<sql id="selectId_byrole">
+		lrr.role_id,
+       lr.id,
+       lr.name,
+       lr.parentId,
+       lr.resKey,
+       lr.type,
+       lr.resUrl,
+       lr.level,
+       lr.icon,
+       lr.ishide,
+       lr.description
+	</sql>
 	<select id="findChildlists" resultType="com.lanyuan.entity.ResFormMap">
 		SELECT
 		<include refid="selectId" />
@@ -35,12 +49,12 @@
 		select resId from
 		ly_res_user where 1=1
 		<if test="userId != null and userId != '' and userId != 0">
-		and userId = #{userId}
+			and userId = #{userId}
 		</if>
 		<if test="roleId != null and roleId != '' and roleId != 0">
-		and userId in (
-		      SELECT userId from ly_user_role where roleId = #{roleId}
-		   )
+			and userId in (
+			SELECT userId from ly_user_role where roleId = #{roleId}
+			)
 		</if>
 		)
 		<if test="parentId != null and parentId != '' and parentId != 0">
@@ -57,14 +71,25 @@
 		select resId from ly_res_user
 		where userId=#{userId})
 	</select>
+
+
+	<select id="findResByRole" parameterType="String" resultType="com.lanyuan.entity.ResFormMap">
+		SELECT
+		<include refid="selectId_byrole" />
+		FROM ly_role_resource lrr
+		LEFT JOIN ly_resources lr
+		ON lrr.resource_id = lr.id
+		WHERE lrr.role_id = #{id}
+	</select>
+
 	<update id="updateSortOrder" parameterType="java.util.List">
-          <foreach collection="list" item="item" index="index" open="" close="" separator=";">
-                update ly_resources
-                <set>
-                  level = #{item.level}
-                </set>
-                where id = #{item.id}
-         </foreach>
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update ly_resources
+			<set>
+				level = #{item.level}
+			</set>
+			where id = #{item.id}
+		</foreach>
 	</update>
 	<!-- 删 -->
 	<delete id="deleteResourcesRole" parameterType="String">

@@ -5,7 +5,7 @@
 	var resourceTree;
 	$(function() {
 		resourceTree = $('#resourceTree').tree({
-			url : '${ctx}/resource/allTree?flag=true',
+			url : '${ctx}/resource/tree.shtml?flag=true',
 			parentField : 'pid',
 			lines : true,
 			checkbox : true,
@@ -13,8 +13,8 @@
 			},
 			onLoadSuccess : function(node, data) {
 				progressLoad();
-				$.post( '${ctx}/role/get', {
-					id : '${role.id}'
+				$.post( '${ctx}/role/get.shtml', {
+					id : '${roleFormMap.id}'
 				}, function(result) {
 					var ids;
 					if (result.id != undefined&&result.resourceIds!= undefined) {
@@ -30,11 +30,11 @@
 				}, 'json');
 				progressClose();
 			},
-			cascadeCheck : false
+			cascadeCheck : true
 		});
 
 		$('#roleGrantForm').form({
-			url : '${ctx}/role/grant',
+			url : '${ctx}/role/grant.shtml',
 			onSubmit : function() {
 				progressLoad();
 				var isValid = $(this).form('validate');
@@ -54,7 +54,7 @@
 			success : function(result) {
 				progressClose();
 				result = $.parseJSON(result);
-				if (result.success) {
+				if (result.status == 1) {
 					parent.$.modalDialog.openner_dataGrid.datagrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
 					parent.$.modalDialog.handler.dialog('close');
 				} else {
@@ -99,9 +99,9 @@
 	<div data-options="region:'west'" title="系统资源" style="width: 300px; padding: 1px;">
 		<div class="well well-small">
 			<form id="roleGrantForm" method="post">
-				<input name="id" type="hidden"  value="${role.id}" readonly="readonly">
+				<input name="roleFormMap.id" type="hidden"  value="${roleFormMap.id}" readonly="readonly">
 				<ul id="resourceTree"></ul>
-				<input id="resourceIds" name="resourceIds" type="hidden" />
+				<input id="resourceIds" name="roleFormMap.resourceIds" type="hidden" />
 			</form>
 		</div>
 	</div>

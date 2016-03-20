@@ -161,7 +161,7 @@
 				title : '授权',
 				width : 500,
 				height : 500,
-				href : '${ctx}/role/grantPage.shtml?id=' + id,
+				href : '${ctx}/role/grantPage.shtml?roleFormMap.id=' + id,
 				buttons : [ {
 					text : '授权',
 					handler : function() {

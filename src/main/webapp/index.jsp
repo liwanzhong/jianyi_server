@@ -16,7 +16,7 @@
 
 		var sessionInfo_userId = '${sessionScope.userSessionId}';
 		if (sessionInfo_userId) {//如果没有登录,直接跳转到登录页面
-			layout_west_tree_url = '${ctx}/resources/tree.shtml';
+			layout_west_tree_url = '${ctx}/resource/tree.shtml';
 		}else{
 			window.location.href='${ctx}/login.shtml';
 		}

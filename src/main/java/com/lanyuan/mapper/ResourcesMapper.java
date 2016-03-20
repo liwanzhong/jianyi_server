@@ -13,5 +13,7 @@ public interface ResourcesMapper extends BaseMapper {
 	public void updateSortOrder(List<ResFormMap> map);
 	
 	public List<ResFormMap> findUserResourcess(String userId);
-	
+
+
+	List<ResFormMap> findResByRole(String id)throws Exception;
 }

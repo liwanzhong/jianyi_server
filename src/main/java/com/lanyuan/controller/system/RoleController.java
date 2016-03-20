@@ -6,16 +6,17 @@ import java.util.*;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import com.lanyuan.entity.RoleFormMap;
-import com.lanyuan.entity.UserEntrelationFormMap;
-import com.lanyuan.entity.UserFormMap;
+import com.lanyuan.entity.*;
 import com.lanyuan.exception.SystemException;
+import com.lanyuan.mapper.ResourcesMapper;
+import com.lanyuan.mapper.RoleResourcesMapper;
 import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.Organization;
 import com.lanyuan.vo.PageFilter;
 import com.lanyuan.vo.Tree;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -41,6 +42,16 @@ public class RoleController extends BaseController {
 	@Inject
 	private RoleMapper roleMapper;
 
+
+	@Autowired
+	private ResourcesMapper resourcesMapper;
+
+	@Autowired
+	private RoleResourcesMapper roleResourcesMapper;
+
+
+
+
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@RequestMapping("list")
@@ -65,36 +76,46 @@ public class RoleController extends BaseController {
 	}
 
 
-	@RequestMapping("/grantPage")
-	public String grantPage(HttpServletRequest request, Long id) {
-		/*Trole t = roleDao.get(Trole.class, id);
-		Role r = new Role();
-		r.setDescription(t.getDescription());
-		r.setId(t.getId());
-		r.setIsdefault(t.getIsdefault());
-		r.setName(t.getName());
-		r.setSeq(t.getSeq());
-		Set<Tresource> s = t.getResources();
-		if ((s != null) && !s.isEmpty()) {
+	@RequestMapping("grantPage")
+	public String grantPage(Model model)throws Exception {
+
+		RoleFormMap roleFormMap = getFormMap(RoleFormMap.class);
+
+		roleFormMap = roleMapper.findbyFrist("id",roleFormMap.get("id").toString(),RoleFormMap.class);
+		model.addAttribute("roleFormMap",roleFormMap);
+		return  Common.BACKGROUND_PATH + "/system/role/grant";
+	}
+
+
+	@ResponseBody
+	@RequestMapping("get")
+	@SystemLog(module="权限管理",methods="加载角色权限列表")//凡需要处理业务逻辑的.都需要记录操作日志
+	@Transactional(readOnly=false)//需要事务操作必须加入此注解
+	public RoleFormMap get(String id)throws Exception {
+		RoleFormMap roleFormMap =roleMapper.findbyFrist("id",id,RoleFormMap.class);
+
+		// 查找角色绑定的资源
+		List<ResFormMap> resFormMapList = resourcesMapper.findResByRole(id);
+		if(CollectionUtils.isNotEmpty(resFormMapList)){
+			String ids =null;
+			String names=null;
 			boolean b = false;
-			String ids = "";
-			String names = "";
-			for (Tresource tr : s) {
+			for(ResFormMap item:resFormMapList){
 				if (b) {
 					ids += ",";
 					names += ",";
 				} else {
 					b = true;
 				}
-				ids += tr.getId();
-				names += tr.getName();
+				ids += item.get("id").toString();
+				names += item.get("name").toString();
 			}
-			r.setResourceIds(ids);
-			r.setResourceNames(names);
+			roleFormMap.put("resourceIds",ids);
+			roleFormMap.put("ResourceNames",names);
 		}
-		return r;
-		request.setAttribute("role", r);*/
-		return "/admin/roleGrant";
+
+		return roleFormMap;
+
 	}
 
 
@@ -146,40 +167,32 @@ public class RoleController extends BaseController {
 
 
 
-	@RequestMapping("/grant")
+	@RequestMapping("grant")
 	@ResponseBody
 	public Map<String,Object> grant() {
 		Map<String,Object> retMap = new HashMap<String, Object>();
-		/*Json j = new Json();
+		retMap.put("status",0);
 		try {
-			roleService.grant(role);
-			j.setMsg("授权成功！");
-			j.setSuccess(true);
-		} catch (Exception e) {
-			j.setMsg(e.getMessage());
-		}*/
+			RoleFormMap roleFormMap = getFormMap(RoleFormMap.class);
+			List<RoleResourcesFormMap> roleResourcesFormMapList =new ArrayList<RoleResourcesFormMap>();
+			if(StringUtils.isNotBlank(roleFormMap.get("resourceIds").toString())){
+				for (String id : roleFormMap.get("resourceIds").toString().split(",")) {
+					RoleResourcesFormMap roleResourcesFormMap = new RoleResourcesFormMap();
+					roleResourcesFormMap.put("role_id",roleFormMap.get("id").toString());
+					roleResourcesFormMap.put("resource_id",id);
+
+					roleResourcesFormMapList.add(roleResourcesFormMap);
+				}
+			}
+			roleResourcesMapper.batchSave(roleResourcesFormMapList);
+			retMap.put("status",1);
+		}catch (Exception ex){
+			retMap.put("msg",ex.getMessage());
+		}
 		return retMap;
 	}
 
-	/*public void grant(Role role)throws Exception {
-		Trole t = roleDao.get(Trole.class, role.getId());
-		if ((role.getResourceIds() != null) && !role.getResourceIds().equalsIgnoreCase("")) {
-			String ids = "";
-			boolean b = false;
-			for (String id : role.getResourceIds().split(",")) {
-				if (b) {
-					ids += ",";
-				} else {
-					b = true;
-				}
-				ids += id;
-			}
-			t.setResources(new HashSet<Tresource>(resourceDao.find("select distinct t from Tresource t where t.id in ("
-					+ ids + ")")));
-		} else {
-			t.setResources(null);
-		}
-	}*/
+
 
 
 	@ResponseBody
