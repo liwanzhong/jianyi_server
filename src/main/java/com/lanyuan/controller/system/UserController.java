@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.lanyuan.entity.OrganizationFormMap;
+import com.lanyuan.entity.*;
 import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.Organization;
 import com.lanyuan.vo.PageFilter;
@@ -24,9 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lanyuan.mapper.UserMapper;
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
-import com.lanyuan.entity.ResUserFormMap;
-import com.lanyuan.entity.UserFormMap;
-import com.lanyuan.entity.UserGroupsFormMap;
 import com.lanyuan.exception.SystemException;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
@@ -57,7 +54,9 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping("editPage")
-	public String editPage(Model model) throws Exception {
+	public String editPage(Model model,String id) throws Exception {
+		UserFormMap userFormMap = userMapper.findbyFrist("id",id,UserFormMap.class);
+		model.addAttribute("userFormMap",userFormMap);
 		return Common.BACKGROUND_PATH + "/system/user/edit";
 	}
 
@@ -84,52 +83,25 @@ public class UserController extends BaseController {
 
 
 
-	/*@RequestMapping("/export")
-	public void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String fileName = "用户列表";
-		UserFormMap userFormMap = findHasHMap(UserFormMap.class);
-		//exportData = 
-		// [{"colkey":"sql_info","name":"SQL语句","hide":false},
-		// {"colkey":"total_time","name":"总响应时长","hide":false},
-		// {"colkey":"avg_time","name":"平均响应时长","hide":false},
-		// {"colkey":"record_time","name":"记录时间","hide":false},
-		// {"colkey":"call_count","name":"请求次数","hide":false}
-		// ]
-		String exportData = userFormMap.getStr("exportData");// 列表头的json字符串
-
-		List<Map<String, Object>> listMap = JsonUtils.parseJSONList(exportData);
-
-		List<UserFormMap> lis = userMapper.findUserPage(userFormMap);
-		POIUtils.exportToExcel(response, listMap, lis, fileName);
-	}*/
 
 
 
 	@ResponseBody
 	@RequestMapping("add")
-	@SystemLog(module="系统管理",methods="用户管理-新增用户")//凡需要处理业务逻辑的.都需要记录操作日志
+	@SystemLog(module="用户管理",methods="新增用户")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	public String add(String txtGroupsSelect){
+	public Map<String,Object> add(){
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
 		try {
 			UserFormMap userFormMap = getFormMap(UserFormMap.class);
-			userFormMap.put("txtGroupsSelect", txtGroupsSelect);
-			PasswordHelper passwordHelper = new PasswordHelper();
-			userFormMap.set("password","123456789");
-			passwordHelper.encryptPassword(userFormMap);
-			userMapper.addEntity(userFormMap);//新增后返回新增信息
-			if (!Common.isEmpty(txtGroupsSelect)) {
-				String[] txt = txtGroupsSelect.split(",");
-				UserGroupsFormMap userGroupsFormMap = new UserGroupsFormMap();
-				for (String roleId : txt) {
-					userGroupsFormMap.put("userId", userFormMap.get("id"));
-					userGroupsFormMap.put("roleId", roleId);
-					userMapper.addEntity(userGroupsFormMap);
-				}
-			}
-		} catch (Exception e) {
-			throw new SystemException("添加账号异常");
+			userMapper.addEntity(userFormMap);
+			retMap.put("msg","添加成功");
+			retMap.put("status",1);
+		}catch (Exception ex){
+			retMap.put("msg",ex.getMessage());
 		}
-		return "success";
+		return retMap;
 	}
 
 
@@ -138,14 +110,18 @@ public class UserController extends BaseController {
 	@RequestMapping("delete")
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	@SystemLog(module="系统管理",methods="用户管理-删除用户")//凡需要处理业务逻辑的.都需要记录操作日志
-	public String delete() throws Exception {
-		String[] ids = getParaValues("ids");
-		for (String id : ids) {
-			userMapper.deleteByAttribute("userId", id, UserGroupsFormMap.class);
-			userMapper.deleteByAttribute("userId", id, ResUserFormMap.class);
-			userMapper.deleteByAttribute("id", id, UserFormMap.class);
+	public Map<String,Object>  delete() throws Exception {
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
+		try {
+			UserFormMap userFormMap = getFormMap(UserFormMap.class);
+			userMapper.deleteByNames(userFormMap);
+			retMap.put("msg","删除成功");
+			retMap.put("status",1);
+		}catch (Exception ex){
+			retMap.put("msg",ex.getMessage());
 		}
-		return "success";
+		return retMap;
 	}
 
 
@@ -153,24 +129,21 @@ public class UserController extends BaseController {
 
 
 	@ResponseBody
-	@RequestMapping("edit")
+	@RequestMapping("update")
+	@SystemLog(module="权限组管理",methods="修改权限组")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	@SystemLog(module="系统管理",methods="用户管理-修改用户")//凡需要处理业务逻辑的.都需要记录操作日志
-	public String edit(String txtGroupsSelect) throws Exception {
-		UserFormMap userFormMap = getFormMap(UserFormMap.class);
-		userFormMap.put("txtGroupsSelect", txtGroupsSelect);
-		userMapper.editEntity(userFormMap);
-		userMapper.deleteByAttribute("userId", userFormMap.get("id")+"", UserGroupsFormMap.class);
-		if(!Common.isEmpty(txtGroupsSelect)){
-			String[] txt = txtGroupsSelect.split(",");
-			for (String roleId : txt) {
-				UserGroupsFormMap userGroupsFormMap = new UserGroupsFormMap();
-				userGroupsFormMap.put("userId", userFormMap.get("id"));
-				userGroupsFormMap.put("roleId", roleId);
-				userMapper.addEntity(userGroupsFormMap);
-			}
+	public Map<String,Object>  update(Model model) {
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
+		try {
+			UserFormMap userFormMap = getFormMap(UserFormMap.class);
+			userMapper.editEntity(userFormMap);
+			retMap.put("msg","修改组织成功");
+			retMap.put("status",1);
+		}catch (Exception ex){
+			retMap.put("msg",ex.getMessage());
 		}
-		return "success";
+		return retMap;
 	}
 
 

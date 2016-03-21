@@ -9,19 +9,18 @@
 			parentField : 'pid',
 			lines : true,
 			panelHeight : 'auto',
-			value : '${user.organizationId}'
+			value : '${userFormMap.organization_id}'
 		});
 		
 		$('#roleIds').combotree({
-			<%--url : '${ctx}/role/tree.shtml',--%>
-			url : '${ctx}/organization/tree.shtml',
+			url : '${ctx}/role/tree.shtml',
 			parentField : 'pid',
 			lines : true,
 			panelHeight : 'auto',
 			multiple : true,
 			required: true,
 			cascadeCheck : false,
-			value : $.stringToList('${user.roleIds}')
+			value : $.stringToList('${userFormMap.organization_id}')
 		});
 		
 		$('#userEditForm').form({
@@ -45,39 +44,34 @@
 				}
 			}
 		});
-		$("#sex").val('${user.sex}');
-		$("#usertype").val('${user.usertype}');
-		$("#state").val('${user.state}');
+		$("#usertype").val('${userFormMap.user_type}');
+		$("#state").val('${userFormMap.status}');
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;padding: 3px;">
 		<form id="userEditForm" method="post">
-			<input type="hidden" value="" name="id">
+			<input type="hidden" value="${userFormMap.id}" name="userFormMap.id">
 			<table class="grid">
 				<tr>
 					<td>姓名</td>
-					<td colspan="3"><input name="name" type="text" placeholder="请输入姓名" class="easyui-validatebox" data-options="required:true" value=""></td>
+					<td colspan="3"><input name="userFormMap.userName"  type="text" placeholder="请输入姓名" class="easyui-validatebox" data-options="required:true" value="${userFormMap.userName}"></td>
 				</tr>
 				<tr>
 					<td>登录名</td>
-					<td colspan="3"><input name="loginname" type="text" placeholder="请输入登录名称" class="easyui-validatebox" data-options="required:true" value=""></td>
-				</tr>
-				<tr>
-					<td>密码</td>
-					<td colspan="3"><input name="password" type="password" placeholder="请输入密码" class="easyui-validatebox" data-options="required:true"></td>
+					<td colspan="3"><input name="userFormMap.accountName" type="text" placeholder="请输入登录名称" class="easyui-validatebox" data-options="required:true" value="${userFormMap.accountName}"></td>
 				</tr>
 				<tr>
 					<td>用户类型</td>
 					<td>
-						<select name="usertype" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+						<select name="userFormMap.user_type" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'" id="usertype">
 							<option value="0">管理员</option>
 							<option value="1" selected="selected">企业用户</option>
 						</select>
 					</td>
 					<td>是否有效</td>
 					<td>
-						<select name="usertype" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+						<select name="userFormMap.status" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'" id="state">
 							<option value="0">无效</option>
 							<option value="1" selected="selected">有效</option>
 						</select>
@@ -85,11 +79,16 @@
 				</tr>
 				<tr>
 					<td>所属组织</td>
-					<td><select id="organizationId" name="organizationId" style="width: 140px; height: 29px;" class="easyui-validatebox" data-options="required:true"></select></td>
+					<td><select id="organizationId" name="userFormMap.organization_id" style="width: 140px; height: 29px;" class="easyui-validatebox" data-options="required:true"></select></td>
 					<td>所属角色</td>
-					<td><select id="roleIds"  name="roleIds"   style="width: 140px; height: 29px;"></select></td>
+					<td><select id="roleIds"  name="userFormMap.roleIds"   style="width: 140px; height: 29px;"></select></td>
 				</tr>
-
+				<tr>
+					<td>用户描述</td>
+					<td colspan="3">
+						<textarea name="userFormMap.description" cols="50" >${userFormMap.description}</textarea>
+					</td>
+				</tr>
 			</table>
 		</form>
 	</div>

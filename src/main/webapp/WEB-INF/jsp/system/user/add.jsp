@@ -14,8 +14,7 @@
 		});
 
 		$('#roleIds').combotree({
-			<%--url: '${ctx}/role/tree.shtml',--%>
-			url : '${ctx}/organization/tree.shtml',
+			url: '${ctx}/role/tree.shtml',
 			multiple: true,
 			required: true,
 			panelHeight : 'auto'
@@ -51,27 +50,27 @@
 			<table class="grid">
 				<tr>
 					<td>姓名</td>
-					<td colspan="3"><input name="name" type="text" placeholder="请输入姓名" class="easyui-validatebox" data-options="required:true" value=""></td>
+					<td colspan="3"><input name="userFormMap.userName" type="text" placeholder="请输入姓名" class="easyui-validatebox" data-options="required:true" value=""></td>
 				</tr>
 				<tr>
 					<td>登录名</td>
-					<td colspan="3"><input name="loginname" type="text" placeholder="请输入登录名称" class="easyui-validatebox" data-options="required:true" value=""></td>
+					<td colspan="3"><input name="userFormMap.accountName" type="text" placeholder="请输入登录名称" class="easyui-validatebox" data-options="required:true" value=""></td>
 				</tr>
 				<tr>
 					<td>密码</td>
-					<td colspan="3"><input name="password" type="password" placeholder="请输入密码" class="easyui-validatebox" data-options="required:true"></td>
+					<td colspan="3"><input name="userFormMap.password" type="password" placeholder="请输入密码" class="easyui-validatebox" data-options="required:true"></td>
 				</tr>
 				<tr>
 					<td>用户类型</td>
 					<td>
-						<select name="usertype" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+						<select name="userFormMap.user_type" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
 							<option value="0">管理员</option>
 							<option value="1" selected="selected">企业用户</option>
 						</select>
 					</td>
 					<td>是否有效</td>
 					<td>
-						<select name="usertype" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+						<select name="userFormMap.status" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
 							<option value="0">无效</option>
 							<option value="1" selected="selected">有效</option>
 						</select>
@@ -79,11 +78,16 @@
 				</tr>
 				<tr>
 					<td>所属组织</td>
-					<td><select id="organizationId" name="organizationId" style="width: 140px; height: 29px;" class="easyui-validatebox" data-options="required:true"></select></td>
+					<td><select id="organizationId" name="userFormMap.organization_id" style="width: 140px; height: 29px;" class="easyui-validatebox" data-options="required:true"></select></td>
 					<td>所属角色</td>
-					<td><select id="roleIds"  name="roleIds"   style="width: 140px; height: 29px;"></select></td>
+					<td><select id="roleIds"  name="userFormMap.roleIds[]"   style="width: 140px; height: 29px;"  class="easyui-validatebox" data-options="required:true"></select></td>
 				</tr>
-
+				<tr>
+					<td>用户描述</td>
+					<td colspan="3">
+						<textarea name="userFormMap.description" cols="50" ></textarea>
+					</td>
+				</tr>
 			</table>
 		</form>
 	</div>
