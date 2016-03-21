@@ -20,11 +20,12 @@
 			multiple : true,
 			required: true,
 			cascadeCheck : false,
-			value : $.stringToList('${userFormMap.organization_id}')
+			<%--value : $.stringToList('${userFormMap.organization_id}')--%>
+			value : ${userFormMap.roleIds}
 		});
 		
 		$('#userEditForm').form({
-			url : '${ctx}/user/edit.shtml',
+			url : '${ctx}/user/update.shtml',
 			onSubmit : function() {
 				progressLoad();
 				var isValid = $(this).form('validate');
@@ -81,7 +82,7 @@
 					<td>所属组织</td>
 					<td><select id="organizationId" name="userFormMap.organization_id" style="width: 140px; height: 29px;" class="easyui-validatebox" data-options="required:true"></select></td>
 					<td>所属角色</td>
-					<td><select id="roleIds"  name="userFormMap.roleIds"   style="width: 140px; height: 29px;"></select></td>
+					<td><select id="roleIds"  name="userFormMap.roleIds[]"   style="width: 140px; height: 29px;" class="easyui-validatebox" data-options="required:true"></select></td>
 				</tr>
 				<tr>
 					<td>用户描述</td>

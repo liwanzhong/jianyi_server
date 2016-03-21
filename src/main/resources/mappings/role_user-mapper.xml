@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.RoleUserMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+  lu.id,
+  lu.username,
+  lu.accountName,
+  lu.description,
+  lu.createTime,
+  lu.status,
+  lu.organization_id,
+  lu.user_type,
+  lo.name AS organization_name,
+  (SELECT
+      GROUP_CONCAT(name)
+    FROM ly_role ly_role
+    WHERE ly_role.id
+    IN (SELECT
+        roleId
+      FROM ly_user_role
+      WHERE userId = lu.id)) roleName
+	</sql>
+
+	<select id="findUserPage" resultType="com.lanyuan.entity.RoleUserFormMap">
+		select
+		<include refid="selectId" />
+		FROM ly_user lu
+		LEFT JOIN ly_organization lo
+		ON lu.organization_id = lo.id
+		where 1 = 1
+		<if test="organizationId != null">
+			and lu.organization_id = ${organizationId}
+		</if>
+		<if test="username != null ">
+			and lu.userName='${username}'
+		</if>
+		<if test="createdatetimeStart != null">
+			and lu.createTime &gt;= '${createdatetimeStart}'
+		</if>
+		<if test="createdatetimeEnd != null">
+			and lu.createTime &lt;= '${createdatetimeStart}'
+		</if>
+		<if test="orderby != null">
+			order by ${orderby}
+		</if>
+	</select>
+
+</mapper>

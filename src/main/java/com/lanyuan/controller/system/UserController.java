@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.lanyuan.entity.*;
+import com.lanyuan.mapper.RoleUserMapper;
 import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.Organization;
 import com.lanyuan.vo.PageFilter;
@@ -56,7 +57,19 @@ public class UserController extends BaseController {
 	@RequestMapping("editPage")
 	public String editPage(Model model,String id) throws Exception {
 		UserFormMap userFormMap = userMapper.findbyFrist("id",id,UserFormMap.class);
+		//todo  查询用户权限
+
+		List<String> roleIds = new ArrayList<String>();
+		RoleUserFormMap roleUserFormMap = new RoleUserFormMap();
+		roleUserFormMap.put("userId",id);
+		List<RoleUserFormMap> roleUserFormMapList =  roleUserMapper.findByNames(roleUserFormMap);
+		for(RoleUserFormMap item:roleUserFormMapList){
+			roleIds.add(item.get("roleId").toString());
+
+		}
+		userFormMap.put("roleIds",roleIds);
 		model.addAttribute("userFormMap",userFormMap);
+
 		return Common.BACKGROUND_PATH + "/system/user/edit";
 	}
 
@@ -83,6 +96,8 @@ public class UserController extends BaseController {
 
 
 
+	@Inject
+	private RoleUserMapper roleUserMapper;
 
 
 
@@ -96,6 +111,20 @@ public class UserController extends BaseController {
 		try {
 			UserFormMap userFormMap = getFormMap(UserFormMap.class);
 			userMapper.addEntity(userFormMap);
+
+			//todo 更新用户权限关系表
+			String[] roleIds = (String[])userFormMap.get("roleIds");
+			if(roleIds!=null && roleIds.length>0){
+				List<RoleUserFormMap> roleUserFormMapList = new ArrayList<RoleUserFormMap>();
+				for(String item:roleIds){
+					RoleUserFormMap roleUserFormMap = new RoleUserFormMap();
+					roleUserFormMap.put("userId",userFormMap.get("id").toString());
+					roleUserFormMap.put("roleId",item);
+					roleUserFormMapList.add(roleUserFormMap);
+				}
+				roleUserMapper.batchSave(roleUserFormMapList);
+			}
+
 			retMap.put("msg","添加成功");
 			retMap.put("status",1);
 		}catch (Exception ex){
@@ -119,6 +148,7 @@ public class UserController extends BaseController {
 			retMap.put("msg","删除成功");
 			retMap.put("status",1);
 		}catch (Exception ex){
+			ex.printStackTrace();
 			retMap.put("msg",ex.getMessage());
 		}
 		return retMap;
@@ -138,10 +168,29 @@ public class UserController extends BaseController {
 		try {
 			UserFormMap userFormMap = getFormMap(UserFormMap.class);
 			userMapper.editEntity(userFormMap);
+
+			//todo 更新用户权限关系表
+			String[] roleIds = (String[])userFormMap.get("roleIds");
+			if(roleIds!=null && roleIds.length>0){
+				RoleUserFormMap roleUserFormMapDel = new RoleUserFormMap();
+				roleUserFormMapDel.put("userId",userFormMap.get("id").toString());
+				roleUserMapper.deleteByNames(roleUserFormMapDel);
+
+				List<RoleUserFormMap> roleUserFormMapList = new ArrayList<RoleUserFormMap>();
+				for(String item:roleIds){
+					RoleUserFormMap roleUserFormMap = new RoleUserFormMap();
+					roleUserFormMap.put("userId",userFormMap.get("id").toString());
+					roleUserFormMap.put("roleId",item);
+					roleUserFormMapList.add(roleUserFormMap);
+				}
+				roleUserMapper.batchSave(roleUserFormMapList);
+			}
+
 			retMap.put("msg","修改组织成功");
 			retMap.put("status",1);
 		}catch (Exception ex){
 			retMap.put("msg",ex.getMessage());
+			ex.printStackTrace();
 		}
 		return retMap;
 	}

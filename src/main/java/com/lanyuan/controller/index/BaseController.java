@@ -171,6 +171,7 @@ public class BaseController {
 						String mname = t.getClass().getSimpleName().toUpperCase();
 						if(nms.toUpperCase().startsWith(mname)){
 							nms=nms.substring(mname.length()+1).replace("[]","");
+//							nms=nms.substring(nms.toUpperCase().indexOf(mname)+1);
 							map.put( nms,as);
 						}
 					}

@@ -169,6 +169,8 @@ public class RoleController extends BaseController {
 
 	@RequestMapping("grant")
 	@ResponseBody
+	@SystemLog(module="角色管理",methods="角色授权")//凡需要处理业务逻辑的.都需要记录操作日志
+	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	public Map<String,Object> grant() {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
@@ -176,6 +178,9 @@ public class RoleController extends BaseController {
 			RoleFormMap roleFormMap = getFormMap(RoleFormMap.class);
 			List<RoleResourcesFormMap> roleResourcesFormMapList =new ArrayList<RoleResourcesFormMap>();
 			if(StringUtils.isNotBlank(roleFormMap.get("resourceIds").toString())){
+				RoleResourcesFormMap roleResourcesFormMapDel= new RoleResourcesFormMap();
+				roleResourcesFormMapDel.put("role_id",roleFormMap.get("id").toString());
+				roleResourcesMapper.deleteByNames(roleResourcesFormMapDel);
 				for (String id : roleFormMap.get("resourceIds").toString().split(",")) {
 					RoleResourcesFormMap roleResourcesFormMap = new RoleResourcesFormMap();
 					roleResourcesFormMap.put("role_id",roleFormMap.get("id").toString());
@@ -187,6 +192,7 @@ public class RoleController extends BaseController {
 			roleResourcesMapper.batchSave(roleResourcesFormMapList);
 			retMap.put("status",1);
 		}catch (Exception ex){
+			ex.printStackTrace();
 			retMap.put("msg",ex.getMessage());
 		}
 		return retMap;

@@ -147,10 +147,10 @@
 				var currentUserId = '${sessionInfo.id}';/*当前登录用户的ID*/
 				if (currentUserId != id) {
 					progressLoad();
-					$.post('${ctx}/user/delete', {
-						id : id
+					$.post('${ctx}/user/delete.shtml', {
+						'userFormMap.id' : id
 					}, function(result) {
-						if (result.success) {
+						if (result.status == 1) {
 							parent.$.messager.alert('提示', result.msg, 'info');
 							dataGrid.datagrid('reload');
 						}
