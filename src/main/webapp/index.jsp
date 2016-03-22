@@ -133,7 +133,7 @@
 <div id="index_layout">
 	<div data-options="region:'north',border:false" style=" overflow: hidden;" >
 		<div id="header">
-			<span style="float: right; padding-right: 20px;">欢迎 <b>${sessionScope.userSession.name}</b>&nbsp;&nbsp; <a href="javascript:void(0)" onclick="editUserPwd()" style="color: #fff">修改密码</a>&nbsp;&nbsp;<a href="javascript:void(0)" onclick="logout()" style="color: #fff">安全退出</a>
+			<span style="float: right; padding-right: 20px;">欢迎 [<b>${sessionScope.userSession.userName}</b>]&nbsp;&nbsp; <a href="javascript:void(0)" onclick="editUserPwd()" style="color: #fff">修改密码</a>&nbsp;&nbsp;<a href="javascript:void(0)" onclick="logout()" style="color: #fff">安全退出</a>
         	&nbsp;&nbsp;&nbsp;&nbsp;
     		</span>
 			<span class="header"></span>

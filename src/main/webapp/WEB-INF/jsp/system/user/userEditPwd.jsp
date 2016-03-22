@@ -5,7 +5,7 @@
 	$(function() {
 
 		$('#editUserPwdForm').form({
-			url : '${ctx}/user/editUserPwd',
+			url : '${ctx}/user/editPassword.shtml',
 			onSubmit : function() {
 				progressLoad();
 				var isValid = $(this).form('validate');
@@ -17,7 +17,7 @@
 			success : function(result) {
 				progressClose();
 				result = $.parseJSON(result);
-				if (result.success) {
+				if (result.status == 1) {
 					parent.$.messager.alert('提示', result.msg, 'info');
 					parent.$.modalDialog.handler.dialog('close');
 				} else {
@@ -29,33 +29,35 @@
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
-		<c:if test="${sessionInfo.name == null}">
+		<c:if test="${sessionScope.userSession.userName == null}">
 			<div>登录已超时，请重新登录.</div>
 			<script type="text/javascript" charset="utf-8">
 				try {
-					window.location.href='${ctx}/admin/index';
+					window.location.href='${ctx}/index.shtml';
 				} catch (e) {
 				}
 			</script>
 		</c:if>
-		<c:if test="${sessionInfo.name != null}">
+		<c:if test="${sessionScope.userSession.userName != null}">
 			<form id="editUserPwdForm" method="post">
+				<input type="hidden" name="userFormMap.accountName" value="${sessionScope.userSession.accountName}">
+				<input type="hidden" name="userFormMap.id" value="${sessionScope.userSession.id}">
 				<table>
 					<tr>
 						<th>登录名</th>
-						<td>${sessionInfo.name}</td>
+						<td>${sessionScope.userSession.userName}</td>
 					</tr>
 					<tr>
 						<th>原密码</th>
-						<td><input name="oldPwd" type="password" placeholder="请输入原密码" class="easyui-validatebox" data-options="required:true"></td>
+						<td><input name="userFormMap.oldPwd" type="password" placeholder="请输入原密码" class="easyui-validatebox" data-options="required:true"></td>
 					</tr>
 					<tr>
 						<th>新密码</th>
-						<td><input name="pwd" type="password" placeholder="请输入新密码" class="easyui-validatebox" data-options="required:true"></td>
+						<td><input name="userFormMap.pwd" type="password" id="pwd" placeholder="请输入新密码" class="easyui-validatebox" data-options="required:true"></td>
 					</tr>
 					<tr>
 						<th>重复密码</th>
-						<td><input name="rePwd" type="password" placeholder="请再次输入新密码" class="easyui-validatebox" data-options="required:true,validType:'eqPwd[\'#editUserPwdForm input[name=pwd]\']'"></td>
+						<td><input name="userFormMap.rePwd" type="password" placeholder="请再次输入新密码" class="easyui-validatebox" data-options="required:true,validType:'eqPwd[\'#pwd\']'"></td>
 					</tr>
 				</table>
 			</form>

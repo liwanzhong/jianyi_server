@@ -15,6 +15,8 @@ import com.lanyuan.vo.Organization;
 import com.lanyuan.vo.PageFilter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,6 +112,10 @@ public class UserController extends BaseController {
 		retMap.put("status",0);
 		try {
 			UserFormMap userFormMap = getFormMap(UserFormMap.class);
+			//这里对修改的密码进行加密
+			PasswordHelper passwordHelper = new PasswordHelper();
+			passwordHelper.encryptPassword(userFormMap);
+
 			userMapper.addEntity(userFormMap);
 
 			//todo 更新用户权限关系表
@@ -218,7 +224,7 @@ public class UserController extends BaseController {
 	//密码修改
 	@RequestMapping("updatePassword")
 	public String updatePassword(Model model) throws Exception {
-		return Common.BACKGROUND_PATH + "/system/user/updatePassword";
+		return Common.BACKGROUND_PATH + "/system/user/userEditPwd";
 	}
 
 	//保存新密码
@@ -226,14 +232,25 @@ public class UserController extends BaseController {
 	@ResponseBody
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解N
 	@SystemLog(module="系统管理",methods="用户管理-修改密码")//凡需要处理业务逻辑的.都需要记录操作日志
-	public String editPassword() throws Exception{
-		// 当验证都通过后，把用户信息放在session里
-		UserFormMap userFormMap = getFormMap(UserFormMap.class);
-		userFormMap.put("password", userFormMap.get("newpassword"));
-		//这里对修改的密码进行加密
-		PasswordHelper passwordHelper = new PasswordHelper();
-		passwordHelper.encryptPassword(userFormMap);
-		userMapper.editEntity(userFormMap);
-		return "success";
+	public Map<String,Object> editPassword() throws Exception{
+
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
+		try {
+			//todo 验证旧密码是否通过
+			UserFormMap userFormMap = getFormMap(UserFormMap.class);
+			userFormMap.put("password", userFormMap.get("pwd"));
+			//这里对修改的密码进行加密
+			PasswordHelper passwordHelper = new PasswordHelper();
+			passwordHelper.encryptPassword(userFormMap);
+
+			userMapper.editEntity(userFormMap);
+			retMap.put("msg","修改密码成功");
+			retMap.put("status",1);
+		}catch (Exception ex){
+			ex.printStackTrace();
+			retMap.put("msg",ex.getMessage());
+		}
+		return retMap;
 	}
 }
