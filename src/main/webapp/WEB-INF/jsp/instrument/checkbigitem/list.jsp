@@ -105,26 +105,18 @@
 			} else {//点击操作里面的删除图标会触发这个
 				dataGrid.datagrid('unselectAll').datagrid('uncheckAll');
 			}
-			parent.$.messager.confirm('询问', '您是否要删除当前用户？', function(b) {
+			parent.$.messager.confirm('询问', '是否需要删除当前大项？', function(b) {
 				if (b) {
-					var currentUserId = '${sessionInfo.id}';/*当前登录用户的ID*/
-					if (currentUserId != id) {
-						progressLoad();
-						$.post('${ctx}/instrument/bigitem/delete.shtml', {
-							'checkBigItemFormMap.id' : id
-						}, function(result) {
-							if (result.status == 1) {
-								parent.$.messager.alert('提示', result.msg, 'info');
-								dataGrid.datagrid('reload');
-							}
-							progressClose();
-						}, 'JSON');
-					} else {
-						parent.$.messager.show({
-							title : '提示',
-							msg : '不可以删除自己！'
-						});
-					}
+					progressLoad();
+					$.post('${ctx}/instrument/bigitem/delete.shtml', {
+						'checkBigItemFormMap.id' : id
+					}, function(result) {
+						if (result.status == 1) {
+							parent.$.messager.alert('提示', result.msg, 'info');
+							dataGrid.datagrid('reload');
+						}
+						progressClose();
+					}, 'JSON');
 				}
 			});
 		}
@@ -171,11 +163,11 @@
 	<form id="searchForm">
 		<table>
 			<tr>
-				<th>姓名:</th>
-				<td><input name="userFormMap.username" placeholder="请输入用户姓名"/></td>
-				<th>创建时间:</th>
-				<td><input name="userFormMap.createdatetimeStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" />至<input  name="userFormMap.createdatetimeEnd" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" />
-					<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" onclick="cleanFun();">清空</a></td>
+				<th>检测大项:</th>
+				<td>
+					<input name="checkBigItemFormMap.name" placeholder="请输入检测大项名称"/>
+					<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" onclick="cleanFun();">清空</a>
+				</td>
 			</tr>
 		</table>
 	</form>

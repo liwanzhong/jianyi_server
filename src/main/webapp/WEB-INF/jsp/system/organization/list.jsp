@@ -53,7 +53,10 @@
 				},  {
 					width : '120',
 					title : '创建时间',
-					field : 'createdatetime'
+					field : 'createdatetime',
+					formatter : function(value, row, index) {
+						return (new Date(parseFloat(value))).format("yyyy-MM-dd hh:mm:ss");
+					}
 				},{
 					field : 'pid',
 					title : '上级资源ID',

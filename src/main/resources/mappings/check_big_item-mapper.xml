@@ -29,6 +29,9 @@
 		<include refid="selectId" />
 		FROM check_big_item cbi
 		where 1 = 1
+		<if test="name != null">
+			AND cbi.name = '${name}'
+		</if>
 		<if test="orderby != null">
 			ORDER  by ${orderby}
 		</if>

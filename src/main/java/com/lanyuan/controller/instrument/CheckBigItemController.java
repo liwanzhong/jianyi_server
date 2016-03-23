@@ -136,6 +136,7 @@ public class CheckBigItemController extends BaseController {
 			CheckBigItemFormMap checkBigItemFormMap = getFormMap(CheckBigItemFormMap.class);
 			checkBigItemMapper.editEntity(checkBigItemFormMap);
 			retMap.put("msg","修改成功");
+			retMap.put("status",1);
 		}catch (Exception ex){
 			retMap.put("msg",ex.getMessage());
 			ex.printStackTrace();
