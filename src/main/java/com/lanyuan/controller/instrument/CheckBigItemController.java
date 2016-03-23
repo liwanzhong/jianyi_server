@@ -3,14 +3,17 @@ package com.lanyuan.controller.instrument;
 
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
-import com.lanyuan.entity.CheckBigItemFormMap;
-import com.lanyuan.entity.UserEntrelationFormMap;
-import com.lanyuan.entity.UserGroupsFormMap;
+import com.lanyuan.entity.*;
 import com.lanyuan.exception.SystemException;
 import com.lanyuan.mapper.CheckBigItemMapper;
+import com.lanyuan.mapper.RoleUserMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
 import com.lanyuan.util.CommonConstants;
+import com.lanyuan.util.PasswordHelper;
+import com.lanyuan.vo.Grid;
+import com.lanyuan.vo.PageFilter;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
@@ -21,8 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -36,125 +38,114 @@ public class CheckBigItemController extends BaseController {
 	@Inject
 	private CheckBigItemMapper checkBigItemMapper;
 
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
-		model.addAttribute("res", findByRes());
 		return Common.BACKGROUND_PATH + "/instrument/checkbigitem/list";
 	}
 
-	@ResponseBody
-	@RequestMapping("findByPage")
-	public PageView findByPage( String pageNow,String pageSize,String column,String sort) throws Exception {
-		CheckBigItemFormMap CheckBigItemFormMap = getFormMap(CheckBigItemFormMap.class);
-		CheckBigItemFormMap=toFormMap(CheckBigItemFormMap, pageNow, pageSize,CheckBigItemFormMap.getStr("orderby"));
-		CheckBigItemFormMap.put("column", column);
-		CheckBigItemFormMap.put("sort", sort);
-		pageView.setRecords(checkBigItemMapper.findEnterprisePage(CheckBigItemFormMap));//不调用默认分页,调用自已的mapper中findUserPage
-		return pageView;
-	}
-
-
-
-
-	@RequestMapping("addUI")
-	public String addUI(Model model) throws Exception {
+	@RequestMapping("addPage")
+	public String addPage(Model model) throws Exception {
 		return Common.BACKGROUND_PATH + "/instrument/checkbigitem/add";
 	}
 
+	@RequestMapping("editPage")
+	public String editPage(Model model,String id) throws Exception {
+		CheckBigItemFormMap checkBigItemFormMap = checkBigItemMapper.findbyFrist("id",id,CheckBigItemFormMap.class);
+		model.addAttribute("checkBigItemFormMap",checkBigItemFormMap);
+		return Common.BACKGROUND_PATH + "/instrument/checkbigitem/edit";
+	}
+
+
 	@ResponseBody
-	@RequestMapping("addEntity")
-	@SystemLog(module="系统管理",methods="企业管理，新增企业信息")//凡需要处理业务逻辑的.都需要记录操作日志
+	@RequestMapping("dataGrid")
+	@SystemLog(module="用户管理",methods="加载用户列表")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	public String addEntity(String txtGroupsSelect){
-		try {
-			SimpleDateFormat datetimeformat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			CheckBigItemFormMap checkBigItemFormMap = getFormMap(CheckBigItemFormMap.class);
-			checkBigItemFormMap.put("txtGroupsSelect", txtGroupsSelect);
-			checkBigItemFormMap.put("insert_time",datetimeformat.format(new Date()));
-			checkBigItemFormMap.put("update_time",datetimeformat.format(new Date()));
-			checkBigItemFormMap.put("is_show",1);
-
-			// 查询当前排序
-			Integer lastcheckbigitem_orderby = checkBigItemMapper.findLasyOrderItemCout();
-			checkBigItemFormMap.put("order_by",(lastcheckbigitem_orderby==null?0:lastcheckbigitem_orderby)+1);
-
-			checkBigItemMapper.addEntity(checkBigItemFormMap);//新增后返回新增信息
-
-		} catch (Exception e) {
-			throw new SystemException("添加账号异常");
-		}
-		return "success";
-	}
-
-	@ResponseBody
-	@RequestMapping("deleteEntity")
-	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	@SystemLog(module="系统管理",methods="删除企业")//凡需要处理业务逻辑的.都需要记录操作日志
-	public String deleteEntity() throws Exception {
-		String[] ids = getParaValues("ids");
-		for (String id : ids) {
-			checkBigItemMapper.deleteByAttribute("id", id, CheckBigItemFormMap.class);
-		}
-		return "success";
-	}
-
-	@RequestMapping("editUI")
-	public String editUI(Model model) throws Exception {
-		String id = getPara("id");
-		if(Common.isNotEmpty(id)){
-			model.addAttribute("enterprise", checkBigItemMapper.findbyFrist("id", id, CheckBigItemFormMap.class));
-		}
-		return Common.BACKGROUND_PATH + "/instrument/info/edit";
-	}
-
-	@ResponseBody
-	@RequestMapping("editEntity")
-	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	@SystemLog(module="系统管理",methods="用户管理-修改用户")//凡需要处理业务逻辑的.都需要记录操作日志
-	public String editEntity(String txtGroupsSelect) throws Exception {
-		CheckBigItemFormMap CheckBigItemFormMap = getFormMap(CheckBigItemFormMap.class);
-		CheckBigItemFormMap.put("txtGroupsSelect", txtGroupsSelect);
-		checkBigItemMapper.editEntity(CheckBigItemFormMap);
-		checkBigItemMapper.deleteByAttribute("userId", CheckBigItemFormMap.get("id")+"", UserGroupsFormMap.class);
-		if(!Common.isEmpty(txtGroupsSelect)){
-			String[] txt = txtGroupsSelect.split(",");
-			for (String roleId : txt) {
-				UserGroupsFormMap userGroupsFormMap = new UserGroupsFormMap();
-				userGroupsFormMap.put("userId", CheckBigItemFormMap.get("id"));
-				userGroupsFormMap.put("roleId", roleId);
-				checkBigItemMapper.addEntity(userGroupsFormMap);
-			}
-		}
-		return "success";
-	}
-
-
-
-
-	@ResponseBody
-	@RequestMapping("loadAll")
-	public List<CheckBigItemFormMap> loadAll(Model model) throws Exception {
+	public Grid dataGrid(PageFilter ph)throws Exception {
+		Grid grid = new Grid();
 		CheckBigItemFormMap checkBigItemFormMap = getFormMap(CheckBigItemFormMap.class);
-		return checkBigItemMapper.findByWhere(checkBigItemFormMap);
+		checkBigItemFormMap.put("orderby",ph.getSort()+" "+ph.getOrder());
+		checkBigItemFormMap=toFormMap(checkBigItemFormMap,  String.valueOf(ph.getPage()), String.valueOf(ph.getRows()),checkBigItemFormMap.getStr("orderby"));
+		List<CheckBigItemFormMap> userFormMapList =checkBigItemMapper.findEnterprisePage(checkBigItemFormMap);
+		if(CollectionUtils.isNotEmpty(userFormMapList)){
+			grid.setRows(userFormMapList);
+		}
+		PageView pageView = (PageView) checkBigItemFormMap.get("paging");
+		grid.setTotal(pageView.getRowCount());
+		return grid;
+
 	}
 
-	/**
-	 * 验证账号是否存在
-	 *
-	 * @author lanyuan Email：mmm333zzz520@163.com date：2014-2-19
-	 * @param name
-	 * @return
-	 */
-	@RequestMapping("isExist")
+
+
+
 	@ResponseBody
-	public boolean isExist(String name) {
-		CheckBigItemFormMap account = checkBigItemMapper.findbyFrist("accountName", name, CheckBigItemFormMap.class);
-		if (account == null) {
-			return true;
-		} else {
-			return false;
+	@RequestMapping("add")
+	@SystemLog(module="用户管理",methods="新增用户")//凡需要处理业务逻辑的.都需要记录操作日志
+	@Transactional(readOnly=false)//需要事务操作必须加入此注解
+	public Map<String,Object> add(){
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
+		try {
+			CheckBigItemFormMap checkBigItemFormMap = getFormMap(CheckBigItemFormMap.class);
+			checkBigItemFormMap.put("insert_time",dateFormat.format(new Date()));
+			checkBigItemFormMap.put("update_time",dateFormat.format(new Date()));
+			checkBigItemMapper.addEntity(checkBigItemFormMap);
+			retMap.put("msg","添加成功");
+			retMap.put("status",1);
+		}catch (Exception ex){
+			retMap.put("msg",ex.getMessage());
 		}
+		return retMap;
 	}
+
+
+
+	@ResponseBody
+	@RequestMapping("delete")
+	@Transactional(readOnly=false)//需要事务操作必须加入此注解
+	@SystemLog(module="系统管理",methods="用户管理-删除用户")//凡需要处理业务逻辑的.都需要记录操作日志
+	public Map<String,Object>  delete() throws Exception {
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
+		try {
+			CheckBigItemFormMap checkBigItemFormMap = getFormMap(CheckBigItemFormMap.class);
+			checkBigItemMapper.deleteByNames(checkBigItemFormMap);
+			retMap.put("msg","删除成功");
+			retMap.put("status",1);
+		}catch (Exception ex){
+			ex.printStackTrace();
+			retMap.put("msg",ex.getMessage());
+		}
+		return retMap;
+	}
+
+
+
+
+
+	@ResponseBody
+	@RequestMapping("update")
+	@SystemLog(module="权限组管理",methods="修改权限组")//凡需要处理业务逻辑的.都需要记录操作日志
+	@Transactional(readOnly=false)//需要事务操作必须加入此注解
+	public Map<String,Object>  update(Model model) {
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
+		try {
+			CheckBigItemFormMap checkBigItemFormMap = getFormMap(CheckBigItemFormMap.class);
+			checkBigItemMapper.editEntity(checkBigItemFormMap);
+			retMap.put("msg","修改成功");
+		}catch (Exception ex){
+			retMap.put("msg",ex.getMessage());
+			ex.printStackTrace();
+		}
+		return retMap;
+	}
+
+
+
+
 
 
 }

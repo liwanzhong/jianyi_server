@@ -68,9 +68,12 @@
 				title : '用户权限',
 				field : 'roleName'
 			},{
-				width : '120',
+				width : '150',
 				title : '创建时间',
 				field : 'createTime',
+				formatter : function(value, row, index) {
+					return (new Date(parseFloat(value))).format("yyyy-MM-dd hh:mm:ss");
+				},
 				sortable : true
 			}, {
 				width : '60',

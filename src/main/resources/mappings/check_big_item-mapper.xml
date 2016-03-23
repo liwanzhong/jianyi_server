@@ -8,23 +8,30 @@
 	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
 	<!-- 以下与实体类的中字段一致 -->
 	<sql id="selectId">
-		id, name, withsex, normal_age, charts_item, show_exc_tips, exc_tips_count, controller_age,
-    age_min, age_max, is_show, order_by, insert_time, update_time
+		cbi.id,
+       cbi.name,
+       cbi.withsex,
+       cbi.normal_age,
+       cbi.charts_item,
+       cbi.show_exc_tips,
+       cbi.exc_tips_count,
+       cbi.controller_age,
+       cbi.age_min,
+       cbi.age_max,
+       cbi.order_by,
+       cbi.insert_time,
+       cbi.update_time,
+       cbi.quanzhong
 	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.CheckBigItemFormMap">
 		select
 		<include refid="selectId" />
-		from check_big_item
+		FROM check_big_item cbi
 		where 1 = 1
-		<choose>
-			<when test="orderby != null">
-				${orderby} ,order_by ASC
-			</when>
-			<otherwise>
-				ORDER  BY order_by ASC
-			</otherwise>
-		</choose>
+		<if test="orderby != null">
+			ORDER  by ${orderby}
+		</if>
 	</select>
 
 	<select id="findLasyOrderItemCout" resultType="java.lang.Integer">
