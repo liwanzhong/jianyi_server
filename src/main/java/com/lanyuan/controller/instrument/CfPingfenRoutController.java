@@ -65,8 +65,8 @@ public class CfPingfenRoutController extends BaseController {
 
 	@RequestMapping("editPage")
 	public String editPage(Model model,String id) throws Exception {
-		CheckSmallItemFormMap checkSmallItemFormMap = checkSmallItemMapper.findbyFrist("id",id,CheckSmallItemFormMap.class);
-		model.addAttribute("checkSmallItemFormMap",checkSmallItemFormMap);
+		CfPingfenRoutFormMap cfPingfenRoutFormMap = cfPingfenRoutMapper.findbyFrist("id",id,CfPingfenRoutFormMap.class);
+		model.addAttribute("cfPingfenRoutFormMap",cfPingfenRoutFormMap);
 		return Common.BACKGROUND_PATH + "/instrument/cfpingfenrout/edit";
 	}
 	
@@ -102,7 +102,6 @@ public class CfPingfenRoutController extends BaseController {
 		retMap.put("status",0);
 		try {
 			CfPingfenRoutFormMap cfPingfenRoutFormMap = getFormMap(CfPingfenRoutFormMap.class);
-			cfPingfenRoutFormMap.put("insert_time",dateFormat.format(new Date()));
 			cfPingfenRoutFormMap.put("update_time",dateFormat.format(new Date()));
 			checkSmallItemMapper.addEntity(cfPingfenRoutFormMap);
 			retMap.put("msg","添加成功");

@@ -8,24 +8,28 @@
 	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
 	<!-- 以下与实体类的中字段一致 -->
 	<sql id="selectId">
-  cpr.id,
-  cpr.age_max,
-  cpr.age_min,
-  cpr.pingfen_min,
-  cpr.pingfen_max,
-  cpr.tz_pingfen_min,
-  cpr.tz_pingfen_max,
-  cpr.rout_min,
-  cpr.rout_max,
-  cpr.update_time,
-  cpr.valid,
-  cpr.small_id
+	   cpr.id,
+       cpr.age_max,
+       cpr.age_min,
+       cpr.rout_min,
+       cpr.rout_max,
+       cpr.update_time,
+       cpr.valid,
+       cpr.small_id,
+       cpl.name orgin_pingfen_leve_name,
+       cpl.pingfen_min orgin_pingfen_min,
+       cpl.pingfen_max orgin_pingfen_max,
+       cpl.show_color orgin_pingfen_color,
+       cpl1.name tz_pingfen_leve_name,
+       cpl1.pingfen_min tz_pingfen_min,
+       cpl1.pingfen_max tz_pingfen_max,
+       cpl1.show_color tz_pingfen_color
 	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.CfPingfenRoutFormMap">
 		select
 		<include refid="selectId" />
-		FROM cf_pingfen_rout cpr
+		FROM cf_pingfen_rout cpr LEFT JOIN cf_pingfen_leve cpl ON cpr.orgin_pingfen_id=cpl.id LEFT JOIN cf_pingfen_leve cpl1 ON cpr.tz_pingfen_id=cpl1.id
 		where 1 = 1
 		<if test="small_id != null">
 			AND cpr.small_id = ${small_id}

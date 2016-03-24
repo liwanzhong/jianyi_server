@@ -23,7 +23,7 @@
 		FROM cf_pingfen_leve cpl
 		where 1 = 1
 		<if test="orderby != null">
-			${orderby}
+			ORDER BY ${orderby}
 		</if>
 	</select>
 

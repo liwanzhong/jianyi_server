@@ -35,39 +35,42 @@
 				pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 				columns : [ [ {
 					width : '120',
-					title : '检测小项名称',
-					field : 'name'
+					title : '年龄范围',
+					field : 'age_min'
 				}, {
 					width : '150',
-					title : '检测指标-基准值（n1）',
-					field : 'min_value'
+					title : '年龄范围',
+					field : 'age_max'
 				},{
 					width : '150',
-					title : '检测基准-衰退值（n2）',
-					field : 'max_value'
+					title : '原评分范围',
+					field : 'orgin_pingfen_leve_name',
+					formatter : function(value, row, index) {
+						return value+'('+row.orgin_pingfen_min+'--'+row.orgin_pingfen_max+')';
+					}
 				},{
 					width : '120',
-					title : '区间值（n2-n1）',
-					field : 'in_value',
+					title : '调整后评分范围',
+					field : 'tz_pingfen_leve_name',
 					formatter : function(value, row, index) {
-						return (row.max_value - row.min_value);
-					},
-					sortable : true
+						return value+'('+row.tz_pingfen_min+'--'+row.tz_pingfen_max+')';
+					}
 				},{
 					width : '140',
-					title : '实际检测范围最小值',
-					field : 'check_min',
-					sortable : true
+					title : '最后更新时间',
+					field : 'update_time',
+					sortable : true,
+					formatter : function(value, row, index) {
+						return (new Date(parseFloat(value))).format("yyyy-MM-dd hh:mm:ss");
+					}
 				},{
 					width : '140',
-					title : '实际检测范围最大值',
-					field : 'check_max',
-					sortable : true
-				},{
-					width : '80',
-					title : '权重系数',
-					field : 'quanzhong',
-					sortable : true
+					title : '是否有效',
+					field : 'valid',
+					sortable : true,
+					formatter : function(value, row, index) {
+						return value==1?'有效':'无效';
+					}
 				},{
 					field : 'action',
 					title : '操作',
@@ -92,7 +95,7 @@
 				title : '添加',
 				width : '50%',
 				height : '40%',
-				href : '${ctx}/instrument/pingfen_rout/addPage.shtml?bigItemId=${checkSmallItemFormMap.id}',
+				href : '${ctx}/instrument/pingfen_rout/addPage.shtml?smallItemId=${checkSmallItemFormMap.id}',
 				buttons : [ {
 					text : '添加',
 					handler : function() {
