@@ -6,7 +6,7 @@
 	
 
 		$('#userEditForm').form({
-			url : '${ctx}/instrument/bigitem/update.shtml',
+			url : '${ctx}/instrument/pingfen_leve/update.shtml',
 			onSubmit : function() {
 				progressLoad();
 				var isValid = $(this).form('validate');
@@ -22,7 +22,7 @@
 					parent.$.modalDialog.openner_dataGrid.datagrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
 					parent.$.modalDialog.handler.dialog('close');
 				} else {
-					parent.$.messager.alert('错误', result.msg, 'error');
+					parent.$.messager.alert('提醒', result.msg, 'error');
 				}
 			}
 		});
@@ -31,89 +31,33 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;padding: 3px;">
 		<form id="userEditForm" method="post">
-			<input type="hidden" name="checkBigItemFormMap.id" value="${checkBigItemFormMap.id}">
+			<input type="hidden" name="cfPingfenLeveFormMap.id" value="${cfPingfenLeveFormMap.id}">
 			<table class="grid">
 				<tr>
-					<td>大项名称</td>
-					<td colspan="3"><input name="checkBigItemFormMap.name" type="text" placeholder="请输入大项名称" class="easyui-validatebox" data-options="required:true" value="${checkBigItemFormMap.name}"></td>
+					<td>等级名称</td>
+					<td colspan="3"><input name="cfPingfenLeveFormMap.name" type="text" placeholder="等级名称" class="easyui-validatebox" data-options="required:true" value="${cfPingfenLeveFormMap.name}"></td>
 				</tr>
 				<tr>
-					<td>权重系数</td>
-					<td colspan="3"><input name="checkBigItemFormMap.quanzhong" type="text" placeholder="请输入权重系数" class="easyui-validatebox" data-options="required:true" value="${checkBigItemFormMap.quanzhong}"></td>
-				</tr>
-				<tr>
-					<td>性别区分</td>
+					<td>分数范围</td>
 					<td colspan="3">
-						<c:choose>
-							<c:when test="${checkBigItemFormMap.withsex eq '0'}">
-								<input name="checkBigItemFormMap.withsex" type="radio" class="easyui-validatebox" data-options="required:true" checked value="0">无
-								<input name="checkBigItemFormMap.withsex" type="radio" class="easyui-validatebox" data-options="required:true" value="1">男
-								<input name="checkBigItemFormMap.withsex" type="radio" class="easyui-validatebox" data-options="required:true" value="2">女
-							</c:when>
-							<c:when test="${checkBigItemFormMap.withsex eq '1'}">
-								<input name="checkBigItemFormMap.withsex" type="radio" class="easyui-validatebox" data-options="required:true"  value="0">无
-								<input name="checkBigItemFormMap.withsex" type="radio" class="easyui-validatebox" data-options="required:true" value="1" checked>男
-								<input name="checkBigItemFormMap.withsex" type="radio" class="easyui-validatebox" data-options="required:true" value="2">女
-							</c:when>
-							<c:when test="${checkBigItemFormMap.withsex eq '2'}">
-								<input name="checkBigItemFormMap.withsex" type="radio" class="easyui-validatebox" data-options="required:true"  value="0">无
-								<input name="checkBigItemFormMap.withsex" type="radio" class="easyui-validatebox" data-options="required:true" value="1" >男
-								<input name="checkBigItemFormMap.withsex" type="radio" class="easyui-validatebox" data-options="required:true" value="2" checked>女
-							</c:when>
-						</c:choose>
-
+						<input name="cfPingfenLeveFormMap.pingfen_min" type="text" class="easyui-validatebox" data-options="required:true" checked value="${cfPingfenLeveFormMap.pingfen_min}">  分   至
+						<input name="cfPingfenLeveFormMap.pingfen_max" type="text" class="easyui-validatebox" data-options="required:true" value="${cfPingfenLeveFormMap.pingfen_max}">
 					</td>
 				</tr>
 				<tr>
-					<td>易发年龄</td>
+					<td>展现图标</td>
 					<td colspan="3">
-						<input name="checkBigItemFormMap.normal_age" type="text" placeholder="请输入易发年龄" value="${checkBigItemFormMap.normal_age}" >
+						<input name="cfPingfenLeveFormMap.show_tag_path" type="text" placeholder="展现图标" class="easyui-validatebox" data-options="required:true" value="${cfPingfenLeveFormMap.show_tag_path}" >
 					</td>
 				</tr>
 				<tr>
-					<td>显示异常项提醒</td>
-					<td>
-						<c:choose>
-							<c:when test="${checkBigItemFormMap.show_exc_tips eq '0'}">
-								<input type="radio" name="checkBigItemFormMap.show_exc_tips"  value="1"> 是
-								<input type="radio" name="checkBigItemFormMap.show_exc_tips" value="0" checked> 否
-							</c:when>
-							<c:when test="${checkBigItemFormMap.show_exc_tips eq '1'}">
-								<input type="radio" name="checkBigItemFormMap.show_exc_tips" checked value="1"> 是
-								<input type="radio" name="checkBigItemFormMap.show_exc_tips" value="0"> 否
-							</c:when>
-						</c:choose>
-
-					</td>
-					<td colspan="2">
-						<input name="checkBigItemFormMap.exc_tips_count" type="text" placeholder="" value="${checkBigItemFormMap.exc_tips_count}"> 项
-					</td>
-				</tr>
-				<tr>
-					<td>是否年龄控制</td>
-					<td >
-						<c:choose>
-							<c:when test="${checkBigItemFormMap.controller_age eq '0'}">
-								<input type="radio" name="checkBigItemFormMap.controller_age"  value="1"> 是
-								<input type="radio" name="checkBigItemFormMap.controller_age" value="0" checked> 否
-							</c:when>
-							<c:when test="${checkBigItemFormMap.controller_age eq '1'}">
-								<input type="radio" name="checkBigItemFormMap.controller_age" checked value="1"> 是
-								<input type="radio" name="checkBigItemFormMap.controller_age" value="0"> 否
-							</c:when>
-						</c:choose>
-
-					</td>
-					<td colspan="2">
-						<input type="text" name="checkBigItemFormMap.age_min" value="${checkBigItemFormMap.age_min}"> 岁  至<input type="text" name="checkBigItemFormMap.age_max" value="${checkBigItemFormMap.age_max}">岁
-					</td>
-				</tr>
-				<tr>
-					<td>排序</td>
+					<td>展现颜色</td>
 					<td colspan="3">
-						<input type="text" name="checkBigItemFormMap.order_by" value="${checkBigItemFormMap.order_by}" >
+						<input type="text" name="cfPingfenLeveFormMap.show_color" placeholder="展现颜色"  data-options="required:true" class="easyui-validatebox" value="${cfPingfenLeveFormMap.show_color}">
+						例如：#ff6600
 					</td>
 				</tr>
+
 			</table>
 		</form>
 	</div>

@@ -6,7 +6,7 @@
 
 	$(function() {
 		$('#userAddForm').form({
-			url : '${ctx}/instrument/bigitem/add.shtml',
+			url : '${ctx}/instrument/pingfen_leve/add.shtml',
 			onSubmit : function() {
 				progressLoad();
 				var isValid = $(this).form('validate');
@@ -34,53 +34,30 @@
 		<form id="userAddForm" method="post">
 			<table class="grid">
 				<tr>
-					<td>大项名称</td>
-					<td colspan="3"><input name="checkBigItemFormMap.name" type="text" placeholder="请输入大项名称" class="easyui-validatebox" data-options="required:true" value=""></td>
+					<td>等级名称</td>
+					<td colspan="3"><input name="cfPingfenLeveFormMap.name" type="text" placeholder="等级名称" class="easyui-validatebox" data-options="required:true" value=""></td>
 				</tr>
 				<tr>
-					<td>权重系数</td>
-					<td colspan="3"><input name="checkBigItemFormMap.quanzhong" type="text" placeholder="请输入权重系数" class="easyui-validatebox" data-options="required:true" value=""></td>
-				</tr>
-				<tr>
-					<td>性别区分</td>
+					<td>分数范围</td>
 					<td colspan="3">
-						<input name="checkBigItemFormMap.withsex" type="radio" class="easyui-validatebox" data-options="required:true" checked value="0">无
-						<input name="checkBigItemFormMap.withsex" type="radio" class="easyui-validatebox" data-options="required:true" value="1">男
-						<input name="checkBigItemFormMap.withsex" type="radio" class="easyui-validatebox" data-options="required:true" value="2">女
+						<input name="cfPingfenLeveFormMap.pingfen_min" type="text" class="easyui-validatebox" data-options="required:true" checked value="0">  分   至
+						<input name="cfPingfenLeveFormMap.pingfen_max" type="text" class="easyui-validatebox" data-options="required:true" value="1">
 					</td>
 				</tr>
 				<tr>
-					<td>易发年龄</td>
+					<td>展现图标</td>
 					<td colspan="3">
-						<input name="checkBigItemFormMap.normal_age" type="text" placeholder="请输入易发年龄" >
+						<input name="cfPingfenLeveFormMap.show_tag_path" type="text" placeholder="展现图标" class="easyui-validatebox" data-options="required:true" >
 					</td>
 				</tr>
 				<tr>
-					<td>显示异常项提醒</td>
-					<td>
-						<input type="radio" name="checkBigItemFormMap.show_exc_tips" checked value="1"> 是
-						<input type="radio" name="checkBigItemFormMap.show_exc_tips" value="0"> 否
-					</td>
-					<td colspan="2">
-						<input name="checkBigItemFormMap.exc_tips_count" type="text" placeholder=""> 项
-					</td>
-				</tr>
-				<tr>
-					<td>是否年龄控制</td>
-					<td >
-						<input type="radio" name="checkBigItemFormMap.controller_age" checked value="1"> 是
-						<input type="radio" name="checkBigItemFormMap.controller_age" value="0"> 否
-					</td>
-					<td colspan="2">
-						<input type="text" name="checkBigItemFormMap.age_min"> 岁  至<input type="text" name="checkBigItemFormMap.age_max">岁
-					</td>
-				</tr>
-				<tr>
-					<td>排序</td>
+					<td>展现颜色</td>
 					<td colspan="3">
-						<input type="text" name="checkBigItemFormMap.order_by" value="0">
+						<input type="text" name="cfPingfenLeveFormMap.show_color" placeholder="展现颜色"  data-options="required:true" class="easyui-validatebox">
+						例如：#ff6600
 					</td>
 				</tr>
+
 			</table>
 		</form>
 	</div>
