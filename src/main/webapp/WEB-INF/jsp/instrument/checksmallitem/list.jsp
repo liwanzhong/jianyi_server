@@ -78,7 +78,7 @@
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >删除</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="smallCheckItemFun(\'{0}\');" >评分概率</a>', row.id);
+						str += $.formatString('<a href="javascript:void(0)" onclick="pingfenRoutConf(\'{0}\');" >评分概率</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >检测项关联设置</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
@@ -134,8 +134,10 @@
 		}
 
 
-		function smallCheckItemFun(id){
-			window.location.href = '${ctx}/instrument/smallitem/list.shtml?bigItemId='+id;
+
+
+		function pingfenRoutConf(id){
+			window.location.href = '${ctx}/instrument/pingfen_rout/list.shtml?smallItemId='+id;
 		}
 
 		function editFun(id) {

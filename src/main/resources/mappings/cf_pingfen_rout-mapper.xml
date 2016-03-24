@@ -31,12 +31,8 @@
 			AND cpr.small_id = ${small_id}
 		</if>
 		<if test="orderby != null">
-			${orderby}
+			ORDER BY ${orderby}
 		</if>
-	</select>
-
-	<select id="findLasyOrderItemCout" resultType="java.lang.Integer">
-		SELECT  order_by FROM  check_small_item ORDER BY order_by DESC limit 1;
 	</select>
 
 </mapper>
