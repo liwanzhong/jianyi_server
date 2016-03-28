@@ -3,16 +3,10 @@ package com.lanyuan.controller.system;
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.ResFormMap;
-import com.lanyuan.entity.UserEntrelationFormMap;
-import com.lanyuan.exception.SystemException;
 import com.lanyuan.mapper.ResourcesMapper;
 import com.lanyuan.util.Common;
-import com.lanyuan.vo.Organization;
-import com.lanyuan.vo.Resource;
 import com.lanyuan.vo.Tree;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -21,7 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -62,33 +59,39 @@ public class ResourcesController extends BaseController {
 	@ResponseBody
 	@RequestMapping("tree")
 	public List<Tree> treelists(Model model) {
-		ResFormMap resFormMap = getFormMap(ResFormMap.class);
-		String order = " order by level asc";
-		resFormMap.put("$orderby", order);
-		List<ResFormMap> mps = resourcesMapper.findByNames(resFormMap);
 		List<Tree> list = new ArrayList<Tree>();
-		for (ResFormMap map : mps) {
-			if(!StringUtils.equalsIgnoreCase(map.get("type").toString(),"2")){
-				Tree tree = new Tree();
-				tree.setId(map.get("id").toString());
-				if (map.get("parentId") != null && !StringUtils.equalsIgnoreCase(map.get("parentId").toString(),"0")) {
-					tree.setPid(map.get("parentId").toString());
-				} else {
-					tree.setState("closed");
-				}
-				tree.setText(map.get("name").toString());
-				if(null!=map.get("icon")){
-					tree.setIconCls(map.get("icon").toString());
-				}
-				if(StringUtils.equalsIgnoreCase(map.get("type").toString(),"1")){
-					Map<String, Object> attr = new HashMap<String, Object>();
-					attr.put("url", map.get("resUrl").toString());
-					tree.setAttributes(attr);
-				}
-				list.add(tree);
-			}
+		try{
+			ResFormMap resFormMap = getFormMap(ResFormMap.class);
+			String order = " order by level asc";
+			resFormMap.put("$orderby", order);
+			List<ResFormMap> mps = resourcesMapper.findByNames(resFormMap);
 
+			for (ResFormMap map : mps) {
+				if(!StringUtils.equalsIgnoreCase(map.get("type").toString(),"2")){
+					Tree tree = new Tree();
+					tree.setId(map.get("id").toString());
+					if (map.get("parentId") != null && !StringUtils.equalsIgnoreCase(map.get("parentId").toString(),"0")) {
+						tree.setPid(map.get("parentId").toString());
+					} else {
+						tree.setState("closed");
+					}
+					tree.setText(map.get("name").toString());
+					if(null!=map.get("icon")){
+						tree.setIconCls(map.get("icon").toString());
+					}
+					if(StringUtils.equalsIgnoreCase(map.get("type").toString(),"1")){
+						Map<String, Object> attr = new HashMap<String, Object>();
+						attr.put("url", map.get("resUrl")!=null?map.get("resUrl").toString():null);
+						tree.setAttributes(attr);
+					}
+					list.add(tree);
+				}
+
+			}
+		}catch (Exception ex){
+			ex.printStackTrace();
 		}
+
 		return list;
 	}
 
