@@ -8,20 +8,29 @@
 	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
 	<!-- 以下与实体类的中字段一致 -->
 	<sql id="selectId">
-		instrument_info.id, instrument_info.istmt_code, instrument_info.ent_id, instrument_info.sub_ent_point_id, instrument_info.name, instrument_info.modle_id, instrument_info.remark,enterprise_info.name as entname,sub_enterprise_point.name as subentname
+	   ii.id,
+       ii.istmt_code,
+       ii.organization_id,
+       ii.remark,
+       ii.create_time,
+       lo.name organization_name
 	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.EquipmentFormMap">
 		select
 		<include refid="selectId" />
-		FROM instrument_info
-		LEFT JOIN enterprise_info
-		ON enterprise_info.id = instrument_info.ent_id
-		LEFT JOIN sub_enterprise_point
-		ON instrument_info.sub_ent_point_id = sub_enterprise_point.id
+		FROM instrument_info ii
+		LEFT JOIN ly_organization lo
+		ON ii.organization_id = lo.id
 		where 1 = 1
+		<if test="organization_id != null">
+			AND ii.organization_id = ${organization_id}
+		</if>
+		<if test="istmt_code != null">
+			AND ii.istmt_code='${istmt_code}'
+		</if>
 		<if test="orderby != null">
-			${orderby}
+			ORDER BY ${orderby}
 		</if>
 	</select>
 
