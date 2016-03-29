@@ -6,11 +6,11 @@
 </head>
 <body>
 <section class="vbox">
-    <%@include file="/common/header.jsp"%>
+    <%--<%@include file="/common/header.jsp"%>--%>
     <section>
         <section class="hbox stretch">
             <!-- .aside -->
-            <%@include file="/common/left.jsp"%>
+            <%--<%@include file="/common/left.jsp"%>--%>
             <!-- /.aside -->
             <section id="content">
                 <section id="id_vbox" class="vbox">

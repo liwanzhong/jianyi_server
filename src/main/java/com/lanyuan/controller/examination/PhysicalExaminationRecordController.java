@@ -3,12 +3,13 @@ package com.lanyuan.controller.examination;
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.PhysicalExaminationRecordFormMap;
-import com.lanyuan.entity.UserGroupsFormMap;
-import com.lanyuan.exception.SystemException;
 import com.lanyuan.mapper.PhysicalExaminationRecordMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
-import org.apache.shiro.crypto.hash.Md5Hash;
+import com.lanyuan.vo.Grid;
+import com.lanyuan.vo.PageFilter;
+import com.lanyuan.vo.Tree;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by liwanzhong on 2016/2/21.
@@ -26,113 +29,97 @@ public class PhysicalExaminationRecordController extends BaseController {
     @Inject
     private PhysicalExaminationRecordMapper physicalExaminationRecordMapper;
 
+    ///examination/physicalexaminationrecord/list
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     @RequestMapping("list")
     public String listUI(Model model) throws Exception {
-        model.addAttribute("res", findByRes());
         return Common.BACKGROUND_PATH + "/examination/physicalexaminationrecord/list";
     }
 
-    @ResponseBody
-    @RequestMapping("findByPage")
-    public PageView findByPage(String pageNow, String pageSize, String column, String sort) throws Exception {
-        PhysicalExaminationRecordFormMap PhysicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
-        PhysicalExaminationRecordFormMap=toFormMap(PhysicalExaminationRecordFormMap, pageNow, pageSize,PhysicalExaminationRecordFormMap.getStr("orderby"));
-        PhysicalExaminationRecordFormMap.put("column", column);
-        PhysicalExaminationRecordFormMap.put("sort", sort);
-
-        pageView.setRecords(physicalExaminationRecordMapper.findEnterprisePage(PhysicalExaminationRecordFormMap));//不调用默认分页,调用自已的mapper中findUserPage
-        return pageView;
-    }
-
-
-
-
-    @RequestMapping("addUI")
-    public String addUI(Model model) throws Exception {
-        //todo 生成机器码
-        String mscode= Md5Hash.toString(Md5Hash.toBytes(String.valueOf(System.currentTimeMillis())));
-        model.addAttribute("mscode",mscode);
+    @RequestMapping("addPage")
+    public String addPage(Model model) throws Exception {
         return Common.BACKGROUND_PATH + "/examination/physicalexaminationrecord/add";
     }
 
-    @ResponseBody
-    @RequestMapping("addEntity")
-    @SystemLog(module="系统管理",methods="企业管理，新增企业信息")//凡需要处理业务逻辑的.都需要记录操作日志
-    @Transactional(readOnly=false)//需要事务操作必须加入此注解
-    public String addEntity(String txtGroupsSelect){
-        try {
-            PhysicalExaminationRecordFormMap PhysicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
-
-
-            physicalExaminationRecordMapper.addEntity(PhysicalExaminationRecordFormMap);//新增后返回新增信息
-
-        } catch (Exception e) {
-            throw new SystemException("添加账号异常");
-        }
-        return "success";
-    }
-
-    @ResponseBody
-    @RequestMapping("deleteEntity")
-    @Transactional(readOnly=false)//需要事务操作必须加入此注解
-    @SystemLog(module="系统管理",methods="删除企业")//凡需要处理业务逻辑的.都需要记录操作日志
-    public String deleteEntity() throws Exception {
-        String[] ids = getParaValues("ids");
-        for (String id : ids) {
-            physicalExaminationRecordMapper.deleteByAttribute("id", id, PhysicalExaminationRecordFormMap.class);
-        }
-        return "success";
-    }
-
-    @RequestMapping("editUI")
-    public String editUI(Model model) throws Exception {
-        String id = getPara("id");
-        if(Common.isNotEmpty(id)){
-            model.addAttribute("enterprise", physicalExaminationRecordMapper.findbyFrist("id", id, PhysicalExaminationRecordFormMap.class));
-        }
+    @RequestMapping("editPage")
+    public String editPage(Model model,String id) throws Exception {
+        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = physicalExaminationRecordMapper.findbyFrist("id",id,PhysicalExaminationRecordFormMap.class);
+        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMap);
         return Common.BACKGROUND_PATH + "/examination/physicalexaminationrecord/edit";
     }
 
     @ResponseBody
-    @RequestMapping("editEntity")
+    @RequestMapping("tree")
+    @SystemLog(module="组织管理",methods="加载组织树形列表")//凡需要处理业务逻辑的.都需要记录操作日志
     @Transactional(readOnly=false)//需要事务操作必须加入此注解
-    @SystemLog(module="系统管理",methods="用户管理-修改用户")//凡需要处理业务逻辑的.都需要记录操作日志
-    public String editEntity(String txtGroupsSelect) throws Exception {
-        PhysicalExaminationRecordFormMap PhysicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
-        PhysicalExaminationRecordFormMap.put("txtGroupsSelect", txtGroupsSelect);
-        physicalExaminationRecordMapper.editEntity(PhysicalExaminationRecordFormMap);
-        physicalExaminationRecordMapper.deleteByAttribute("userId", PhysicalExaminationRecordFormMap.get("id")+"", UserGroupsFormMap.class);
-        if(!Common.isEmpty(txtGroupsSelect)){
-            String[] txt = txtGroupsSelect.split(",");
-            for (String roleId : txt) {
-                UserGroupsFormMap userGroupsFormMap = new UserGroupsFormMap();
-                userGroupsFormMap.put("userId", PhysicalExaminationRecordFormMap.get("id"));
-                userGroupsFormMap.put("roleId", roleId);
-                physicalExaminationRecordMapper.addEntity(userGroupsFormMap);
+    public List<Tree> tree()throws Exception {
+        List<Tree> lt = new ArrayList<Tree>();
+        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
+        physicalExaminationRecordFormMap.put("orderby","  id asc");
+        List<PhysicalExaminationRecordFormMap> cfPingfenLeveFormMapList = physicalExaminationRecordMapper.findEnterprisePage(physicalExaminationRecordFormMap);
+
+        if (CollectionUtils.isNotEmpty(cfPingfenLeveFormMapList)) {
+            for (PhysicalExaminationRecordFormMap r : cfPingfenLeveFormMapList) {
+                Tree tree = new Tree();
+                tree.setId(r.get("id").toString());
+                tree.setText(r.get("name").toString());
+                lt.add(tree);
             }
         }
-        return "success";
+        return lt;
     }
 
 
-
-
-
-    /**
-     * 验证账号是否存在
-     *
-     * @author lanyuan Email：mmm333zzz520@163.com date：2014-2-19
-     * @param name
-     * @return
-     */
-    @RequestMapping("isExist")
     @ResponseBody
-    public boolean isExist(String name) {
-        PhysicalExaminationRecordFormMap account = physicalExaminationRecordMapper.findbyFrist("accountName", name, PhysicalExaminationRecordFormMap.class);
-        if (account == null) {
-            return true;
-        } else {
-            return false;
+    @RequestMapping("dataGrid")
+    @SystemLog(module="用户管理",methods="加载用户列表")//凡需要处理业务逻辑的.都需要记录操作日志
+    @Transactional(readOnly=false)//需要事务操作必须加入此注解
+    public Grid dataGrid(PageFilter ph)throws Exception {
+        Grid grid = new Grid();
+        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
+        physicalExaminationRecordFormMap.put("orderby",ph.getSort()+" "+ph.getOrder());
+        physicalExaminationRecordFormMap=toFormMap(physicalExaminationRecordFormMap,  String.valueOf(ph.getPage()), String.valueOf(ph.getRows()),physicalExaminationRecordFormMap.getStr("orderby"));
+        List<PhysicalExaminationRecordFormMap> userFormMapList =physicalExaminationRecordMapper.findEnterprisePage(physicalExaminationRecordFormMap);
+        if(CollectionUtils.isNotEmpty(userFormMapList)){
+            grid.setRows(userFormMapList);
         }
+        PageView pageView = (PageView) physicalExaminationRecordFormMap.get("paging");
+        grid.setTotal(pageView.getRowCount());
+        return grid;
+
     }
+
+
+
+
+
+
+
+
+    @ResponseBody
+    @RequestMapping("delete")
+    @Transactional(readOnly=false)//需要事务操作必须加入此注解
+    @SystemLog(module="系统管理",methods="用户管理-删除用户")//凡需要处理业务逻辑的.都需要记录操作日志
+    public Map<String,Object>  delete() throws Exception {
+        Map<String,Object> retMap = new HashMap<String, Object>();
+        retMap.put("status",0);
+        try {
+            PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
+            physicalExaminationRecordMapper.deleteByNames(physicalExaminationRecordFormMap);
+            retMap.put("msg","删除成功");
+            retMap.put("status",1);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            retMap.put("msg",ex.getMessage());
+        }
+        return retMap;
+    }
+
+
+
+
+
+
 }

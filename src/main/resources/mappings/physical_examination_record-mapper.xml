@@ -8,19 +8,46 @@
 	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
 	<!-- 以下与实体类的中字段一致 -->
 	<sql id="selectId">
-		 physical_examination_record.id, physical_examination_record.custom_id, physical_examination_record.ent_id, physical_examination_record.sub_point_id, physical_examination_record.instrument_id, physical_examination_record.status, physical_examination_record.report_gentime, physical_examination_record.report_path, physical_examination_record.check_time, physical_examination_record.update_time,
-		 custom_info.id as customid,custom_info.name as customname,custom_info.sex as customsex,custom_info.mobile as custommobile
+  per.id,
+  per.status,
+  per.report_gentime,
+  per.report_path,
+  per.check_time,
+  ci.idcard,
+  ci.mobile,
+  ci.name custom_name,
+  ci.sex,
+  ci.birthday,
+  lo.id organization_id,
+  lo.name organization_name
 	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.PhysicalExaminationRecordFormMap">
 		select
 		<include refid="selectId" />
-		FROM physical_examination_record
-		LEFT JOIN custom_info
-		ON physical_examination_record.custom_id = custom_info.id
+		FROM physical_examination_record per
+		LEFT JOIN custom_info ci
+		ON per.custom_id = ci.id
+		LEFT JOIN ly_organization lo
+		ON ci.organization_id = lo.id
 		where 1 = 1
+		<if test="name != null">
+			AND ci.name = '${name}'
+		</if>
+		<if test="mobile != null">
+			AND ci.mobile = '${mobile}'
+		</if>
+		<if test="organization_id != null">
+			AND per.organization_id = ${organization_id}
+		</if>
+		<if test="check_time_start != null">
+			AND per.check_time &gt;= '${check_time_start}'
+		</if>
+		<if test="check_time_end != null">
+			AND per.check_time &lt;= '${check_time_end}'
+		</if>
 		<if test="orderby != null">
-			${orderby}
+			ORDER BY ${orderby}
 		</if>
 	</select>
 
