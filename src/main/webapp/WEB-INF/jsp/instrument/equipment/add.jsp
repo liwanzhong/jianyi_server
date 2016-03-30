@@ -5,6 +5,14 @@
 
 
 	$(function() {
+
+		$('#organizationId').combotree({
+			url : '${ctx}/organization/tree.shtml',
+			parentField : 'pid',
+			lines : true,
+			panelHeight : 'auto'
+		});
+
 		$('#userAddForm').form({
 			url : '${ctx}/instrument/equipment/add.shtml',
 			onSubmit : function() {
@@ -34,30 +42,23 @@
 		<form id="userAddForm" method="post">
 			<table class="grid">
 				<tr>
-					<td>等级名称</td>
-					<td colspan="3"><input name="cfPingfenLeveFormMap.name" type="text" placeholder="等级名称" class="easyui-validatebox" data-options="required:true" value=""></td>
-				</tr>
-				<tr>
-					<td>分数范围</td>
+					<td>机器码</td>
 					<td colspan="3">
-						<input name="cfPingfenLeveFormMap.pingfen_min" type="text" class="easyui-validatebox" data-options="required:true" checked value="0">  分   至
-						<input name="cfPingfenLeveFormMap.pingfen_max" type="text" class="easyui-validatebox" data-options="required:true" value="1">
+						<input name="equipmentFormMap.istmt_code" style="width: 230px" type="text" placeholder="机器码" class="easyui-validatebox" data-options="required:true" value="${istmt_code}" readonly>
 					</td>
 				</tr>
 				<tr>
-					<td>展现图标</td>
+					<td>所属检测点</td>
 					<td colspan="3">
-						<input name="cfPingfenLeveFormMap.show_tag_path" type="text" placeholder="展现图标" class="easyui-validatebox" data-options="required:true" >
+						<select name="equipmentFormMap.organization_id" id="organizationId" style="width: 230px;" data-options="required:true"></select>
 					</td>
 				</tr>
 				<tr>
-					<td>展现颜色</td>
+					<td>备注</td>
 					<td colspan="3">
-						<input type="text" name="cfPingfenLeveFormMap.show_color" placeholder="展现颜色"  data-options="required:true" class="easyui-validatebox">
-						例如：#ff6600
+						<textarea name="equipmentFormMap.remark"  placeholder="备注说明信息" class="easyui-validatebox"  cols="50" rows="5"></textarea>
 					</td>
 				</tr>
-
 			</table>
 		</form>
 	</div>

@@ -8,20 +8,25 @@
 	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
 	<!-- 以下与实体类的中字段一致 -->
 	<sql id="selectId">
-		cut_items.id,
-  		cut_items.name,
-  		cut_items.ref_check_big_item_id,
-  		cut_items.ref_check_small_item_id,
-  		cut_items.remark,
-  		cut_items.order_by
+	   ci.id,
+       ci.name,
+       ci.ref_check_big_item_id,
+       ci.ref_check_small_item_id,
+       ci.remark,
+       ci.order_by
 	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.CutItemFormMap">
 		select
 		<include refid="selectId" />
-		FROM cut_items
+		FROM cut_items ci
 		where 1 = 1
-		ORDER BY cut_items.order_by ASC
+		<if test="name != null">
+			AND ci.name = '${name}'
+		</if>
+		<if test="order_by != null">
+			ORDER BY ${order_by}
+		</if>
 	</select>
 
 </mapper>

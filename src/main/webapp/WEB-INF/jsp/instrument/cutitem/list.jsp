@@ -9,20 +9,14 @@
 	<meta http-equiv="X-UA-Compatible" content="edge" />
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>仪器配置</title>
+	<title>切割项配置</title>
 	<script type="text/javascript">
 		var dataGrid;
 		$(function() {
-
-			$('#organizationId').combotree({
-				url : '${ctx}/organization/tree.shtml',
-				parentField : 'pid',
-				lines : true,
-				panelHeight : 'auto'
-			});
+			
 
 			dataGrid = $('#dataGrid').datagrid({
-				url : '${ctx}/instrument/equipment/dataGrid.shtml',
+				url : '${ctx}/instrument/cut_item/dataGrid.shtml',
 				fit : true,
 				striped : true,
 				rownumbers : true,
@@ -35,26 +29,18 @@
 				pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 				columns : [ [ {
 					width : '250',
-					title : '机器码',
-					field : 'istmt_code'
+					title : '切割项名称',
+					field : 'name'
 				}, {
 					width : '180',
-					title : '所属检测点',
-					field : 'organization_name',
+					title : '备注',
+					field : 'remark',
 					sortable : true
 				},{
 					width : '150',
-					title : '创建时间',
-					field : 'create_time',
-					sortable : true,
-					formatter : function(value, row, index) {
-						return value==null || value==undefined || value =='' ?'':(new Date(parseFloat(value))).format("yyyy-MM-dd hh:mm:ss");
-					}
-				},{
-					width : '300',
-					title : '备注',
-					field : 'remark',
-					align : 'center'
+					title : '排序',
+					field : 'order_by',
+					sortable : true
 				},{
 					field : 'action',
 					title : '操作',
@@ -79,7 +65,7 @@
 				title : '添加',
 				width : '50%',
 				height : '40%',
-				href : '${ctx}/instrument/equipment/addPage.shtml',
+				href : '${ctx}/instrument/cut_item/addPage.shtml',
 				buttons : [ {
 					text : '添加',
 					handler : function() {
@@ -101,8 +87,8 @@
 			parent.$.messager.confirm('询问', '是否需要删除当前项？', function(b) {
 				if (b) {
 					progressLoad();
-					$.post('${ctx}/instrument/equipment/delete.shtml', {
-						'equipmentFormMap.id' : id
+					$.post('${ctx}/instrument/cut_item/delete.shtml', {
+						'cutItemFormMap.id' : id
 					}, function(result) {
 						if (result.status == 1) {
 							parent.$.messager.alert('提示', result.msg, 'info');
@@ -126,7 +112,7 @@
 				title : '编辑',
 				width : '50%',
 				height : '40%',
-				href : '${ctx}/instrument/equipment/editPage.shtml?id=' + id,
+				href : '${ctx}/instrument/cut_item/editPage.shtml?id=' + id,
 				buttons : [ {
 					text : '编辑',
 					handler : function() {
@@ -148,24 +134,7 @@
 	</script>
 </head>
 <body class="easyui-layout" data-options="fit:true,border:false">
-<div data-options="region:'north',border:false" style="height: 30px; overflow: hidden;background-color: #fff">
-	<form id="searchForm">
-		<table>
-			<tr>
-				<th>机器码</th>
-				<td>
-					<input name="equipmentFormMap.istmt_code" placeholder="请输入机器码" style="width: 280px;"/>
-				</td>
-				<th>所属检测点</th>
-				<td>
-					<select id="organizationId" style="width: 250px;" name="equipmentFormMap.organization_id"></select>
-					<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" onclick="cleanFun();">清空</a>
-				</td>
-			</tr>
-		</table>
-	</form>
-</div>
-<div data-options="region:'center',border:true,title:'仪器管理'" >
+<div data-options="region:'center',border:true,title:'切割项管理'" >
 	<table id="dataGrid" data-options="fit:true,border:false"></table>
 </div>
 <div id="toolbar" style="display: none;">

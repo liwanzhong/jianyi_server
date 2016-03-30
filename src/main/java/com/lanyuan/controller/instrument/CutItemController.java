@@ -4,16 +4,13 @@ package com.lanyuan.controller.instrument;
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.CutItemFormMap;
-import com.lanyuan.entity.CutItemFormMap;
-import com.lanyuan.entity.UserEntrelationFormMap;
-import com.lanyuan.entity.UserGroupsFormMap;
-import com.lanyuan.exception.SystemException;
 import com.lanyuan.mapper.CutItemMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
-import com.lanyuan.util.CommonConstants;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
+import com.lanyuan.vo.Grid;
+import com.lanyuan.vo.PageFilter;
+import com.lanyuan.vo.Tree;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -22,8 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -37,132 +33,112 @@ public class CutItemController extends BaseController {
 	@Inject
 	private CutItemMapper cutItemMapper;
 
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
-		model.addAttribute("res", findByRes());
-		return Common.BACKGROUND_PATH + "/custom/info/list";
+		return Common.BACKGROUND_PATH + "/instrument/cutitem/list";
 	}
+
+	@RequestMapping("addPage")
+	public String addPage(Model model) throws Exception {
+		return Common.BACKGROUND_PATH + "/instrument/cutitem/add";
+	}
+
+	@RequestMapping("editPage")
+	public String editPage(Model model,String id) throws Exception {
+		CutItemFormMap cutItemFormMap = cutItemMapper.findbyFrist("id",id,CutItemFormMap.class);
+		model.addAttribute("cutItemFormMap",cutItemFormMap);
+		return Common.BACKGROUND_PATH + "/instrument/cutitem/edit";
+	}
+
+
+
 
 	@ResponseBody
-	@RequestMapping("findByPage")
-	public PageView findByPage( String pageNow,String pageSize,String column,String sort) throws Exception {
-		CutItemFormMap cutItemFormMap = getFormMap(CutItemFormMap.class);
-		cutItemFormMap=toFormMap(cutItemFormMap, pageNow, pageSize,cutItemFormMap.getStr("orderby"));
-		cutItemFormMap.put("column", column);
-		cutItemFormMap.put("sort", sort);
-		//todo 获取当前登录用户的企业和检测点
-		Session session = SecurityUtils.getSubject().getSession();
-		UserEntrelationFormMap userEntrelationFormMap = (UserEntrelationFormMap)session.getAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION);
-
-		if(userEntrelationFormMap!=null){//为空表示是系统管理用户,不为空表示是企业的用户
-			Integer ent_id = userEntrelationFormMap.getInt("ent_id");
-			Integer sub_point_id = userEntrelationFormMap.getInt("sub_point_id");
-
-			cutItemFormMap.put("ent_id",ent_id);
-			cutItemFormMap.put("sub_point_id",sub_point_id);
-		}
-
-		pageView.setRecords(cutItemMapper.findEnterprisePage(cutItemFormMap));//不调用默认分页,调用自已的mapper中findUserPage
-		return pageView;
-	}
-
-
-
-
-	@RequestMapping("addUI")
-	public String addUI(Model model) throws Exception {
-		return Common.BACKGROUND_PATH + "/custom/info/add";
-	}
-
-	@ResponseBody
-	@RequestMapping("addEntity")
-	@SystemLog(module="系统管理",methods="企业管理，新增企业信息")//凡需要处理业务逻辑的.都需要记录操作日志
+	@RequestMapping("dataGrid")
+	@SystemLog(module="用户管理",methods="加载用户列表")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	public String addEntity(String txtGroupsSelect){
+	public Grid dataGrid(PageFilter ph)throws Exception {
+		Grid grid = new Grid();
+		CutItemFormMap cutItemFormMap = getFormMap(CutItemFormMap.class);
+		cutItemFormMap.put("orderby",ph.getSort()+" "+ph.getOrder());
+		cutItemFormMap=toFormMap(cutItemFormMap,  String.valueOf(ph.getPage()), String.valueOf(ph.getRows()),cutItemFormMap.getStr("orderby"));
+		List<CutItemFormMap> userFormMapList =cutItemMapper.findEnterprisePage(cutItemFormMap);
+		if(CollectionUtils.isNotEmpty(userFormMapList)){
+			grid.setRows(userFormMapList);
+		}
+		PageView pageView = (PageView) cutItemFormMap.get("paging");
+		grid.setTotal(pageView.getRowCount());
+		return grid;
+
+	}
+
+
+
+
+	@ResponseBody
+	@RequestMapping("add")
+	@SystemLog(module="用户管理",methods="新增用户")//凡需要处理业务逻辑的.都需要记录操作日志
+	@Transactional(readOnly=false)//需要事务操作必须加入此注解
+	public Map<String,Object> add(){
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
 		try {
-			SimpleDateFormat datetimeformat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			CutItemFormMap CutItemFormMap = getFormMap(CutItemFormMap.class);
-			CutItemFormMap.put("txtGroupsSelect", txtGroupsSelect);
-			CutItemFormMap.put("insert_time",datetimeformat.format(new Date()));
-			CutItemFormMap.put("update_time",datetimeformat.format(new Date()));
-
-			cutItemMapper.addEntity(CutItemFormMap);//新增后返回新增信息
-
-		} catch (Exception e) {
-			 throw new SystemException("添加账号异常");
+			CutItemFormMap cutItemFormMap = getFormMap(CutItemFormMap.class);
+			cutItemFormMap.put("create_time",dateFormat.format(new Date()));
+			cutItemMapper.addEntity(cutItemFormMap);
+			retMap.put("msg","添加成功");
+			retMap.put("status",1);
+		}catch (Exception ex){
+			retMap.put("msg",ex.getMessage());
 		}
-		return "success";
+		return retMap;
 	}
 
+
+
 	@ResponseBody
-	@RequestMapping("deleteEntity")
+	@RequestMapping("delete")
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	@SystemLog(module="系统管理",methods="删除企业")//凡需要处理业务逻辑的.都需要记录操作日志
-	public String deleteEntity() throws Exception {
-		String[] ids = getParaValues("ids");
-		for (String id : ids) {
-			cutItemMapper.deleteByAttribute("id", id, CutItemFormMap.class);
+	@SystemLog(module="系统管理",methods="用户管理-删除用户")//凡需要处理业务逻辑的.都需要记录操作日志
+	public Map<String,Object>  delete() throws Exception {
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
+		try {
+			CutItemFormMap cutItemFormMap = getFormMap(CutItemFormMap.class);
+			cutItemMapper.deleteByNames(cutItemFormMap);
+			retMap.put("msg","删除成功");
+			retMap.put("status",1);
+		}catch (Exception ex){
+			ex.printStackTrace();
+			retMap.put("msg",ex.getMessage());
 		}
-		return "success";
+		return retMap;
 	}
 
-	@RequestMapping("editUI")
-	public String editUI(Model model) throws Exception {
-		String id = getPara("id");
-		if(Common.isNotEmpty(id)){
-			model.addAttribute("enterprise", cutItemMapper.findbyFrist("id", id, CutItemFormMap.class));
-		}
-		return Common.BACKGROUND_PATH + "/custom/info/edit";
-	}
+
+
+
 
 	@ResponseBody
-	@RequestMapping("editEntity")
+	@RequestMapping("update")
+	@SystemLog(module="权限组管理",methods="修改权限组")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	@SystemLog(module="系统管理",methods="用户管理-修改用户")//凡需要处理业务逻辑的.都需要记录操作日志
-	public String editEntity(String txtGroupsSelect) throws Exception {
-		CutItemFormMap CutItemFormMap = getFormMap(CutItemFormMap.class);
-		CutItemFormMap.put("txtGroupsSelect", txtGroupsSelect);
-		cutItemMapper.editEntity(CutItemFormMap);
-		cutItemMapper.deleteByAttribute("userId", CutItemFormMap.get("id")+"", UserGroupsFormMap.class);
-		if(!Common.isEmpty(txtGroupsSelect)){
-			String[] txt = txtGroupsSelect.split(",");
-			for (String roleId : txt) {
-				UserGroupsFormMap userGroupsFormMap = new UserGroupsFormMap();
-				userGroupsFormMap.put("userId", CutItemFormMap.get("id"));
-				userGroupsFormMap.put("roleId", roleId);
-				cutItemMapper.addEntity(userGroupsFormMap);
-			}
+	public Map<String,Object>  update(Model model) {
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
+		try {
+			CutItemFormMap cutItemFormMap = getFormMap(CutItemFormMap.class);
+			cutItemMapper.editEntity(cutItemFormMap);
+			retMap.put("msg","修改成功");
+			retMap.put("status",1);
+		}catch (Exception ex){
+			retMap.put("msg",ex.getMessage());
+			ex.printStackTrace();
 		}
-		return "success";
+		return retMap;
 	}
 
-
-
-
-	@ResponseBody
-	@RequestMapping("loadCutItems")
-	public List<CutItemFormMap> loadCutItems(Model model) throws Exception {
-		CutItemFormMap cutItemFormMap = getFormMap(CutItemFormMap.class);
-		return cutItemMapper.findByWhere(cutItemFormMap);
-	}
-
-	/**
-	 * 验证账号是否存在
-	 * 
-	 * @author lanyuan Email：mmm333zzz520@163.com date：2014-2-19
-	 * @param name
-	 * @return
-	 */
-	@RequestMapping("isExist")
-	@ResponseBody
-	public boolean isExist(String name) {
-		CutItemFormMap account = cutItemMapper.findbyFrist("accountName", name, CutItemFormMap.class);
-		if (account == null) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
 
 }

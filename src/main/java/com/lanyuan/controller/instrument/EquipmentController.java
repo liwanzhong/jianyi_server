@@ -10,6 +10,10 @@ import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.PageFilter;
 import com.lanyuan.vo.Tree;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.crypto.RandomNumberGenerator;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -38,6 +42,11 @@ public class EquipmentController  extends BaseController {
 
     @RequestMapping("addPage")
     public String addPage(Model model) throws Exception {
+        //todo 生成机器码
+        RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
+        String salt=randomNumberGenerator.nextBytes().toHex();
+        String istmt_code = new SimpleHash("md5", "", ByteSource.Util.bytes(salt), 2).toHex();
+        model.addAttribute("istmt_code",istmt_code);
         return Common.BACKGROUND_PATH + "/instrument/equipment/add";
     }
 
@@ -101,8 +110,7 @@ public class EquipmentController  extends BaseController {
         retMap.put("status",0);
         try {
             EquipmentFormMap equipmentFormMap = getFormMap(EquipmentFormMap.class);
-            equipmentFormMap.put("insert_time",dateFormat.format(new Date()));
-            equipmentFormMap.put("update_time",dateFormat.format(new Date()));
+            equipmentFormMap.put("create_time",dateFormat.format(new Date()));
             equipmentMapper.addEntity(equipmentFormMap);
             retMap.put("msg","添加成功");
             retMap.put("status",1);
