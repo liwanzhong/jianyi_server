@@ -196,6 +196,13 @@ public class CheckController extends BaseController {
 									break;
 								}
 							}
+							for(CfPingfenLeveFormMap item:cfPingfenLeveFormMapList){
+								if(item.getDouble("pingfen_min")<=checkScore.doubleValue() && item.getDouble("pingfen_max")>=checkScore.doubleValue()){
+									physicalExaminationBigResultFormMap.put("leve_id",item.getLong("id"));
+									break;
+								}
+							}
+
 							physicalExaminationBigResultFormMapList.add(physicalExaminationBigResultFormMap);
 
 						}
@@ -217,6 +224,13 @@ public class CheckController extends BaseController {
 					totalScore = totalScore.add(item.getBigDecimal("gen_quanzhong").multiply(item.getBigDecimal("check_score")));
 				}
 				physicalExaminationMainReportFormMap.put("check_total_score",totalScore.divide(new BigDecimal(physicalExaminationBigResultFormMapList.size())));
+
+				for(CfPingfenLeveFormMap item:cfPingfenLeveFormMapList){
+					if(item.getDouble("pingfen_min")<=physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").doubleValue() && item.getDouble("pingfen_max")>=physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").doubleValue()){
+						physicalExaminationMainReportFormMap.put("level",item.getLong("id"));
+						break;
+					}
+				}
 
 				physicalExaminationMainReportMapper.addEntity(physicalExaminationMainReportFormMap);
 			}
