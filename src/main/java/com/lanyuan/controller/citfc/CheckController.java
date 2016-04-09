@@ -37,6 +37,10 @@ public class CheckController extends BaseController {
 
 
 	@Inject
+	private CheckBigItemMapper checkBigItemMapper;
+
+
+	@Inject
 	private PhysicalExaminationRecordMapper physicalExaminationRecordMapper;
 
 
@@ -46,6 +50,14 @@ public class CheckController extends BaseController {
 
 	@Inject
 	private CfPingfenLeveMapper cfPingfenLeveMapper;
+
+
+	@Inject
+	private PhysicalExaminationMainReportMapper physicalExaminationMainReportMapper;
+
+
+	@Inject
+	private PhysicalExaminationBigResultMapper physicalExaminationBigResultMapper;
 
 
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -90,25 +102,27 @@ public class CheckController extends BaseController {
 
 				// 获取评分标准
 				List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList = cfPingfenLeveMapper.findByNames(getFormMap(CfPingfenLeveFormMap.class));
-				System.out.println(cfPingfenLeveFormMapList);
 
 				List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = new ArrayList<PhysicalExaminationResultFormMap>();
+
+				Map<Long,List<PhysicalExaminationResultFormMap>> itemMap =  new HashMap<Long, List<PhysicalExaminationResultFormMap>>();
+
 				for(CheckSmallItemFormMap checkSmallItemFormMap:checkSmallItemFormMapList){
 
 					BigDecimal n1 = checkSmallItemFormMap.getBigDecimal("min_value");
 					BigDecimal n2 = checkSmallItemFormMap.getBigDecimal("max_value");
 
 					PhysicalExaminationResultFormMap physicalExaminationResultFormMap = getFormMap(PhysicalExaminationResultFormMap.class);
-					physicalExaminationResultFormMap.put("examination_record_id",recordFormMap.get("id").toString());
-					physicalExaminationResultFormMap.put("bit_item_id",checkSmallItemFormMap.get("big_item_id").toString());
-					physicalExaminationResultFormMap.put("small_item_id",checkSmallItemFormMap.get("id").toString());
+					physicalExaminationResultFormMap.put("examination_record_id",recordFormMap.getLong("id"));
+					physicalExaminationResultFormMap.put("bit_item_id",checkSmallItemFormMap.getLong("big_item_id"));
+					physicalExaminationResultFormMap.put("small_item_id",checkSmallItemFormMap.getLong("id"));
 					physicalExaminationResultFormMap.put("gen_min_value",n1);
 					physicalExaminationResultFormMap.put("gen_max_value",n2);
 
 					BigDecimal n = (n2.subtract(n1));
 
 					physicalExaminationResultFormMap.put("gen_in_value",n);
-					physicalExaminationResultFormMap.put("gen_quanzhong",checkSmallItemFormMap.get("quanzhong").toString());
+					physicalExaminationResultFormMap.put("gen_quanzhong",checkSmallItemFormMap.getBigDecimal("quanzhong"));
 					//计算
 
 					BigDecimal M = n.divide(new BigDecimal(20.0),3, RoundingMode.HALF_UP);
@@ -139,10 +153,72 @@ public class CheckController extends BaseController {
 
 					physicalExaminationResultFormMapList.add(physicalExaminationResultFormMap);
 
-
+					Set<Long> keySet = itemMap.keySet();
+					List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapListIn = null;
+					if(keySet.contains(physicalExaminationResultFormMap.getLong("bit_item_id"))){
+						physicalExaminationResultFormMapListIn = itemMap.get(physicalExaminationResultFormMap.getLong("bit_item_id"));
+					}else{
+						physicalExaminationResultFormMapListIn = new ArrayList<PhysicalExaminationResultFormMap>();
+					}
+					physicalExaminationResultFormMapListIn.add(physicalExaminationResultFormMap);
+					itemMap.put(physicalExaminationResultFormMap.getLong("bit_item_id"),physicalExaminationResultFormMapListIn);
 
 				}
 				physicalExaminationResultMapper.batchSave(physicalExaminationResultFormMapList);
+
+				// 获取所有的检测大项
+				List<CheckBigItemFormMap> checkBigItemFormMapList = checkBigItemMapper.findByNames(getFormMap(CheckBigItemFormMap.class));
+
+				// 计算大项得分
+				Set<Long> keySet = itemMap.keySet();
+				Iterator<Long> iterator = keySet.iterator();
+				List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = new ArrayList<PhysicalExaminationBigResultFormMap>();
+				while (iterator.hasNext()){
+					Long key = iterator.next();
+					List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapListIn = itemMap.get(key);
+					if(CollectionUtils.isNotEmpty(physicalExaminationResultFormMapListIn)){
+						BigDecimal totalQuanzhong = new BigDecimal(0);
+						BigDecimal totalScore = new BigDecimal(0);
+						for(PhysicalExaminationResultFormMap item :physicalExaminationResultFormMapListIn){
+							totalQuanzhong=totalQuanzhong.add(item.getBigDecimal("gen_quanzhong"));
+							totalScore=totalScore.add(item.getBigDecimal("quanzhong_score"));
+						}
+						if(totalQuanzhong.doubleValue()>0.00d){
+							BigDecimal checkScore = totalScore.divide(totalQuanzhong,3,BigDecimal.ROUND_HALF_UP);
+							PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
+							physicalExaminationBigResultFormMap.put("examination_record_id",recordFormMap.getLong("id"));
+							physicalExaminationBigResultFormMap.put("big_item_id",key);
+							physicalExaminationBigResultFormMap.put("check_score",checkScore);
+
+							for(CheckBigItemFormMap checkBigItemFormMap:checkBigItemFormMapList){
+								if(checkBigItemFormMap.getLong("id")==key){
+									physicalExaminationBigResultFormMap.put("gen_quanzhong",checkBigItemFormMap.getBigDecimal("quanzhong"));
+									break;
+								}
+							}
+							physicalExaminationBigResultFormMapList.add(physicalExaminationBigResultFormMap);
+
+						}
+					}
+				}
+				if(CollectionUtils.isNotEmpty(physicalExaminationBigResultFormMapList)){
+					physicalExaminationBigResultMapper.batchSave(physicalExaminationBigResultFormMapList);
+				}
+
+
+
+				//todo 保存总评
+				PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = getFormMap(PhysicalExaminationMainReportFormMap.class);
+				physicalExaminationMainReportFormMap.put("examination_record_id",recordFormMap.getLong("id"));
+
+				//todo 计算总分
+				BigDecimal totalScore = new BigDecimal(0);
+				for(PhysicalExaminationBigResultFormMap item:physicalExaminationBigResultFormMapList){
+					totalScore = totalScore.add(item.getBigDecimal("gen_quanzhong").multiply(item.getBigDecimal("check_score")));
+				}
+				physicalExaminationMainReportFormMap.put("check_total_score",totalScore.divide(new BigDecimal(physicalExaminationBigResultFormMapList.size())));
+
+				physicalExaminationMainReportMapper.addEntity(physicalExaminationMainReportFormMap);
 			}
 
 
