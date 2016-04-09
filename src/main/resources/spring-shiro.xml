@@ -84,7 +84,7 @@
 				/clientLogin.shtml = anon
 				/denied.jsp = anon
 				/lanyuan.shtml = anon
-				/citfc/client_call/*.shtml= anon
+				/citfc/client_call/** = anon
 			</value>
 		</property>
 	</bean>

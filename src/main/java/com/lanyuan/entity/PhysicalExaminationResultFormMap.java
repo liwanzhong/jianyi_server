@@ -7,8 +7,8 @@ import com.lanyuan.util.FormMap;
 /**
  * user实体表
  */
-@TableSeg(tableName = "physical_examination_record", id="id")
-public class PhysicalExaminationRecordFormMap extends FormMap<String,Object>{
+@TableSeg(tableName = "physical_examination_result", id="id")
+public class PhysicalExaminationResultFormMap extends FormMap<String,Object>{
 
 	/**
 	 *@descript
@@ -18,5 +18,4 @@ public class PhysicalExaminationRecordFormMap extends FormMap<String,Object>{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public static final Integer STATUS_CHECKED = 1;//检测结束
 }
