@@ -5,14 +5,18 @@ import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.CustomBelonetoEntFormMap;
 import com.lanyuan.entity.CustomInfoFormMap;
+import com.lanyuan.entity.UserEntrelationFormMap;
 import com.lanyuan.mapper.CustomBelonetoEntMapper;
 import com.lanyuan.mapper.CustomCutItemMapper;
 import com.lanyuan.mapper.CustomInfoMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
+import com.lanyuan.util.CommonConstants;
 import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.PageFilter;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -51,6 +55,36 @@ public class CustomInfoController extends BaseController {
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
 		return Common.BACKGROUND_PATH + "/custom/info/list";
+	}
+
+
+	@RequestMapping("list_client")
+	public String list_client(Model model) throws Exception {
+		return Common.BACKGROUND_PATH + "/front/member-list";
+	}
+
+
+	@ResponseBody
+	@RequestMapping("findByPage")
+	public PageView findByPage( String pageNow,String pageSize,String column,String sort) throws Exception {
+		CustomInfoFormMap customInfoFormMap = getFormMap(CustomInfoFormMap.class);
+		customInfoFormMap=toFormMap(customInfoFormMap, pageNow, pageSize,customInfoFormMap.getStr("orderby"));
+		customInfoFormMap.put("column", column);
+		customInfoFormMap.put("sort", sort);
+		// 获取当前登录用户的企业和检测点
+		Session session = SecurityUtils.getSubject().getSession();
+		UserEntrelationFormMap userEntrelationFormMap = (UserEntrelationFormMap)session.getAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION);
+
+		if(userEntrelationFormMap!=null){//为空表示是系统管理用户,不为空表示是企业的用户
+			String ent_id = userEntrelationFormMap.get("ent_id").toString();
+			String sub_point_id = userEntrelationFormMap.get("sub_point_id").toString();
+
+			customInfoFormMap.put("ent_id",ent_id);
+			customInfoFormMap.put("sub_point_id",sub_point_id);
+		}
+
+		pageView.setRecords(customInfoMapper.findEnterprisePage(customInfoFormMap));//不调用默认分页,调用自已的mapper中findUserPage
+		return pageView;
 	}
 
 	@RequestMapping("addPage")

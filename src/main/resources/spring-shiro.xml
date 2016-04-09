@@ -76,9 +76,11 @@
 				/error.jsp = anon
 				/js/** = anon
 				/css/** = anon
+				/front-static/** = anon
 				/layer-v1.9.2/** = anon
 				/notebook/** = anon
 				/login.shtml = anon
+				/front/login.shtml = anon
 				/clientLogin.shtml = anon
 				/denied.jsp = anon
 				/lanyuan.shtml = anon
