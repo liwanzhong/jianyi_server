@@ -55,4 +55,26 @@
 		</if>
 	</select>
 
+
+	<select id="findItemCheckResultList" resultType="com.lanyuan.entity.PhysicalExaminationResultFormMap">
+SELECT
+  per.bit_item_id,
+  per.gen_min_value,
+  per.gen_max_value,
+  per.gen_in_value,
+  per.in_value_score,
+  per.check_value,
+  per.item_score,
+  (SELECT
+      cpl.name
+    FROM cf_pingfen_leve cpl
+    WHERE cpl.id = per.orgin_leve_id) AS orgin_leve_id,
+  per.gen_quanzhong,
+  per.quanzhong_score,
+  csi.name
+FROM physical_examination_result per
+  LEFT JOIN check_small_item csi
+    ON csi.id = per.small_item_id WHERE per.examination_record_id = #{examination_record_id}
+	</select>
+
 </mapper>

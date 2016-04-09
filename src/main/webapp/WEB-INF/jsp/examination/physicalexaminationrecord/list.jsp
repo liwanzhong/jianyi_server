@@ -37,7 +37,7 @@
 				columns : [ [ {
 					width : '120',
 					title : '会员姓名',
-					field : 'name'
+					field : 'custom_name'
 				}, {
 					width : '120',
 					title : '会员性别',
@@ -50,7 +50,7 @@
 					title : '会员手机',
 					field : 'mobile'
 				},{
-					width : '100',
+					width : '180',
 					title : '检测时间',
 					field : 'check_time',
 					align : 'center',
@@ -64,7 +64,7 @@
 					field : 'status',
 					align : 'center',
 					formatter : function(value, row, index) {
-						return '报告状态';
+						return value;
 					},
 					sortable : true
 				},{
@@ -75,9 +75,9 @@
 						var str = '';
 						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >检测值</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >查看</a>', row.id);
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >重算</a>', row.id);
+						str += $.formatString('<a href="javascript:void(0)" target="_blank" onclick="showCheckResult(\'{0}\');">查看</a>', row.id);
+						/*str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >重算</a>', row.id);*/
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >下载</a>', row.id);
 						return str;
@@ -85,6 +85,19 @@
 				}] ]
 			});
 		});
+
+
+
+		function showCheckResult(id){
+			if (id == undefined) {//点击右键菜单才会触发这个
+				var rows = dataGrid.datagrid('getSelections');
+				id = rows[0].id;
+			} else {//点击操作里面的删除图标会触发这个
+				dataGrid.datagrid('unselectAll').datagrid('uncheckAll');
+			}
+			var url =  '${ctx}/examination/physicalExamination/result.shtml?recordid='+id;
+			window.open(url);
+		}
 
 
 

@@ -10,5 +10,6 @@ import java.util.List;
 public interface PhysicalExaminationBigResultMapper extends BaseMapper{
 
 	public List<PhysicalExaminationBigResultFormMap> findEnterprisePage(PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap);
-	
+
+	List<PhysicalExaminationBigResultFormMap> findItemCheckResultList(Long examination_record_id);
 }

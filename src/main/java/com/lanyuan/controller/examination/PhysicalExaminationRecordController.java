@@ -2,8 +2,14 @@ package com.lanyuan.controller.examination;
 
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
+import com.lanyuan.entity.PhysicalExaminationBigResultFormMap;
+import com.lanyuan.entity.PhysicalExaminationMainReportFormMap;
 import com.lanyuan.entity.PhysicalExaminationRecordFormMap;
+import com.lanyuan.entity.PhysicalExaminationResultFormMap;
+import com.lanyuan.mapper.PhysicalExaminationBigResultMapper;
+import com.lanyuan.mapper.PhysicalExaminationMainReportMapper;
 import com.lanyuan.mapper.PhysicalExaminationRecordMapper;
+import com.lanyuan.mapper.PhysicalExaminationResultMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
 import com.lanyuan.vo.Grid;
@@ -29,7 +35,6 @@ public class PhysicalExaminationRecordController extends BaseController {
     @Inject
     private PhysicalExaminationRecordMapper physicalExaminationRecordMapper;
 
-    ///examination/physicalexaminationrecord/list
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -38,38 +43,6 @@ public class PhysicalExaminationRecordController extends BaseController {
         return Common.BACKGROUND_PATH + "/examination/physicalexaminationrecord/list";
     }
 
-    @RequestMapping("addPage")
-    public String addPage(Model model) throws Exception {
-        return Common.BACKGROUND_PATH + "/examination/physicalexaminationrecord/add";
-    }
-
-    @RequestMapping("editPage")
-    public String editPage(Model model,String id) throws Exception {
-        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = physicalExaminationRecordMapper.findbyFrist("id",id,PhysicalExaminationRecordFormMap.class);
-        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMap);
-        return Common.BACKGROUND_PATH + "/examination/physicalexaminationrecord/edit";
-    }
-
-    @ResponseBody
-    @RequestMapping("tree")
-    @SystemLog(module="组织管理",methods="加载组织树形列表")//凡需要处理业务逻辑的.都需要记录操作日志
-    @Transactional(readOnly=false)//需要事务操作必须加入此注解
-    public List<Tree> tree()throws Exception {
-        List<Tree> lt = new ArrayList<Tree>();
-        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
-        physicalExaminationRecordFormMap.put("orderby","  id asc");
-        List<PhysicalExaminationRecordFormMap> cfPingfenLeveFormMapList = physicalExaminationRecordMapper.findEnterprisePage(physicalExaminationRecordFormMap);
-
-        if (CollectionUtils.isNotEmpty(cfPingfenLeveFormMapList)) {
-            for (PhysicalExaminationRecordFormMap r : cfPingfenLeveFormMapList) {
-                Tree tree = new Tree();
-                tree.setId(r.get("id").toString());
-                tree.setText(r.get("name").toString());
-                lt.add(tree);
-            }
-        }
-        return lt;
-    }
 
 
     @ResponseBody
@@ -91,31 +64,45 @@ public class PhysicalExaminationRecordController extends BaseController {
 
     }
 
+    @Inject
+    private PhysicalExaminationMainReportMapper physicalExaminationMainReportMapper;
 
 
+    @Inject
+    private PhysicalExaminationBigResultMapper physicalExaminationBigResultMapper;
 
 
+    @Inject
+    private PhysicalExaminationResultMapper physicalExaminationResultMapper;
+
+    @RequestMapping("result")
+    @SystemLog(module="用户管理",methods="加载用户列表")
+    public String result(Model model,String recordid)throws Exception {
+        PhysicalExaminationRecordFormMap recordFormMap = physicalExaminationRecordMapper.findbyFrist("id",recordid,PhysicalExaminationRecordFormMap.class);
+        model.addAttribute("record",recordFormMap);
+
+        PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = physicalExaminationMainReportMapper.findbyFrist("examination_record_id",recordFormMap.get("id").toString(),PhysicalExaminationMainReportFormMap.class);
+        model.addAttribute("physicalExaminationMainReportFormMap",physicalExaminationMainReportFormMap);
+
+        List<PhysicalExaminationBigResultFormMap> bigResultFormMapList = physicalExaminationBigResultMapper.findItemCheckResultList(recordFormMap.getLong("id"));
+        model.addAttribute("bigResultFormMapList",bigResultFormMapList);
 
 
+        List<PhysicalExaminationResultFormMap> resultList =physicalExaminationResultMapper .findItemCheckResultList(recordFormMap.getLong("id"));
+        model.addAttribute("resultList",resultList);
 
-    @ResponseBody
-    @RequestMapping("delete")
-    @Transactional(readOnly=false)//需要事务操作必须加入此注解
-    @SystemLog(module="系统管理",methods="用户管理-删除用户")//凡需要处理业务逻辑的.都需要记录操作日志
-    public Map<String,Object>  delete() throws Exception {
-        Map<String,Object> retMap = new HashMap<String, Object>();
-        retMap.put("status",0);
-        try {
-            PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
-            physicalExaminationRecordMapper.deleteByNames(physicalExaminationRecordFormMap);
-            retMap.put("msg","删除成功");
-            retMap.put("status",1);
-        }catch (Exception ex){
-            ex.printStackTrace();
-            retMap.put("msg",ex.getMessage());
-        }
-        return retMap;
+
+        return Common.BACKGROUND_PATH + "/examination/physicalexaminationrecord/checkResult";
     }
+
+
+
+
+
+
+
+
+
 
 
 
