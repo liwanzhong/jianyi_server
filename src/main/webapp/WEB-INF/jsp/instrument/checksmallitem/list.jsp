@@ -50,7 +50,7 @@
 					title : '区间值（n2-n1）',
 					field : 'in_value',
 					formatter : function(value, row, index) {
-						return (row.max_value - row.min_value);
+						return (row.max_value - row.min_value).toFixed(3);
 					},
 					sortable : true
 				},{
