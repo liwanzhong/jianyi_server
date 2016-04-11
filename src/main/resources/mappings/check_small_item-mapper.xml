@@ -64,4 +64,8 @@ WHERE csi.id NOT IN (SELECT
 		SELECT  order_by FROM  check_small_item ORDER BY order_by DESC limit 1;
 	</select>
 
+
+
+
+
 </mapper>

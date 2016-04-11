@@ -49,6 +49,8 @@
 						var str = '';
 						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="configFun(\'{0}\');" >配置关联项</a>', row.id);
+						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >删除</a>', row.id);
 						return str;
 					}
@@ -71,6 +73,31 @@
 					handler : function() {
 						parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
 						var f = parent.$.modalDialog.handler.find('#userAddForm');
+						f.submit();
+					}
+				} ]
+			});
+		}
+
+
+
+		function configFun(id){
+			if (id == undefined) {
+				var rows = dataGrid.datagrid('getSelections');
+				id = rows[0].id;
+			} else {
+				dataGrid.datagrid('unselectAll').datagrid('uncheckAll');
+			}
+			parent.$.modalDialog({
+				title : '配  置',
+				width : '30%',
+				height : '75%',
+				href : '${ctx}/instrument/cut_item/configRefPage.shtml?cutItemFormMap.id='+id,
+				buttons : [ {
+					text : '配  置',
+					handler : function() {
+						parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+						var f = parent.$.modalDialog.handler.find('#roleGrantForm');
 						f.submit();
 					}
 				} ]

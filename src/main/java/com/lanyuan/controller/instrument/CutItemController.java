@@ -3,13 +3,18 @@ package com.lanyuan.controller.instrument;
 
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
+import com.lanyuan.entity.CheckBigItemFormMap;
+import com.lanyuan.entity.CheckSmallItemFormMap;
 import com.lanyuan.entity.CutItemFormMap;
+import com.lanyuan.entity.CutItemRefsmallitemConfigFormMap;
+import com.lanyuan.mapper.CheckBigItemMapper;
+import com.lanyuan.mapper.CheckSmallItemMapper;
 import com.lanyuan.mapper.CutItemMapper;
+import com.lanyuan.mapper.CutItemRefsmallitemConfigMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
 import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.PageFilter;
-import com.lanyuan.vo.Tree;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -32,6 +38,21 @@ import java.util.*;
 public class CutItemController extends BaseController {
 	@Inject
 	private CutItemMapper cutItemMapper;
+
+
+	@Inject
+	private CheckBigItemMapper checkBigItemMapper;
+
+
+	@Inject
+	private CheckSmallItemMapper checkSmallItemMapper;
+
+
+	@Inject
+	private CutItemRefsmallitemConfigMapper cutItemRefsmallitemConfigMapper;
+
+
+
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -50,6 +71,60 @@ public class CutItemController extends BaseController {
 		CutItemFormMap cutItemFormMap = cutItemMapper.findbyFrist("id",id,CutItemFormMap.class);
 		model.addAttribute("cutItemFormMap",cutItemFormMap);
 		return Common.BACKGROUND_PATH + "/instrument/cutitem/edit";
+	}
+
+
+	@RequestMapping("configRefPage")
+	public String grantPage(Model model)throws Exception {
+		CutItemFormMap cutItemFormMap = getFormMap(CutItemFormMap.class);
+		cutItemFormMap = cutItemMapper.findbyFrist("id",cutItemFormMap.get("id").toString(),CutItemFormMap.class);
+		model.addAttribute("cutItemFormMap",cutItemFormMap);
+		//todo 加载检测大小项目
+		List<CheckBigItemFormMap> checkBigItemFormMapList = checkBigItemMapper.findByNames(getFormMap(CheckBigItemFormMap.class));
+
+		List<CheckSmallItemFormMap> checkSmallItemFormMapList = checkSmallItemMapper.findByNames(getFormMap(CheckSmallItemFormMap.class));
+
+		model.addAttribute("checkBigItemFormMapList",checkBigItemFormMapList);
+
+		model.addAttribute("checkSmallItemFormMapList",checkSmallItemFormMapList);
+
+
+		CutItemRefsmallitemConfigFormMap cutItemRefsmallitemConfigFormMap = getFormMap(CutItemRefsmallitemConfigFormMap.class);
+		cutItemRefsmallitemConfigFormMap.put("cut_item_id",cutItemFormMap.getLong("id"));
+		List<CutItemRefsmallitemConfigFormMap> cutItemRefsmallitemConfigFormMapList = cutItemRefsmallitemConfigMapper.findByNames(cutItemRefsmallitemConfigFormMap);
+		model.addAttribute("cutItemRefsmallitemConfigFormMapList",cutItemRefsmallitemConfigFormMapList);
+		return  Common.BACKGROUND_PATH + "/instrument/cutitem/configRef";
+	}
+
+
+	@ResponseBody
+	@RequestMapping("config")
+	@SystemLog(module="权限管理",methods="加载角色权限列表")//凡需要处理业务逻辑的.都需要记录操作日志
+	@Transactional(readOnly=false)//需要事务操作必须加入此注解
+	public Map<String,Object> get(HttpServletRequest request, Long cutItemId)throws Exception {
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
+		try{
+			//todo 删除原来的配置
+			cutItemRefsmallitemConfigMapper.deleteByAttribute("cut_item_id",cutItemId+"", CutItemRefsmallitemConfigFormMap.class);
+			//新增配置
+			List<CutItemRefsmallitemConfigFormMap> cutItemRefsmallitemConfigFormMapList = new ArrayList<CutItemRefsmallitemConfigFormMap>();
+			for(String item:request.getParameterValues("refItem")){
+				CutItemRefsmallitemConfigFormMap cutItemRefsmallitemConfigFormMap = getFormMap(CutItemRefsmallitemConfigFormMap.class);
+				cutItemRefsmallitemConfigFormMap.put("cut_item_id",cutItemId);
+				cutItemRefsmallitemConfigFormMap.put("ref_checksmall_id",item);
+
+				cutItemRefsmallitemConfigFormMapList.add(cutItemRefsmallitemConfigFormMap);
+			}
+			cutItemRefsmallitemConfigMapper.batchSave(cutItemRefsmallitemConfigFormMapList);
+			retMap.put("status",1);
+			retMap.put("msg","success");
+		}catch (Exception ex){
+			retMap.put("msg",ex.getMessage());
+		}
+
+		return retMap;
+
 	}
 
 

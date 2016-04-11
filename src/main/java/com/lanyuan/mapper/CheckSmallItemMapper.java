@@ -14,4 +14,5 @@ public interface CheckSmallItemMapper extends BaseMapper{
 	public Integer findLasyOrderItemCout();
 
 	List<CheckSmallItemFormMap> getAllButCustomCutedItem(String customid);
+
 }
