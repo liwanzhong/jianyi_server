@@ -5,42 +5,47 @@ $(function() {
 	grid = lyGrid({
 		pagId : 'paging',
 		l_column : [ {
-			colkey : "customid",
-			name : "会员编号"
+			colkey : "id",
+			name : "id",
+			hide:true
 		}, {
-			colkey : "customname",
+			colkey : "name",
 			name : "会员姓名"
 		}, {
-			colkey : "customsex",
-			name : "会员性别"
+			colkey : "sex",
+			name : "会员性别",
+			renderData : function(rowindex,data, rowdata, column) {
+				return data==1?'男':'女';
+			}
 		}, {
-			colkey : "custommobile",
+			colkey : "mobile",
 			name : "会员手机"
 		}, {
 			colkey : "check_time",
 			name : "检测时间",
-			isSort:true
+			renderData : function(rowindex,data, rowdata, column) {
+				return new Date(data).format("yyyy-MM-dd hh:mm:ss");
+			}
 		}, {
 			colkey : "status",
 			name : "检测状态",
-			isSort:true
-		}, {
-			name : "健康促进",
-			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				//return "<a href='http://www.baidu.com'>新增检测点</a>&nbsp;&nbsp;&nbsp;<a href='#'>查看企业</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除企业</a>";
-				console.log(rowdata.id)
-				return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a>';
+			renderData : function(rowindex,data, rowdata, column) {
+				if(data==3){
+					return '报告生成中';
+				}else if(data == 4){
+					return '报告已经生成';
+				}else{
+					return '未生成报告';
+				}
 			}
 		}, {
 			name : "报告相关操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				//return "<a href='http://www.baidu.com'>新增检测点</a>&nbsp;&nbsp;&nbsp;<a href='#'>查看企业</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除企业</a>";
-				console.log(rowdata.id)
-				return '<a class="btn btn-danger marR10" data-toggle="modal" data-target="#myModal">删除</a>';
+				return '<a href="javascript:void(0);">检测值</a>&nbsp;&nbsp;&nbsp;<a target="_blank" href="'+rootPath + '/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看报告</a>&nbsp;&nbsp;&nbsp;<a href="'+rootPath + '/examination/physicalExamination/report.shtml">下载</a>';
 			}
 		} ],
 		jsonUrl : rootPath + '/examination/physicalExamination/findByPage.shtml',
-		checkbox : true,
+		checkbox : false,
 		serNumber : true
 	});
 	$("#search").click("click", function() {// 绑定查询按扭

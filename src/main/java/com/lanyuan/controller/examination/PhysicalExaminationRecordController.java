@@ -2,10 +2,7 @@ package com.lanyuan.controller.examination;
 
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
-import com.lanyuan.entity.PhysicalExaminationBigResultFormMap;
-import com.lanyuan.entity.PhysicalExaminationMainReportFormMap;
-import com.lanyuan.entity.PhysicalExaminationRecordFormMap;
-import com.lanyuan.entity.PhysicalExaminationResultFormMap;
+import com.lanyuan.entity.*;
 import com.lanyuan.mapper.PhysicalExaminationBigResultMapper;
 import com.lanyuan.mapper.PhysicalExaminationMainReportMapper;
 import com.lanyuan.mapper.PhysicalExaminationRecordMapper;
@@ -14,8 +11,9 @@ import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
 import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.PageFilter;
-import com.lanyuan.vo.Tree;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -24,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.List;
 
 /**
  * Created by liwanzhong on 2016/2/21.
@@ -41,6 +39,59 @@ public class PhysicalExaminationRecordController extends BaseController {
     @RequestMapping("list")
     public String listUI(Model model) throws Exception {
         return Common.BACKGROUND_PATH + "/examination/physicalexaminationrecord/list";
+    }
+
+
+    @RequestMapping("client_list")
+    public String clientList(Model model) throws Exception {
+        return Common.BACKGROUND_PATH + "/front/examination/list";
+    }
+
+
+    @RequestMapping("addUI")
+    public String addUI(Model model) throws Exception {
+        return Common.BACKGROUND_PATH + "/front/examination/add";
+    }
+
+
+    @RequestMapping("report")
+    public String report(Model model) throws Exception {
+        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
+        List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList = physicalExaminationRecordMapper.findExaminationRecordCustomInfo(physicalExaminationRecordFormMap);
+        if(CollectionUtils.isEmpty(physicalExaminationRecordFormMapList)){
+            throw new Exception("参数异常");
+        }
+        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMapList.get(0));
+
+        PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = physicalExaminationMainReportMapper.findbyFrist("examination_record_id",physicalExaminationRecordFormMap.getStr("id"),PhysicalExaminationMainReportFormMap.class);
+        model.addAttribute("physicalExaminationMainReportFormMap",physicalExaminationMainReportFormMap);
+
+        PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
+        physicalExaminationBigResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getStr("id"));
+        List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = physicalExaminationBigResultMapper.findByNames(physicalExaminationBigResultFormMap);
+
+        model.addAttribute("physicalExaminationBigResultFormMapList",physicalExaminationBigResultFormMapList);
+        return Common.BACKGROUND_PATH + "/front/examination/report";
+    }
+
+
+
+    @ResponseBody
+    @RequestMapping("findByPage")
+    public PageView findByPage( String pageNow,String pageSize,String column,String sort) throws Exception {
+        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
+        physicalExaminationRecordFormMap=toFormMap(physicalExaminationRecordFormMap, pageNow, pageSize,physicalExaminationRecordFormMap.getStr("orderby"));
+        physicalExaminationRecordFormMap.put("column", column);
+        physicalExaminationRecordFormMap.put("sort", sort);
+
+        Session session = SecurityUtils.getSubject().getSession();
+        UserFormMap userFormMap = (UserFormMap)session.getAttribute("userSession");
+        if(userFormMap == null){
+            throw  new Exception("用户未登陆!");
+        }
+        physicalExaminationRecordFormMap.put("organization_id",userFormMap.getLong("organization_id"));
+        pageView.setRecords(physicalExaminationRecordMapper.findEnterprisePage(physicalExaminationRecordFormMap));
+        return pageView;
     }
 
 

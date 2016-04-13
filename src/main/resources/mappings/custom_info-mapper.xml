@@ -30,26 +30,36 @@
 	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.CustomInfoFormMap">
-		select
-		<include refid="selectId" />
+		SELECT
+		cbe.organization_id,
+		cbe.insert_time,
+		cbe.id as belongToId,
+		(SELECT
+		per.check_time
+		FROM physical_examination_record per
+		WHERE per.custom_id = ci.id AND per.organization_id = cbe.organization_id) AS last_check_time,
+		ci.id,
+		ci.idcard,
+		ci.mobile,
+		ci.name,
+		ci.sex,
+		ci.birthday,
+		ci.body_height,
+		ci.weight
 		FROM custom_beloneto_ent cbe
 		LEFT JOIN custom_info ci
-		ON ci.id = cbe.custom_id
-		LEFT JOIN ly_organization lo
-		ON cbe.organization_id = lo.id
-		where  cbe.isdelete = 0 AND ci.isvalid = 1
-		<if test="organization_id != null">
-			AND  cbe.organization_id = ${organization_id}
-		</if>
-		<if test="insert_time_start != null">
-			AND  cbe.insert_time &gt;= '${sub_point_id}'
-		</if>
-		<if test="insert_time_end != null">
-			AND cbe.insert_time &lt;= '${insert_time_end}'
-		</if>
+		ON cbe.custom_id = ci.id
+		WHERE ci.isvalid = 1 AND cbe.isdelete = 0
 		<if test="name != null">
 			AND ci.name = '${name}'
 		</if>
+		<if test="idcard != null">
+			AND ci.idcard = '${idcard}'
+		</if>
+		<if test="mobile != null">
+			AND ci.mobile = '${mobile}'
+		</if>
+		AND cbe.organization_id = ${organization_id}
 		<if test="orderby != null">
 			ORDER BY ${orderby}
 		</if>

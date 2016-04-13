@@ -23,34 +23,52 @@
 	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.PhysicalExaminationRecordFormMap">
-		select
-		<include refid="selectId" />
+		SELECT
+		per.id,
+		per.organization_id,
+		per.status,
+		per.check_time,
+		ci.mobile,
+		ci.name,
+		ci.sex
 		FROM physical_examination_record per
 		LEFT JOIN custom_info ci
 		ON per.custom_id = ci.id
-		LEFT JOIN ly_organization lo
-		ON ci.organization_id = lo.id
-		where 1 = 1
+		WHERE  per.organization_id = ${organization_id}
 		<if test="name != null">
 			AND ci.name = '${name}'
 		</if>
 		<if test="mobile != null">
 			AND ci.mobile = '${mobile}'
 		</if>
-		<if test="organization_id != null">
-			AND per.organization_id = ${organization_id}
-		</if>
 		<if test="check_time_start != null">
 			AND per.check_time &gt;= '${check_time_start}'
 		</if>
 		<if test="check_time_end != null">
-			AND per.check_time &lt;= ${check_time_end}
+			AND per.check_time &lt;= '${check_time_end}'
 		</if>
 		<if test="orderby != null">
 			ORDER BY ${orderby}
 		</if>
 	</select>
 
+
+
+	<select id="findExaminationRecordCustomInfo" resultType="com.lanyuan.entity.PhysicalExaminationRecordFormMap">
+		SELECT
+  per.id,
+  per.organization_id,
+  per.check_time,
+  ci.name,
+  ci.sex,
+  ci.birthday,
+  ci.body_height,
+  ci.weight
+FROM physical_examination_record per
+  LEFT JOIN custom_info ci
+    ON per.custom_id = ci.id
+WHERE per.id = ${id}
+	</select>
 
 
 </mapper>

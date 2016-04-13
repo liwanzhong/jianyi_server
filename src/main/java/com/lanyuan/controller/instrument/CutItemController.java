@@ -105,7 +105,7 @@ public class CutItemController extends BaseController {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
 		try{
-			//todo 删除原来的配置
+			// 删除原来的配置
 			cutItemRefsmallitemConfigMapper.deleteByAttribute("cut_item_id",cutItemId+"", CutItemRefsmallitemConfigFormMap.class);
 			//新增配置
 			List<CutItemRefsmallitemConfigFormMap> cutItemRefsmallitemConfigFormMapList = new ArrayList<CutItemRefsmallitemConfigFormMap>();
@@ -207,6 +207,26 @@ public class CutItemController extends BaseController {
 			CutItemFormMap cutItemFormMap = getFormMap(CutItemFormMap.class);
 			cutItemMapper.editEntity(cutItemFormMap);
 			retMap.put("msg","修改成功");
+			retMap.put("status",1);
+		}catch (Exception ex){
+			retMap.put("msg",ex.getMessage());
+			ex.printStackTrace();
+		}
+		return retMap;
+	}
+
+
+	@ResponseBody
+	@RequestMapping("loadCutItems")
+	@SystemLog(module="权限组管理",methods="修改权限组")//凡需要处理业务逻辑的.都需要记录操作日志
+	@Transactional(readOnly=false)//需要事务操作必须加入此注解
+	public Map<String,Object>  loadCutItems(Model model) {
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
+		try {
+			CutItemFormMap cutItemFormMap = getFormMap(CutItemFormMap.class);
+			List<CutItemFormMap> cutItemFormMapList = cutItemMapper.findByNames(cutItemFormMap);
+			retMap.put("data",cutItemFormMapList);
 			retMap.put("status",1);
 		}catch (Exception ex){
 			retMap.put("msg",ex.getMessage());

@@ -6,40 +6,35 @@ $(function() {
 		pagId : 'paging',
 		l_column : [ {
 			colkey : "id",
-			name : "会员编号"
+			name : "会员编号",
+			hide:true
 		}, {
 			colkey : "name",
-			name : "会员姓名",
-			isSort:true
+			name : "会员姓名"
 		}, {
 			colkey : "sex",
 			name : "会员性别",
-			isSort:true,
 			renderData : function(rowindex,data, rowdata, column) {
 				return data==1?'男':'女';
 			}
 		}, {
 			colkey : "mobile",
-			name : "会员手机",
-			isSort:true
+			name : "会员手机"
 		}, {
 			colkey : "bmi",
 			name : "BMI",
-			isSort:true,
 			renderData : function(rowindex,data, rowdata, column) {
-				return rowdata.body_height/rowdata.weight;
+				return (rowdata.body_height/rowdata.weight).toFixed(3);
 			}
 		}, {
 			colkey : "insert_time",
 			name : "注册时间",
-			isSort:true,
 			renderData : function(rowindex,data, rowdata, column) {
 				return new Date(data).format("yyyy-MM-dd hh:mm:ss");
 			}
 		}, {
-			colkey : "lastcheck_time",
+			colkey : "last_check_time",
 			name : "最近一次检测",
-			isSort:true,
 			renderData : function(rowindex,data, rowdata, column) {
 				if(data!=''){
 					return new Date(data).format("yyyy-MM-dd hh:mm:ss");
@@ -51,31 +46,22 @@ $(function() {
 		}, {
 			name : "操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				return "<a href='#'>编辑</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem());'>删除</a>";
+				return "<a href='#'>编辑</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem("+rowdata.belongToId+"));'>删除</a>";
 			}
 		} ],
 		jsonUrl : rootPath + '/custom/info/findByPage.shtml',
-		checkbox : true,
+		checkbox : false,
 		serNumber : true
 	});
 	$("#search").click("click", function() {// 绑定查询按扭
 		var searchParams = $("#searchForm").serializeJson();// 初始化传参数
+		console.log(searchParams);
 		grid.setOptions({
 			data : searchParams
 		});
 	});
-	$("#addFun").click("click", function() {
-		addAccount();
-	});
-	$("#editFun").click("click", function() {
-		editAccount();
-	});
-	$("#delFun").click("click", function() {
-		delAccount();
-	});
-	$("#permissions").click("click", function() {
-		permissions();
-	});
+
+
 });
 function editAccount() {
 	var cbox = grid.getSelectedCheckbox();
@@ -90,6 +76,8 @@ function editAccount() {
 		content : rootPath + '/custom/info/editUI.shtml?id=' + cbox
 	});
 }
+
+
 function addAccount() {
 	pageii = layer.open({
 		title : "新增",
@@ -98,20 +86,15 @@ function addAccount() {
 		content : rootPath + '/custom/info/addUI.shtml'
 	});
 }
-function delAccount() {
-	var cbox = grid.getSelectedCheckbox();
-	console.log(grid);
-	if (cbox == "") {
-		layer.msg("请选择删除项！！");
-		return;
-	}
-	layer.confirm('是否删除？', function(index) {
-		var url = rootPath + '/custom/info/deleteEntity.shtml';
+function deleteCurrentitem(id) {
+	layer.confirm('是否需要删除当前会员？', function(index) {
+		var url = rootPath + '/custom/info/delete.shtml';
 		var s = CommnUtil.ajax(url, {
-			ids : cbox.join(",")
+			'customBelonetoEntFormMap.id' : id
 		}, "json");
-		if (s == "success") {
+		if (s.status ==1) {
 			layer.msg('删除成功');
+			console.log(grid);
 			grid.loadData();
 		} else {
 			layer.msg('删除失败');

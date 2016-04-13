@@ -79,57 +79,7 @@ public class CustomController extends BaseController {
 		return pageView;
 	}
 
-	@RequestMapping("toVerify")
-	public String toVerify(Model model) throws Exception {
-		return Common.BACKGROUND_PATH + "/custom/info/verify";
-	}
 
-	@ResponseBody
-	@RequestMapping("verify")
-	@SystemLog(module="会员管理",methods="验证会员信息")//凡需要处理业务逻辑的.都需要记录操作日志
-	public Map<String,Object> verify(@RequestParam(value = "cardid") String cardid){
-		Map<String,Object> retMap = new HashMap<String, Object>();
-		retMap.put("cardid",cardid);
-		try {
-
-			Session session = SecurityUtils.getSubject().getSession();
-			UserEntrelationFormMap userEntrelationFormMap = (UserEntrelationFormMap)session.getAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION);
-
-			if(userEntrelationFormMap == null){
-				retMap.put("custom_status",-1);
-				retMap.put("msg","登录用户非企业用户，请切换账号继续操作！");
-				return retMap;
-			}
-
-			//todo 验证系统是否存在这样的一个用户
-			CustomInfoFormMap customInfoFormMap = customInfoMapper.findbyFrist("idcard",cardid,CustomInfoFormMap.class);
-			if(customInfoFormMap == null){
-				retMap.put("custom_status",0);
-				retMap.put("msg","当前验证会员为系统新会员！");
-				return retMap;
-			}else{
-				//todo 验证会员是否已经跟当前企业绑定了关系
-				CustomBelonetoEntFormMap findNameT = new CustomBelonetoEntFormMap();
-				findNameT.put("ent_id",userEntrelationFormMap.get("ent_id").toString());
-				findNameT.put("sub_ent_point_id",userEntrelationFormMap.get("sub_point_id").toString());
-				findNameT.put("custom_id",customInfoFormMap.get("id"));
-				findNameT.put("isdelete",0);
-				List<CustomBelonetoEntFormMap> customBelonetoEntFormMapList =null; //customBelonetoEntMapper.findByNames(findNameT);
-				if(CollectionUtils.isNotEmpty(customBelonetoEntFormMapList)){
-					retMap.put("custom_status",2);
-					retMap.put("msg","当前检测点已经绑定当前会员，无需创建！");
-				}else{
-					retMap.put("custom_status",1);
-					retMap.put("msg","系统已经存在当前会员，是否绑定当前会员！");
-				}
-				retMap.put("data",customInfoFormMap);
-
-			}
-		} catch (Exception e) {
-			throw new SystemException("验证会员信息异常["+e.getMessage()+"]");
-		}
-		return retMap;
-	}
 
 
 

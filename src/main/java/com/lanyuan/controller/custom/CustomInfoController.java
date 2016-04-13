@@ -4,31 +4,32 @@ package com.lanyuan.controller.custom;
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.CustomBelonetoEntFormMap;
+import com.lanyuan.entity.CustomCutItemFormMap;
 import com.lanyuan.entity.CustomInfoFormMap;
-import com.lanyuan.entity.UserEntrelationFormMap;
+import com.lanyuan.entity.UserFormMap;
+import com.lanyuan.exception.SystemException;
 import com.lanyuan.mapper.CustomBelonetoEntMapper;
 import com.lanyuan.mapper.CustomCutItemMapper;
 import com.lanyuan.mapper.CustomInfoMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
-import com.lanyuan.util.CommonConstants;
 import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.PageFilter;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -60,7 +61,7 @@ public class CustomInfoController extends BaseController {
 
 	@RequestMapping("list_client")
 	public String list_client(Model model) throws Exception {
-		return Common.BACKGROUND_PATH + "/front/member-list";
+		return Common.BACKGROUND_PATH + "/front/custom/list";
 	}
 
 
@@ -71,21 +72,18 @@ public class CustomInfoController extends BaseController {
 		customInfoFormMap=toFormMap(customInfoFormMap, pageNow, pageSize,customInfoFormMap.getStr("orderby"));
 		customInfoFormMap.put("column", column);
 		customInfoFormMap.put("sort", sort);
-		// 获取当前登录用户的企业和检测点
+		// 获取当前登录用户所在企业的会员列表
 		Session session = SecurityUtils.getSubject().getSession();
-		UserEntrelationFormMap userEntrelationFormMap = (UserEntrelationFormMap)session.getAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION);
-
-		if(userEntrelationFormMap!=null){//为空表示是系统管理用户,不为空表示是企业的用户
-			String ent_id = userEntrelationFormMap.get("ent_id").toString();
-			String sub_point_id = userEntrelationFormMap.get("sub_point_id").toString();
-
-			customInfoFormMap.put("ent_id",ent_id);
-			customInfoFormMap.put("sub_point_id",sub_point_id);
+		UserFormMap userFormMap = (UserFormMap)session.getAttribute("userSession");
+		if(userFormMap == null){
+			throw  new Exception("用户未登陆!");
 		}
-
-		pageView.setRecords(customInfoMapper.findEnterprisePage(customInfoFormMap));//不调用默认分页,调用自已的mapper中findUserPage
+		customInfoFormMap.put("organization_id",userFormMap.getLong("organization_id"));
+		pageView.setRecords(customInfoMapper.findEnterprisePage(customInfoFormMap));
 		return pageView;
 	}
+
+
 
 	@RequestMapping("addPage")
 	public String addPage(Model model) throws Exception {
@@ -97,6 +95,17 @@ public class CustomInfoController extends BaseController {
 		CustomInfoFormMap customInfoFormMap = customInfoMapper.findbyFrist("id",id,CustomInfoFormMap.class);
 		model.addAttribute("customInfoFormMap",customInfoFormMap);
 		return Common.BACKGROUND_PATH + "/custom/info/edit";
+	}
+
+
+	@RequestMapping("addUI")
+	public String addUI(Model model,String customid,String idcard) throws Exception {
+		if(StringUtils.isNotBlank(customid)){
+			CustomInfoFormMap customInfoFormMap = customInfoMapper.findbyFrist("id",customid,CustomInfoFormMap.class);
+			model.addAttribute("customInfoFormMap",customInfoFormMap);
+		}
+		model.addAttribute("idcard",idcard);
+		return Common.BACKGROUND_PATH + "/front/custom/add";
 	}
 
 
@@ -128,17 +137,67 @@ public class CustomInfoController extends BaseController {
 	@RequestMapping("add")
 	@SystemLog(module="用户管理",methods="新增用户")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	public Map<String,Object> add(){
+	public Map<String,Object> add(HttpServletRequest request){
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
 		try {
+
+			Session session = SecurityUtils.getSubject().getSession();
+			UserFormMap userFormMap = (UserFormMap)session.getAttribute("userSession");
+			if(userFormMap == null){
+				throw  new Exception("用户未登陆!");
+			}
+
 			CustomInfoFormMap customInfoFormMap = getFormMap(CustomInfoFormMap.class);
 			customInfoFormMap.put("insert_time",dateFormat.format(new Date()));
 			customInfoFormMap.put("update_time",dateFormat.format(new Date()));
-			customInfoMapper.addEntity(customInfoFormMap);
-			retMap.put("msg","添加成功");
+			customInfoFormMap.put("isvalid",1);
+			customInfoFormMap.put("organization_id",userFormMap.getLong("organization_id"));
+
+			boolean isNewCustom =false;
+			if(customInfoFormMap.getLong("id") == null){
+				customInfoMapper.addEntity(customInfoFormMap);
+				isNewCustom = true;
+			}else{
+				customInfoMapper.editEntity(customInfoFormMap);
+			}
+
+
+			//todo 保存切割项
+			//删除原来的切割项
+			if(!isNewCustom){
+				customCutItemMapper.deleteByAttribute("custom_id",customInfoFormMap.get("id").toString(), CustomCutItemFormMap.class);
+			}
+			String [] cutItemsArray =  request.getParameterValues("cut_item");
+			List<CustomCutItemFormMap> customCutItemFormMapList = new ArrayList<CustomCutItemFormMap>();
+			for(String item:cutItemsArray){
+				CustomCutItemFormMap customCutItemFormMap = getFormMap(CustomCutItemFormMap.class);
+				customCutItemFormMap.put("cut_item_id",item);
+				customCutItemFormMap.put("custom_id",customInfoFormMap.getLong("id"));
+
+				customCutItemFormMapList.add(customCutItemFormMap);
+			}
+
+			if(CollectionUtils.isNotEmpty(customCutItemFormMapList)){
+				customCutItemMapper.batchSave(customCutItemFormMapList);
+			}
+
+
+
+
+
+			//todo 保存完用户以后，绑定关系
+			CustomBelonetoEntFormMap customBelonetoEntFormMap = getFormMap(CustomBelonetoEntFormMap.class);
+			customBelonetoEntFormMap.put("custom_id",customInfoFormMap.getLong("id"));
+			customBelonetoEntFormMap.put("organization_id",userFormMap.getLong("organization_id"));
+			customBelonetoEntFormMap.put("insert_time",dateFormat.format(new Date()));
+			customBelonetoEntFormMap.put("isdelete",0);
+			customBelonetoEntMapper.addEntity(customBelonetoEntFormMap);
+
+			retMap.put("msg","绑定用户成功");
 			retMap.put("status",1);
 		}catch (Exception ex){
+			ex.printStackTrace();
 			retMap.put("msg",ex.getMessage());
 		}
 		return retMap;
@@ -154,8 +213,9 @@ public class CustomInfoController extends BaseController {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
 		try {
-			CustomInfoFormMap customInfoFormMap = getFormMap(CustomInfoFormMap.class);
-			customBelonetoEntMapper.deleteByAttribute("id",customInfoFormMap.get("id").toString(), CustomBelonetoEntFormMap.class);
+			CustomBelonetoEntFormMap customBelonetoEntFormMap = getFormMap(CustomBelonetoEntFormMap.class);
+			customBelonetoEntFormMap.put("isdelete",1);
+			customBelonetoEntMapper.editEntity(customBelonetoEntFormMap);
 			retMap.put("msg","删除成功");
 			retMap.put("status",1);
 		}catch (Exception ex){
@@ -184,6 +244,67 @@ public class CustomInfoController extends BaseController {
 		}catch (Exception ex){
 			retMap.put("msg",ex.getMessage());
 			ex.printStackTrace();
+		}
+		return retMap;
+	}
+
+
+
+	@RequestMapping("toVerify")
+	public String toVerify(Model model) throws Exception {
+		return Common.BACKGROUND_PATH + "/front/custom/check";
+	}
+
+
+
+	@ResponseBody
+	@RequestMapping("verify")
+	@SystemLog(module="会员管理",methods="验证会员信息")//凡需要处理业务逻辑的.都需要记录操作日志
+	public Map<String,Object> verify(@RequestParam(value = "customInfoFormMap.idCard") String idCard){
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("cardid",idCard);
+		try {
+			if(StringUtils.isBlank(idCard)){
+				throw new SystemException("请输入完整的身份证号！");
+			}
+			Session session = SecurityUtils.getSubject().getSession();
+			UserFormMap userFormMap = (UserFormMap)session.getAttribute("userSession");
+			if(userFormMap == null){
+				throw  new Exception("用户未登陆!");
+			}
+
+
+			//todo 验证系统是否存在这样的一个用户
+			CustomInfoFormMap customInfoFormMap = customInfoMapper.findbyFrist("idcard",idCard,CustomInfoFormMap.class);
+			if(customInfoFormMap == null){
+				retMap.put("custom_status",0);
+				retMap.put("msg","当前验证会员为系统新会员！");
+				return retMap;
+			}else{
+				// 验证会员是否已经跟当前企业绑定了关系
+
+				CustomBelonetoEntFormMap customBelonetoEntFormMap = getFormMap(CustomBelonetoEntFormMap.class);
+				customBelonetoEntFormMap.put("organization_id",userFormMap.getLong("organization_id"));
+				customBelonetoEntFormMap.put("custom_id",customInfoFormMap.getLong("id"));
+				customBelonetoEntFormMap.put("isdelete",0);
+
+				List<CustomBelonetoEntFormMap> customBelonetoEntFormMapList = customBelonetoEntMapper.findByNames(customBelonetoEntFormMap);
+
+				if(CollectionUtils.isNotEmpty(customBelonetoEntFormMapList)){
+					retMap.put("custom_status",2);
+					retMap.put("msg","当前检测点已经绑定当前会员，无需创建！");
+				}else{
+					retMap.put("custom_status",1);
+					retMap.put("msg","系统已经存在当前会员，是否绑定当前会员！");
+				}
+				retMap.put("data",customInfoFormMap);
+
+			}
+		} catch (Exception e) {
+//			throw new SystemException("验证会员信息异常["+e.getMessage()+"]");
+			retMap.put("custom_status",-1);
+			retMap.put("msg",e.getMessage());
+			e.printStackTrace();
 		}
 		return retMap;
 	}
