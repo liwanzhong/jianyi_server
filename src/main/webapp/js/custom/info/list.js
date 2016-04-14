@@ -46,7 +46,7 @@ $(function() {
 		}, {
 			name : "操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				return "<a href='#'>编辑</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem("+rowdata.belongToId+"));'>删除</a>";
+				return "<a href='javascript:void(genTestData("+rowdata.belongToId+","+7+"))'>生成检测数据</a>&nbsp;&nbsp;&nbsp;<a href='#'>编辑</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem("+rowdata.belongToId+"));'>删除</a>";
 			}
 		} ],
 		jsonUrl : rootPath + '/custom/info/findByPage.shtml',
@@ -75,6 +75,23 @@ function editAccount() {
 		area : [ "600px", "80%" ],
 		content : rootPath + '/custom/info/editUI.shtml?id=' + cbox
 	});
+}
+
+
+
+function genTestData(customBelongToId,instrumentId){
+	var url = rootPath + '/citfc/client_call/check/upload.shtml';
+	var s = CommnUtil.ajax(url, {
+		customBelongToId : customBelongToId,
+		instrumentId:instrumentId
+	}, "json");
+	if (s.status ==1) {
+		layer.msg('生成测算数据成功!');
+		grid.loadData();
+	} else {
+		layer.msg('生成测算数据失败');
+	}
+
 }
 
 
