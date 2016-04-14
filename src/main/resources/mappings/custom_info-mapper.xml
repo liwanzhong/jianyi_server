@@ -65,7 +65,7 @@
 		(SELECT
 		per.check_time
 		FROM physical_examination_record per
-		WHERE per.custom_id = ci.id AND per.organization_id = cbe.organization_id) AS last_check_time,
+		WHERE per.custom_id = ci.id AND per.organization_id = cbe.organization_id ORDER BY per.check_time DESC LIMIT 1) AS last_check_time,
 		ci.id,
 		ci.idcard,
 		ci.mobile,
