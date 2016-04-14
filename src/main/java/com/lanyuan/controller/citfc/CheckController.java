@@ -73,7 +73,7 @@ public class CheckController extends BaseController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "upload", method = RequestMethod.GET, produces = "text/json; charset=utf-8")
+	@RequestMapping(value = "upload",  produces = "text/json; charset=utf-8")
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	public Map<String,Object> login(@RequestParam(value = "customBelongToId",defaultValue = "1") String customBelongToId,@RequestParam(value = "instrumentId",defaultValue = "7") String instrumentId) {
 		Map<String,Object> retMap = new HashMap<String, Object>();
@@ -251,7 +251,7 @@ public class CheckController extends BaseController {
 
 				physicalExaminationMainReportMapper.addEntity(physicalExaminationMainReportFormMap);
 			}
-
+			retMap.put("status",1);
 
 		} catch (Exception e) {
 			e.printStackTrace();
