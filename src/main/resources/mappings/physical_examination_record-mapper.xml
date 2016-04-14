@@ -24,6 +24,34 @@
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.PhysicalExaminationRecordFormMap">
 		SELECT
+		<include refid="selectId" />
+		FROM physical_examination_record per
+		LEFT JOIN custom_info ci
+		ON per.custom_id = ci.id
+		LEFT JOIN ly_organization lo
+		ON lo.id = per.organization_id
+		WHERE  1=1
+		<if test="name != null">
+			AND ci.name = '${name}'
+		</if>
+		<if test="mobile != null">
+			AND ci.mobile = '${mobile}'
+		</if>
+		<if test="check_time_start != null">
+			AND per.check_time &gt;= '${check_time_start}'
+		</if>
+		<if test="check_time_end != null">
+			AND per.check_time &lt;= '${check_time_end}'
+		</if>
+		<if test="orderby != null">
+			ORDER BY ${orderby}
+		</if>
+	</select>
+
+
+
+	<select id="findEnterprisePage_Front" resultType="com.lanyuan.entity.PhysicalExaminationRecordFormMap">
+		SELECT
 		per.id,
 		per.organization_id,
 		per.status,

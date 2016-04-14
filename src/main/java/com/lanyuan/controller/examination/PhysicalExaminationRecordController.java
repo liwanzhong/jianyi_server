@@ -90,7 +90,7 @@ public class PhysicalExaminationRecordController extends BaseController {
             throw  new Exception("用户未登陆!");
         }
         physicalExaminationRecordFormMap.put("organization_id",userFormMap.getLong("organization_id"));
-        pageView.setRecords(physicalExaminationRecordMapper.findEnterprisePage(physicalExaminationRecordFormMap));
+        pageView.setRecords(physicalExaminationRecordMapper.findEnterprisePage_Front(physicalExaminationRecordFormMap));
         return pageView;
     }
 

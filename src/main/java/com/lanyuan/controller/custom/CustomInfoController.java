@@ -79,7 +79,7 @@ public class CustomInfoController extends BaseController {
 			throw  new Exception("用户未登陆!");
 		}
 		customInfoFormMap.put("organization_id",userFormMap.getLong("organization_id"));
-		pageView.setRecords(customInfoMapper.findEnterprisePage(customInfoFormMap));
+		pageView.setRecords(customInfoMapper.findEnterprisePage_front(customInfoFormMap));
 		return pageView;
 	}
 

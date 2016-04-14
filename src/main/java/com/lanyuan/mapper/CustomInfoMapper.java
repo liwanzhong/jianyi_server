@@ -10,5 +10,9 @@ import java.util.List;
 public interface CustomInfoMapper extends BaseMapper{
 
 	public List<CustomInfoFormMap> findEnterprisePage(CustomInfoFormMap customInfoFormMap);
+
+	public List<CustomInfoFormMap> findEnterprisePage_front(CustomInfoFormMap customInfoFormMap);
+
+
 	
 }

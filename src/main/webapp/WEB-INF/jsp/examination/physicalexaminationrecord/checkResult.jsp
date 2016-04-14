@@ -39,7 +39,7 @@
                        <td>区间分值</td>
                        <td>测量值</td>
                        <td> 得分</td>
-                       <td>原功能等级（${item.leve}）</td>
+                       <td>功能等级（${item.leve}）</td>
                        <td>权重</td>
                        <td>&nbsp;</td>
                    </tr>

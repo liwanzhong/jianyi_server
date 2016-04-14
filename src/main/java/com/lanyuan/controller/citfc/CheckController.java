@@ -85,6 +85,14 @@ public class CheckController extends BaseController {
 				throw new Exception("无此用户!");
 			}
 
+			CustomInfoFormMap customInfoFormMap = getFormMap(CustomInfoFormMap.class);
+			customInfoFormMap.put("id",customBelonetoEntFormMap.getLong("custom_id"));
+			List<CustomInfoFormMap> customInfoFormMapList = customInfoMapper.findByNames(customInfoFormMap);
+			if(CollectionUtils.isEmpty(customInfoFormMapList)){
+				throw new Exception("无此用户!");
+			}
+			customInfoFormMap = customInfoFormMapList.get(0);
+
 			// 保存检测记录
 			PhysicalExaminationRecordFormMap recordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
 			recordFormMap.put("custom_id",customBelonetoEntFormMap.getLong("custom_id"));
@@ -103,7 +111,6 @@ public class CheckController extends BaseController {
 				// 获取评分标准
 				List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList = cfPingfenLeveMapper.findByNames(getFormMap(CfPingfenLeveFormMap.class));
 
-				List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = new ArrayList<PhysicalExaminationResultFormMap>();
 
 				Map<Long,List<PhysicalExaminationResultFormMap>> itemMap =  new HashMap<Long, List<PhysicalExaminationResultFormMap>>();
 
@@ -128,12 +135,11 @@ public class CheckController extends BaseController {
 					BigDecimal M = n.divide(new BigDecimal(20.0),3, RoundingMode.HALF_UP);
 					physicalExaminationResultFormMap.put("in_value_score",M);
 					//随机生成
-					Random random = new Random();
 					int max = physicalExaminationResultFormMap.getBigDecimal("gen_max_value").multiply(new BigDecimal(1000)).intValue();
 					int min = physicalExaminationResultFormMap.getBigDecimal("gen_min_value").multiply(new BigDecimal(1000)).intValue();
 					int randomNumber = (int) Math.round(Math.random()*(max-min)+min);
 
-					BigDecimal A = new BigDecimal(randomNumber/1000);
+					BigDecimal A = new BigDecimal(randomNumber/1000d);
 					physicalExaminationResultFormMap.put("check_value",A);
 
 					BigDecimal B = new BigDecimal(100).subtract((A.subtract(n1).divide(M,3,BigDecimal.ROUND_HALF_UP))) ;
@@ -151,7 +157,7 @@ public class CheckController extends BaseController {
 					BigDecimal Sco = B.multiply(checkSmallItemFormMap.getBigDecimal("quanzhong"));
 					physicalExaminationResultFormMap.put("quanzhong_score",Sco);
 
-					physicalExaminationResultFormMapList.add(physicalExaminationResultFormMap);
+					physicalExaminationResultMapper.addEntity(physicalExaminationResultFormMap);
 
 					Set<Long> keySet = itemMap.keySet();
 					List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapListIn = null;
@@ -164,7 +170,6 @@ public class CheckController extends BaseController {
 					itemMap.put(physicalExaminationResultFormMap.getLong("bit_item_id"),physicalExaminationResultFormMapListIn);
 
 				}
-				physicalExaminationResultMapper.batchSave(physicalExaminationResultFormMapList);
 
 				// 获取所有的检测大项
 				List<CheckBigItemFormMap> checkBigItemFormMapList = checkBigItemMapper.findByNames(getFormMap(CheckBigItemFormMap.class));
@@ -191,7 +196,7 @@ public class CheckController extends BaseController {
 							physicalExaminationBigResultFormMap.put("check_score",checkScore);
 
 							for(CheckBigItemFormMap checkBigItemFormMap:checkBigItemFormMapList){
-								if(checkBigItemFormMap.getLong("id")==key){
+								if(checkBigItemFormMap.getLong("id").longValue()==key){
 									physicalExaminationBigResultFormMap.put("gen_quanzhong",checkBigItemFormMap.getBigDecimal("quanzhong"));
 									break;
 								}
@@ -202,17 +207,29 @@ public class CheckController extends BaseController {
 									break;
 								}
 							}
+							//配置项是否与性别有关系
+							boolean isFix = true;
+							for(CheckBigItemFormMap checkBigItemFormMap:checkBigItemFormMapList){
+								if(checkBigItemFormMap.getLong("id").longValue() == physicalExaminationBigResultFormMap.getLong("big_item_id").longValue()){
+									Integer withSex = checkBigItemFormMap.getInt("withsex");
+									if(withSex == null || withSex == 0 || withSex.intValue() == customInfoFormMap.getInt("sex")){
+										isFix = true;
+									}else{
+										isFix = false;
+									}
+									break;
+								}
 
-							physicalExaminationBigResultFormMapList.add(physicalExaminationBigResultFormMap);
+							}
+							if(isFix){
+								physicalExaminationBigResultMapper.addEntity(physicalExaminationBigResultFormMap);
+								physicalExaminationBigResultFormMapList.add(physicalExaminationBigResultFormMap);
+							}
+
 
 						}
 					}
 				}
-				if(CollectionUtils.isNotEmpty(physicalExaminationBigResultFormMapList)){
-					physicalExaminationBigResultMapper.batchSave(physicalExaminationBigResultFormMapList);
-				}
-
-
 
 				//todo 保存总评
 				PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = getFormMap(PhysicalExaminationMainReportFormMap.class);
@@ -223,7 +240,7 @@ public class CheckController extends BaseController {
 				for(PhysicalExaminationBigResultFormMap item:physicalExaminationBigResultFormMapList){
 					totalScore = totalScore.add(item.getBigDecimal("gen_quanzhong").multiply(item.getBigDecimal("check_score")));
 				}
-				physicalExaminationMainReportFormMap.put("check_total_score",totalScore.divide(new BigDecimal(physicalExaminationBigResultFormMapList.size())));
+				physicalExaminationMainReportFormMap.put("check_total_score",totalScore.divide(new BigDecimal(physicalExaminationBigResultFormMapList.size()),3, RoundingMode.HALF_UP));
 
 				for(CfPingfenLeveFormMap item:cfPingfenLeveFormMapList){
 					if(item.getDouble("pingfen_min")<=physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").doubleValue() && item.getDouble("pingfen_max")>=physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").doubleValue()){
@@ -247,6 +264,20 @@ public class CheckController extends BaseController {
 
 
 
+	public static void main(String [] args){
+		for(int i=0;i<1000;i++){
+			int max = new BigDecimal(6.215).multiply(new BigDecimal(1000)).intValue();
+			int min =new BigDecimal(0.856).multiply(new BigDecimal(1000)).intValue();
+			int randomNumber = (int) Math.round(Math.random()*(max-min)+min);
+
+			BigDecimal A = new BigDecimal(randomNumber/1000d);
+			if(A.setScale(3,BigDecimal.ROUND_HALF_UP).doubleValue()<min || A.setScale(3,BigDecimal.ROUND_HALF_UP).doubleValue()>max){
+				System.out.println(A.setScale(3,BigDecimal.ROUND_HALF_UP));
+			}
+
+		}
+
+	}
 
 
 
