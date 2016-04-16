@@ -69,6 +69,10 @@ SELECT
       cpl.name
     FROM cf_pingfen_leve cpl
     WHERE cpl.id = per.orgin_leve_id) AS orgin_leve_id,
+    (SELECT
+      cpl.name
+    FROM cf_pingfen_leve cpl
+    WHERE cpl.id = per.tzed_leve_id) AS tzed_leve_id,
   per.gen_quanzhong,
   per.quanzhong_score,
   csi.name

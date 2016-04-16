@@ -12,4 +12,6 @@ public interface CfPingfenRoutMapper extends BaseMapper{
 	public List<CfPingfenRoutFormMap> findEnterprisePage(CfPingfenRoutFormMap cfPingfenRoutFormMap);
 
 	public Integer findLasyOrderItemCout();
+
+	List<CfPingfenRoutFormMap> findSmallItemRout(CfPingfenRoutFormMap cfPingfenRoutFormMap);
 }

@@ -3,11 +3,11 @@ package com.lanyuan.controller.citfc;
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.*;
 import com.lanyuan.mapper.*;
+import com.lanyuan.util.AgeCal;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -58,6 +58,10 @@ public class CheckController extends BaseController {
 
 	@Inject
 	private PhysicalExaminationBigResultMapper physicalExaminationBigResultMapper;
+
+
+	@Inject
+	private CfPingfenRoutMapper cfPingfenRoutMapper;
 
 
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -154,6 +158,31 @@ public class CheckController extends BaseController {
 						}
 					}
 
+
+					// 查找小项等级评分调整概率
+					CfPingfenRoutFormMap cfPingfenRoutFormMap = getFormMap(CfPingfenRoutFormMap.class);
+					// 计算用户年龄
+					Date birthday = customInfoFormMap.getDate("birthday");
+					cfPingfenRoutFormMap.put("age",AgeCal.getAge(birthday));
+					cfPingfenRoutFormMap.put("small_id",checkSmallItemFormMap.getLong("id"));
+					cfPingfenRoutFormMap.put("orgin_pingfen_id",physicalExaminationResultFormMap.getLong("orgin_leve_id"));
+					List<CfPingfenRoutFormMap> cfPingfenRoutFormMapList = cfPingfenRoutMapper.findSmallItemRout(cfPingfenRoutFormMap);
+					if(CollectionUtils.isNotEmpty(cfPingfenRoutFormMapList)){
+						cfPingfenRoutFormMap = cfPingfenRoutFormMapList.get(0);
+
+						int maxTz = 0;
+						int minTz = 1000;
+						int randomNumberTz = (int) Math.round(Math.random()*(maxTz-minTz)+minTz);
+
+						if(randomNumberTz >=cfPingfenRoutFormMap.getDouble("rout_min")*1000 && randomNumberTz<=cfPingfenRoutFormMap.getDouble("rout_max")*1000){
+							physicalExaminationResultFormMap.put("tzed_leve_id",cfPingfenRoutFormMap.getLong("tz_pingfen_id"));
+							//todo 反向设置调整后检测值 （需要反向计算，然后设置这个值）先拿到小项得分，然后根据公式反向出来一个随机的值
+
+						}
+					}
+
+					//根据调整概率，生成新的功能等级
+
 					BigDecimal Sco = B.multiply(checkSmallItemFormMap.getBigDecimal("quanzhong"));
 					physicalExaminationResultFormMap.put("quanzhong_score",Sco);
 
@@ -237,10 +266,12 @@ public class CheckController extends BaseController {
 
 				//todo 计算总分
 				BigDecimal totalScore = new BigDecimal(0);
+				BigDecimal totalQuanzhong = new BigDecimal(0);
 				for(PhysicalExaminationBigResultFormMap item:physicalExaminationBigResultFormMapList){
-					totalScore = totalScore.add(item.getBigDecimal("gen_quanzhong").multiply(item.getBigDecimal("check_score")));
+					totalScore = totalScore.add(item.getBigDecimal("check_score"));
+					totalQuanzhong = totalQuanzhong.add(item.getBigDecimal("gen_quanzhong"));
 				}
-				physicalExaminationMainReportFormMap.put("check_total_score",totalScore.divide(new BigDecimal(physicalExaminationBigResultFormMapList.size()),3, RoundingMode.HALF_UP));
+				physicalExaminationMainReportFormMap.put("check_total_score",totalScore.divide(totalQuanzhong,3, RoundingMode.HALF_UP));
 
 				for(CfPingfenLeveFormMap item:cfPingfenLeveFormMapList){
 					if(item.getDouble("pingfen_min")<=physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").doubleValue() && item.getDouble("pingfen_max")>=physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").doubleValue()){

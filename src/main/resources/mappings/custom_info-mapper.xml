@@ -44,7 +44,7 @@
 			AND  cbe.organization_id = ${organization_id}
 		</if>
 		<if test="insert_time_start != null">
-			AND  cbe.insert_time &gt;= ${sub_point_id}
+			AND  cbe.insert_time &gt;= ${insert_time_start}
 		</if>
 		<if test="insert_time_end != null">
 			AND cbe.insert_time &lt;= '${insert_time_end}'

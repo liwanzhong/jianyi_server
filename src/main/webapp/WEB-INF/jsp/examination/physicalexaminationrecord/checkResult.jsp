@@ -39,7 +39,8 @@
                        <td>区间分值</td>
                        <td>测量值</td>
                        <td> 得分</td>
-                       <td>功能等级（${item.leve}）</td>
+                       <td>原功能等级（${item.leve}）</td>
+                       <td>调整功能等级（${item.leve}）</td>
                        <td>权重</td>
                        <td>&nbsp;</td>
                    </tr>
@@ -55,6 +56,7 @@
                                <td>${smItem.check_value}</td>
                                <td> ${smItem.item_score}</td>
                                <td>${smItem.orgin_leve_id}</td>
+                               <td>${smItem.tzed_leve_id}</td>
                                <td>${smItem.gen_quanzhong}</td>
                                <td>${smItem.quanzhong_score}</td>
                            </tr>

@@ -75,6 +75,26 @@ public class PhysicalExaminationRecordController extends BaseController {
     }
 
 
+    @RequestMapping("report_big_item")
+    public String report_big_item(Model model,String pageNow,Long recordId,Long bigItemId) throws Exception {
+        String pageSize = "1";
+        PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
+        physicalExaminationBigResultFormMap=toFormMap(physicalExaminationBigResultFormMap, pageNow, pageSize,physicalExaminationBigResultFormMap.getStr("orderby"));
+        physicalExaminationBigResultFormMap.put("column", "order_by");
+        physicalExaminationBigResultFormMap.put("sort", "ASC");
+        physicalExaminationBigResultFormMap.put("examination_record_id",recordId);
+        physicalExaminationBigResultFormMap.put("id",bigItemId);
+
+        pageView.setRecords(physicalExaminationBigResultMapper.findEnterprisePage(physicalExaminationBigResultFormMap));
+
+       //todo 查出当前检测大项下的检测小项检测结果
+        PhysicalExaminationResultFormMap physicalExaminationResultFormMap = getFormMap(PhysicalExaminationResultFormMap.class);
+//        physicalExaminationResultFormMap.put("",);
+        List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = physicalExaminationResultMapper.findByNames(physicalExaminationResultFormMap);
+        return Common.BACKGROUND_PATH + "/front/examination/report";
+    }
+
+
 
     @ResponseBody
     @RequestMapping("findByPage")
