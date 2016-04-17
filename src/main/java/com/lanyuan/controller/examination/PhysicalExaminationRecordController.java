@@ -8,6 +8,7 @@ import com.lanyuan.mapper.PhysicalExaminationMainReportMapper;
 import com.lanyuan.mapper.PhysicalExaminationRecordMapper;
 import com.lanyuan.mapper.PhysicalExaminationResultMapper;
 import com.lanyuan.plugin.PageView;
+import com.lanyuan.util.AgeCal;
 import com.lanyuan.util.Common;
 import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.PageFilter;
@@ -65,6 +66,8 @@ public class PhysicalExaminationRecordController extends BaseController {
         if(CollectionUtils.isEmpty(physicalExaminationRecordFormMapList)){
             throw new Exception("参数异常");
         }
+        //todo 计算年龄
+        physicalExaminationRecordFormMapList.get(0).put("age",AgeCal.getAge(physicalExaminationRecordFormMapList.get(0).getDate("birthday")));
         model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMapList.get(0));
 
         PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = physicalExaminationMainReportMapper.findbyFrist("examination_record_id",physicalExaminationRecordFormMap.getStr("id"),PhysicalExaminationMainReportFormMap.class);
@@ -72,7 +75,7 @@ public class PhysicalExaminationRecordController extends BaseController {
 
         PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
         physicalExaminationBigResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getStr("id"));
-        List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = physicalExaminationBigResultMapper.findByNames(physicalExaminationBigResultFormMap);
+        List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = physicalExaminationBigResultMapper.findAllByOrderby(physicalExaminationBigResultFormMap);
 
         model.addAttribute("physicalExaminationBigResultFormMapList",physicalExaminationBigResultFormMapList);
         return Common.BACKGROUND_PATH + "/front/examination/report";
