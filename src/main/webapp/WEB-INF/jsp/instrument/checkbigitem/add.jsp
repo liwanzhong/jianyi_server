@@ -81,6 +81,12 @@
 						<input type="text" name="checkBigItemFormMap.order_by" value="0">
 					</td>
 				</tr>
+				<tr>
+					<td>检测意义</td>
+					<td colspan="3">
+						<textarea cols="50" rows="5" name="checkBigItemFormMap.tips_content"></textarea>
+					</td>
+				</tr>
 			</table>
 		</form>
 	</div>

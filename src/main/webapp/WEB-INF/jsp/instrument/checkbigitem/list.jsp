@@ -69,8 +69,8 @@
 						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >删除</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="smallCheckItemFun(\'{0}\');" >检测小项</a>', row.id);
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >检测项关联配置</a>', row.id);
+						/*str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >检测项关联配置</a>', row.id);*/
 						return str;
 					}
 				}] ],
@@ -85,7 +85,7 @@
 			parent.$.modalDialog({
 				title : '添加',
 				width : '50%',
-				height : '40%',
+				height : '60%',
 				href : '${ctx}/instrument/bigitem/addPage.shtml',
 				buttons : [ {
 					text : '添加',
@@ -136,7 +136,7 @@
 			parent.$.modalDialog({
 				title : '编辑',
 				width : '50%',
-				height : '40%',
+				height : '60%',
 				href : '${ctx}/instrument/bigitem/editPage.shtml?id=' + id,
 				buttons : [ {
 					text : '编辑',
