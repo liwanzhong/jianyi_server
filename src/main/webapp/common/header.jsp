@@ -5,7 +5,7 @@
             <i class="fa fa-bars"></i>
         </a>
         <a href="#" class="navbar-brand" data-toggle="fullscreen" id="logo-font">
-            简医检测管理系统
+            人体机能检测管理系统
         </a>
         <a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".nav-user">
             <i class="fa fa-cog"></i>
@@ -22,9 +22,9 @@
             </a>
             <ul class="dropdown-menu animated fadeInRight">
                 <span class="arrow top"></span>
-                <li><a href="#" onclick="javascript:updatePasswordLayer();">密码修改</a></li>
-                <li class="divider"></li>
-                <li><a href="${ctx}/logout.shtml">登出(Logout)</a></li>
+                <%--<li><a href="#" onclick="javascript:updatePasswordLayer();">密码修改</a></li>
+                <li class="divider"></li>--%>
+                <li><a href="${ctx}/front/logout.shtml">登出(Logout)</a></li>
             </ul>
         </li>
     </ul>
