@@ -58,29 +58,7 @@
 																	<input type="text" class="form-control"  placeholder="请输入会员姓名" name="customInfoFormMap.name" value="${customInfoFormMap.name}" id="name">
 																</div>
 															</div>
-															<c:if test="${customInfoFormMap.id == null}">
-																<div class="line line-dashed line-lg pull-in"></div>
-																<div class="form-group">
-																	<div class="col-sm-3">
-																		<label class=" control-label">登录账号</label>
-																	</div>
-																	<div class="col-sm-9">
-																		<input type="text" class="form-control checkacc" placeholder="请输入登录账号" name="customInfoFormMap.username" value="${customInfoFormMap.username}" id="username">
-																	</div>
-																</div>
-																<div class="line line-dashed line-lg pull-in"></div>
-																<div class="form-group">
-																	<div class="col-sm-3">
-																		<label class="control-label">登录密码</label>
-																	</div>
-																	<div class="col-sm-9">
-																		<input type="password" class="form-control"  placeholder="请输入登录密码" name="customInfoFormMap.password" id="password">
-																	</div>
-																</div>
-															</c:if>
-
 															<div class="line line-dashed line-lg pull-in"></div>
-
 															<div class="form-group">
 																<div class="col-sm-3">
 																	<label class="control-label">会员性别</label>
@@ -107,7 +85,18 @@
 																	<label class="control-label">出生年月</label>
 																</div>
 																<div class="col-sm-9">
-																	<input type="text" class="form-control"  placeholder="请输入出生年月" name="customInfoFormMap.birthday" value="${customInfoFormMap.birthday}" id="birthday">
+																	<input type="text" class="input-sm form-control  form_datetime"  readonly="readonly" placeholder="YYYY-MM-DD"  name="customInfoFormMap.birthday" value="${customInfoFormMap.birthday}" id="birthday" style="background-color:#fff;cursor:pointer">
+																	<script type="text/javascript">
+																		$("#birthday").datetimepicker({
+																			language:'zh-CN',//汉化
+																			format: 'yyyy-mm-dd',//选择日期后，文本框显示的日期格式
+																			weekStart: 1,//一周的第一天
+																			forceParse: 0,//强制解析输入框中的值
+																			todayHighlight: 1,//今天高亮
+																			minView: "month", //选择日期后，不会再跳转去选择时分秒
+																			autoclose:true //选择日期后自动关闭
+																		});
+																	</script>
 																</div>
 															</div>
 															<div class="line line-dashed line-lg pull-in"></div>
@@ -117,7 +106,7 @@
 																	<label class="control-label">身高</label>
 																</div>
 																<div class="col-sm-9">
-																	<input type="text" class="form-control"  placeholder="请输入身高(cm)" name="customInfoFormMap.body_height" value="${customInfoFormMap.body_height}" id="body_height">
+																	<input type="text" onblur="calBmi()" class="form-control"  placeholder="请输入身高(cm)" name="customInfoFormMap.body_height" value="${customInfoFormMap.body_height}" id="body_height">
 																</div>
 															</div>
 															<div class="line line-dashed line-lg pull-in"></div>
@@ -127,7 +116,7 @@
 																	<label class="control-label">体重</label>
 																</div>
 																<div class="col-sm-9">
-																	<input type="text" class="form-control"  placeholder="请输入体重(kg)" name="customInfoFormMap.weight" value="${customInfoFormMap.weight}" id="weight">
+																	<input type="text" onblur="calBmi()" class="form-control"  placeholder="请输入体重(kg)" name="customInfoFormMap.weight" value="${customInfoFormMap.weight}" id="weight">
 																</div>
 															</div>
 															<div class="line line-dashed line-lg pull-in"></div>
@@ -195,7 +184,33 @@
 													});
 
 
+													function calBmi(){
+														$("#bmi").val(($("#weight").val() / (($("#body_height").val()/100)*($("#body_height").val()/100))).toFixed(3));
+													}
+
+
 													$("#addCustomBtn").click(function(){
+														// 验证关键字段
+														if($("#name").val()==null || $("#name").val()==''){
+															layer.msg('请输入会员姓名');
+															return
+														}
+														if($("#birthday").val()==null || $("#birthday").val()==''){
+															layer.msg('请输入会员生日');
+															return
+														}
+														if($("#body_height").val()==null || $("#body_height").val()==''||$("#body_height").val()==0){
+															layer.msg('请输入会员身高');
+															return
+														}
+														if($("#weight").val()==null || $("#weight").val()==''||$("#weight").val()==0){
+															layer.msg('请输入会员体重');
+															return
+														}
+														if($("#mobile").val()!=null && $("#mobile").val()!=''&& $("#mobile").val().length!=11){
+															layer.msg('请输入正确的手机号');
+															return
+														}
 														$.ajax({
 															type : "POST",
 															data :$("#addForm").serialize(),
@@ -247,31 +262,6 @@
 	}
 
 
-	function  verifyCustom(){
-		$.ajax({
-			type : "POST",
-			data :$("#searchForm").serialize(),
-			url : rootPath + '/custom/info/verify.shtml',
-			dataType : 'json',
-			success : function(data) {
-				$("#nextStepTips").empty().append('<label class=" control-label" id="msg">'+data.msg+'</label>');
-				switch (data.custom_status){
-					case -1:
-
-						break;
-					case 0:
-						$("#nextStepTips").append('<a class="btn btn-primary marR10" href="${ctx}/custom/info/addUI.shtml?customid=&idcard='+data.cardid+'">需要新建会员，新建</a>');
-						break;
-					case 1:
-						$("#nextStepTips").append('<a class="btn btn-primary marR10" href="${ctx}/custom/info/addUI.shtml?customid='+data.data.id+'&idcard='+data.cardid+'">已验证存在客户，绑定</a>');
-						break;
-					case 2:
-						$("#nextStepTips").append('<a class="btn btn-primary marR10" href="javascript:void(history.go(-1));">已经绑定关系,返回</a>');
-						break;
-				}
-			}
-		});
-	}
 
 </script>
 </body>

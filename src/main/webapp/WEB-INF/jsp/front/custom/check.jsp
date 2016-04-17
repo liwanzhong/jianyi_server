@@ -39,7 +39,8 @@
                                                         <form class="form-inline" role="form" id="searchForm" name="searchForm">
                                                             <div class="form-group">
                                                                 <label class=" control-label ">会员身份证号:</label>
-                                                                <input type="text" class="input-sm form-control" id="customInfoFormMap_idCard" name="customInfoFormMap.idCard" placeholder="请输入会员身份证号" style="">
+                                                                <%--<input type="text" class="input-sm form-control" id="customInfoFormMap_idCard" name="customInfoFormMap.idCard" placeholder="请输入会员身份证号" style="">--%>
+                                                                <input type="text" style="width: 248px" data-regexp="#^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$"  class="form-control parsley-validated" data-required="true" id="customInfoFormMap_idCard" name="customInfoFormMap.idCard" placeholder="请输入会员身份证号">
                                                             </div>
                                                             <div class="form-group">
                                                                 <button type="button" id="search" class="btn btn-sm" onclick="verifyCustom()">查  询</button>
@@ -81,6 +82,11 @@
 
 
     function  verifyCustom(){
+        if($("#customInfoFormMap_idCard").val()==null || $("#customInfoFormMap_idCard").val() =='' || $("#customInfoFormMap_idCard").val()==undefined ||($("#customInfoFormMap_idCard").val().length!=15 && $("#customInfoFormMap_idCard").val().length!=18)){
+            alert("请输入正确的身份证号码！");
+            return
+        }
+
         $.ajax({
             type : "POST",
             data :$("#searchForm").serialize(),
