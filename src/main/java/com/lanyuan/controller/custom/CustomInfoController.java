@@ -155,7 +155,7 @@ public class CustomInfoController extends BaseController {
 			customInfoFormMap.put("organization_id",userFormMap.getLong("organization_id"));
 
 			boolean isNewCustom =false;
-			if(customInfoFormMap.getLong("id") == null){
+			if(StringUtils.isBlank(customInfoFormMap.get("id")==null?null:customInfoFormMap.get("id").toString())){
 				customInfoMapper.addEntity(customInfoFormMap);
 				isNewCustom = true;
 			}else{
@@ -173,7 +173,7 @@ public class CustomInfoController extends BaseController {
 			for(String item:cutItemsArray){
 				CustomCutItemFormMap customCutItemFormMap = getFormMap(CustomCutItemFormMap.class);
 				customCutItemFormMap.put("cut_item_id",item);
-				customCutItemFormMap.put("custom_id",customInfoFormMap.getLong("id"));
+				customCutItemFormMap.put("custom_id",customInfoFormMap.get("id").toString());
 
 				customCutItemFormMapList.add(customCutItemFormMap);
 			}
@@ -188,7 +188,7 @@ public class CustomInfoController extends BaseController {
 
 			//todo 保存完用户以后，绑定关系
 			CustomBelonetoEntFormMap customBelonetoEntFormMap = getFormMap(CustomBelonetoEntFormMap.class);
-			customBelonetoEntFormMap.put("custom_id",customInfoFormMap.getLong("id"));
+			customBelonetoEntFormMap.put("custom_id",customInfoFormMap.get("id").toString());
 			customBelonetoEntFormMap.put("organization_id",userFormMap.getLong("organization_id"));
 			customBelonetoEntFormMap.put("insert_time",dateFormat.format(new Date()));
 			customBelonetoEntFormMap.put("isdelete",0);
