@@ -39,14 +39,14 @@
     <div class="main">
         <button class="btn-1">${physicalExaminationBigResultFormMap.name}详解</button>
         <p class="word">${physicalExaminationBigResultFormMap.tips_content}</p>
-        <div id="indicatorContainerWrap">
+        <div id="indicatorContainerWrap" style="background-image:${ctx}${physicalExaminationBigResultFormMap.icon} ">
+            <img src="${ctx}${physicalExaminationBigResultFormMap.icon}"  id="prgLogo"/>
             <div id="indicatorContainer"></div>
-            <img src="${ctx}/front-static/report_item/img/cell.png"  id="prgLogo"/>
         </div>
         <div class="cell">
             <ol>
-                <li>${physicalExaminationBigResultFormMap.check_score}分</li>
-                <li>${physicalExaminationBigResultFormMap.leve}</li>
+                <li style="color: ${physicalExaminationBigResultFormMap.show_color}">${physicalExaminationBigResultFormMap.check_score}分</li>
+                <li  style="color: ${physicalExaminationBigResultFormMap.show_color}">${physicalExaminationBigResultFormMap.leve}</li>
             </ol>
         </div>
         <script>
@@ -79,8 +79,8 @@
                 </div>
                 <div class="list-r">
                     <ul>
-                        <li>${item.item_score}分</li>
-                        <li>${item.tzed_leve_id==null ||item.tzed_leve_id==""?item.orgin_leve_id: item.tzed_leve_id  }</li>
+                        <li style="color:${item.tzed_leve_id==null ||item.tzed_leve_id==""?item.org_show_color: item.tzed_show_color  } ">${item.item_score}分</li>
+                        <li style="color:${item.tzed_leve_id==null ||item.tzed_leve_id==""?item.org_show_color: item.tzed_show_color  } ">${item.tzed_leve_id==null ||item.tzed_leve_id==""?item.orgin_leve_id: item.tzed_leve_id  }</li>
                     </ul>
                 </div>
             </div>

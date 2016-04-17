@@ -1,7 +1,7 @@
 @charset "utf-8";
 /* CSS Document */
 
-.wrap{ width: 720px; height: auto; background-color:#cde6f6; margin:0 auto;}
+.wrap{ width: 794px; height: auto; background-color:#fff; margin:0 auto;}
 
 .header{ position:relative; padding:40px 10px 10px; border-bottom: 1px solid #478b8f;}
 .header h1{ position:absolute; left:50%; top:20px; font-size:28px; color:#478b8f; text-align:center;
@@ -41,14 +41,18 @@ transform:translateX(-50%);
 .main-bottom span:nth-of-type(8){ left:44%; top:764px;}
 .main-bottom span:nth-of-type(9){ right:22%; top:650px;}
 .main-bottom span:nth-of-type(10){ right:11%; top:566px;}
-.main-bottom span:nth-of-type(11){ right:1%; top:504px;}
+.main-bottom span:nth-of-type(11){ right:8%; top:489px;}
 .main-bottom span:nth-of-type(12){ right:3%; top:370px;}
-.main-bottom span:nth-of-type(13){ right:8%; top:274px;}
-.main-bottom span:nth-of-type(14){ right:20%; top:204px;}
+.main-bottom span:nth-of-type(13){ right:2%; top:305px;}
+.main-bottom span:nth-of-type(14){ right:9%; top:230px;}
+
+.main-bottom span:nth-of-type(15){ right:16%; top:168px;}
+.main-bottom span:nth-of-type(16){ right:34%; top:105px;}
+/*.main-bottom span:nth-of-type(17){ right:20%; top:204px;}*/
 
 #indicatorContainer2{ position:relative;}
 #indicatorContainer2 canvas{ position:absolute;}
-#indicatorContainer2 canvas:nth-of-type(1){ left:45%; top:40px;}
+#indicatorContainer2 canvas:nth-of-type(1){ left:42%; top:40px;}
 #indicatorContainer2 canvas:nth-of-type(2){ left:30%; top:90px;}
 #indicatorContainer2 canvas:nth-of-type(3){ left:20%; top:170px;}
 #indicatorContainer2 canvas:nth-of-type(4){ left:14%; top:270px;}
@@ -60,6 +64,10 @@ transform:translateX(-50%);
 #indicatorContainer2 canvas:nth-of-type(10){ right:21%; top:460px;}
 #indicatorContainer2 canvas:nth-of-type(11){ right:14%; top:370px;}
 #indicatorContainer2 canvas:nth-of-type(12){ right:14%; top:270px;}
-#indicatorContainer2 canvas:nth-of-type(13){ right:20%; top:170px;}
-#indicatorContainer2 canvas:nth-of-type(14){ right:30%; top:90px;}
+#indicatorContainer2 canvas:nth-of-type(13){ right:15%; top:195px;}
+#indicatorContainer2 canvas:nth-of-type(14){ right:18%; top:123px;}
 
+
+#indicatorContainer2 canvas:nth-of-type(15){ right:25%; top:62px;}
+#indicatorContainer2 canvas:nth-of-type(16){ right:35%; top:38px;}
+/*#indicatorContainer2 canvas:nth-of-type(17){ right:30%; top:90px;}*/

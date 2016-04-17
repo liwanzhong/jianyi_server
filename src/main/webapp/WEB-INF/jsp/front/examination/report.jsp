@@ -21,11 +21,11 @@
         </ol>
         <div class="msg">
         	<ul class="clearfix">
-        		<li>${physicalExaminationRecordFormMap.name}</li>
-        		<li>${physicalExaminationRecordFormMap.sex}</li>
-        		<li>${physicalExaminationRecordFormMap.birthday}岁</li>
-        		<li>体重：${physicalExaminationRecordFormMap.body_height}kg</li>
-        		<li>身高：${physicalExaminationRecordFormMap.weight}cm</li>
+        		<li>姓名:${physicalExaminationRecordFormMap.name}</li>
+        		<li>性别:${physicalExaminationRecordFormMap.sex==1?"男":"女"}</li>
+        		<li>年龄:${physicalExaminationRecordFormMap.age}岁</li>
+        		<li>体重:${physicalExaminationRecordFormMap.weight}kg</li>
+        		<li>身高:${physicalExaminationRecordFormMap.body_height}cm</li>
                 <li class="time">${physicalExaminationRecordFormMap.check_time}</li>
         	</ul>
         </div>
@@ -48,7 +48,7 @@
                 100: '#28980a'
             }, //刻度条的颜色
             barWidth: 10, //刻度条的宽度，默认5
-            initValue: 72, //圆形指示器初始化的值
+            initValue: ${physicalExaminationMainReportFormMap.check_total_score}, //圆形指示器初始化的值
             roundCorner:false, //刻度条是否圆角
             percentage: false //显示百分数
         });  
@@ -57,7 +57,7 @@
             barBgColor: '#41c1bc', //刻度条的背景颜色,默认#eee
             barColor: '#41c1bc', //刻度条的颜色
             barWidth: 10, //刻度条的宽度，默认5
-            initValue:29.86, //圆形指示器初始化的值
+            initValue:${physicalExaminationRecordFormMap.weight/((physicalExaminationRecordFormMap.body_height/100)*(physicalExaminationRecordFormMap.body_height/100))}, //圆形指示器初始化的值
             roundCorner:false, //刻度条是否圆角
             percentage: false //显示百分数
         });  
@@ -71,8 +71,11 @@
     		<li>03健康干预</li>
     	</ul>
     	<button class="health">检测项总体评估</button>
-        <span class="score-1">细胞功能</span>
-        <span class="score-2">心血管功能</span>
+		<c:forEach items="${physicalExaminationBigResultFormMapList}" var="item">
+			<span class="score-1">${item.name}</span>
+		</c:forEach>
+        <%--&lt;%&ndash;<span class="score-1">细胞功能</span>--%>
+        <%--<span class="score-2">心血管功能</span>
         <span class="score-3">脑血管<br>神经功能</span>
         <span class="score-4">呼吸功能</span>
         <span class="score-5">消化<br>吸收功能</span>
@@ -84,10 +87,15 @@
         <span class="score-11">骨、关节功能</span>
         <span class="score-12">女性<br>性激素功能</span>
         <span class="score-13">女性<br>性器官功能</span>
-        <span class="score-14">皮肤功能</span>
+        <span class="score-14">皮肤功能</span>--%>
         <div id="indicatorContainer2">
+
         </div>
+		<div>
+			<img style="padding-top: 90px;" src="${ctx}/front-static/report/img/check.jpg">
+		</div>
 		<script>
+			<c:forEach items="${physicalExaminationBigResultFormMapList}" var="item">
 			$('#indicatorContainer2').radialIndicator({
 				radius: 30, //圆的半径，默认50
 				barBgColor: '#8df8f1', //刻度条的背景颜色,默认#eee
@@ -99,11 +107,15 @@
 					100: '#28980a'
 				}, //刻度条的颜色
 				barWidth: 7, //刻度条的宽度，默认5
-				initValue: 80, //圆形指示器初始化的值
+				initValue: ${item.check_score}, //圆形指示器初始化的值
 				roundCorner:false, //刻度条是否圆角
 				percentage: false //显示百分数
-			});  
-			$('#indicatorContainer2').radialIndicator({
+			});
+			</c:forEach>
+
+
+
+			/*$('#indicatorContainer2').radialIndicator({
 				radius: 30, //圆的半径，默认50
 				barBgColor: '#8df8f1', //刻度条的背景颜色,默认#eee
 				barColor: {
@@ -297,7 +309,7 @@
 				initValue: 65, //圆形指示器初始化的值
 				roundCorner:false, //刻度条是否圆角
 				percentage: false //显示百分数
-			});
+			});*/
                 
         </script>
     </div>
