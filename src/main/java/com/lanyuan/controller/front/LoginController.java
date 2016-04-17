@@ -116,22 +116,15 @@ public class LoginController extends BaseController {
 
 
 
-	@ResponseBody
-	@RequestMapping(value = "logout", method = RequestMethod.POST)
-	public Map<String,Object> logout() {
-		Map<String,Object> retMap = new HashMap<String, Object>();
-		retMap.put("status",0);
+	@RequestMapping(value = "logout", method = RequestMethod.GET)
+	public String logout() {
 		try{
 			// 使用权限管理工具进行用户的退出，注销登录
 			SecurityUtils.getSubject().logout(); // session
-			// 会销毁，在SessionListener监听session销毁，清理权限缓存
-			retMap.put("status",1);
 		}catch (Exception ex){
 			ex.printStackTrace();
-			retMap.put("msg",ex.getMessage());
 		}
-
-		return retMap;
+		return "/login-index";
 	}
 
 

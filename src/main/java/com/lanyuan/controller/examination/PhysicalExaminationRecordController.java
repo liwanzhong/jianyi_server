@@ -154,9 +154,8 @@ public class PhysicalExaminationRecordController extends BaseController {
     @RequestMapping("findByPage")
     public PageView findByPage( String pageNow,String pageSize,String column,String sort) throws Exception {
         PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
+        physicalExaminationRecordFormMap.put("orderby","id DESC");
         physicalExaminationRecordFormMap=toFormMap(physicalExaminationRecordFormMap, pageNow, pageSize,physicalExaminationRecordFormMap.getStr("orderby"));
-        physicalExaminationRecordFormMap.put("column", column);
-        physicalExaminationRecordFormMap.put("sort", sort);
 
         Session session = SecurityUtils.getSubject().getSession();
         UserFormMap userFormMap = (UserFormMap)session.getAttribute("userSession");
