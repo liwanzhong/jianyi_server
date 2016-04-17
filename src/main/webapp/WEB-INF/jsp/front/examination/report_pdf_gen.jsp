@@ -17,7 +17,8 @@
 	<div class="header">
     	<h1>人体机能检测报告</h1>
         <ol class="clearfix">
-        	<li><a href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=1&recordId=${physicalExaminationRecordFormMap.id}">下一页</a></li>
+			<li>&nbsp;&nbsp;&nbsp;</li>
+        	<%--<li><a href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=1&recordId=${physicalExaminationRecordFormMap.id}">下一页</a></li>--%>
         </ol>
         <div class="msg">
         	<ul class="clearfix">

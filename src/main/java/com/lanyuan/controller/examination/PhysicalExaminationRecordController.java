@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
@@ -32,6 +33,9 @@ import java.util.List;
 public class PhysicalExaminationRecordController extends BaseController {
     @Inject
     private PhysicalExaminationRecordMapper physicalExaminationRecordMapper;
+
+    @Inject
+    private PhysicalExaminationBigResultMapper physicalExaminationBigResultMapper;
 
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -75,23 +79,73 @@ public class PhysicalExaminationRecordController extends BaseController {
     }
 
 
+    @RequestMapping("report_pdf_gen")
+    public String report_pdf_gen(Model model) throws Exception {
+        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
+        List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList = physicalExaminationRecordMapper.findExaminationRecordCustomInfo(physicalExaminationRecordFormMap);
+        if(CollectionUtils.isEmpty(physicalExaminationRecordFormMapList)){
+            throw new Exception("参数异常");
+        }
+        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMapList.get(0));
+
+        PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = physicalExaminationMainReportMapper.findbyFrist("examination_record_id",physicalExaminationRecordFormMap.getStr("id"),PhysicalExaminationMainReportFormMap.class);
+        model.addAttribute("physicalExaminationMainReportFormMap",physicalExaminationMainReportFormMap);
+
+        PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
+        physicalExaminationBigResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getStr("id"));
+        List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = physicalExaminationBigResultMapper.findByNames(physicalExaminationBigResultFormMap);
+
+        model.addAttribute("physicalExaminationBigResultFormMapList",physicalExaminationBigResultFormMapList);
+        return Common.BACKGROUND_PATH + "/front/examination/report_pdf_gen";
+    }
+
+
     @RequestMapping("report_big_item")
-    public String report_big_item(Model model,String pageNow,Long recordId,Long bigItemId) throws Exception {
-        String pageSize = "1";
+    public String report_big_item(Model model, @RequestParam(value = "pageNow",defaultValue = "1")String pageNow, @RequestParam(value = "pageSize",defaultValue = "1") String pageSize,  @RequestParam(value = "recordId",required = true)Long recordId, Long bigItemId) throws Exception {
+
         PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
         physicalExaminationBigResultFormMap=toFormMap(physicalExaminationBigResultFormMap, pageNow, pageSize,physicalExaminationBigResultFormMap.getStr("orderby"));
-        physicalExaminationBigResultFormMap.put("column", "order_by");
-        physicalExaminationBigResultFormMap.put("sort", "ASC");
         physicalExaminationBigResultFormMap.put("examination_record_id",recordId);
-        physicalExaminationBigResultFormMap.put("id",bigItemId);
 
-        pageView.setRecords(physicalExaminationBigResultMapper.findEnterprisePage(physicalExaminationBigResultFormMap));
+        pageView.setRecords(physicalExaminationBigResultMapper.findAllByOrderby(physicalExaminationBigResultFormMap));
+        model.addAttribute("pageView",pageView);
+        model.addAttribute("physicalExaminationBigResultFormMap",pageView.getRecords().get(0));
 
-       //todo 查出当前检测大项下的检测小项检测结果
-        PhysicalExaminationResultFormMap physicalExaminationResultFormMap = getFormMap(PhysicalExaminationResultFormMap.class);
-//        physicalExaminationResultFormMap.put("",);
-        List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = physicalExaminationResultMapper.findByNames(physicalExaminationResultFormMap);
-        return Common.BACKGROUND_PATH + "/front/examination/report";
+        try{
+            List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = physicalExaminationResultMapper.findItemCheckResultList(recordId,((PhysicalExaminationBigResultFormMap)pageView.getRecords().get(0)).getLong("big_item_id"));
+            model.addAttribute("physicalExaminationResultFormMapList",physicalExaminationResultFormMapList);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+
+        return Common.BACKGROUND_PATH + "/front/examination/report_item";
+    }
+
+
+
+    @RequestMapping("report_big_item_pdf_gen")
+    public String report_big_item_pdf_gen(Model model,@RequestParam(value = "recordId",required = true)Long recordId, @RequestParam(value = "bigItemId",required = true) Long bigItemId) throws Exception {
+
+        PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
+        physicalExaminationBigResultFormMap.put("examination_record_id",recordId);
+        physicalExaminationBigResultFormMap.put("big_item_id",bigItemId);
+
+        List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList =  physicalExaminationBigResultMapper.findAllByOrderby(physicalExaminationBigResultFormMap);
+        if(CollectionUtils.isNotEmpty(physicalExaminationBigResultFormMapList)){
+            model.addAttribute("physicalExaminationBigResultFormMap",physicalExaminationBigResultFormMapList.get(0));
+        }
+
+
+        try{
+            List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = physicalExaminationResultMapper.findItemCheckResultList(recordId,physicalExaminationBigResultFormMapList.get(0).getLong("big_item_id"));
+            model.addAttribute("physicalExaminationResultFormMapList",physicalExaminationResultFormMapList);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+
+        return Common.BACKGROUND_PATH + "/front/examination/report_big_item_pdf_gen";
     }
 
 
@@ -139,8 +193,7 @@ public class PhysicalExaminationRecordController extends BaseController {
     private PhysicalExaminationMainReportMapper physicalExaminationMainReportMapper;
 
 
-    @Inject
-    private PhysicalExaminationBigResultMapper physicalExaminationBigResultMapper;
+
 
 
     @Inject
@@ -159,7 +212,7 @@ public class PhysicalExaminationRecordController extends BaseController {
         model.addAttribute("bigResultFormMapList",bigResultFormMapList);
 
 
-        List<PhysicalExaminationResultFormMap> resultList =physicalExaminationResultMapper .findItemCheckResultList(recordFormMap.getLong("id"));
+        List<PhysicalExaminationResultFormMap> resultList =physicalExaminationResultMapper .findItemCheckResultList(recordFormMap.getLong("id"),null);
         model.addAttribute("resultList",resultList);
 
 

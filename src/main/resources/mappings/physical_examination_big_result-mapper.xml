@@ -57,20 +57,53 @@
 
 
 
+	<select id="findAllByOrderby" resultType="com.lanyuan.entity.PhysicalExaminationBigResultFormMap">
+		SELECT
+		pebr.big_item_id,
+		pebr.check_score,
+		pebr.gen_quanzhong,
+		cbi.name,
+		(SELECT
+		cpl.name
+		FROM cf_pingfen_leve cpl
+		WHERE cpl.id = pebr.leve_id) AS leve,
+		cbi.tips_content,
+		cbi.icon,
+		cbi.order_by,
+		pebr.examination_record_id
+		FROM physical_examination_big_result pebr
+		LEFT JOIN check_big_item cbi
+		ON pebr.big_item_id = cbi.id
+		WHERE pebr.examination_record_id  =  ${examination_record_id}
+		 <if test="big_item_id != null">
+			 AND pebr.big_item_id = ${big_item_id}
+		 </if>
+		 ORDER BY cbi.order_by ASC
+	</select>
+
+
+
 	<select id="findItemCheckResultList" resultType="com.lanyuan.entity.PhysicalExaminationBigResultFormMap">
 SELECT
-  pebr.big_item_id,
-  pebr.check_score,
-  pebr.gen_quanzhong,
-  cbi.name,
-  (SELECT
-      cpl.name
-    FROM cf_pingfen_leve cpl
-    WHERE cpl.id = pebr.leve_id) AS leve
-FROM physical_examination_big_result pebr
-  LEFT JOIN check_big_item cbi
-    ON pebr.big_item_id = cbi.id
-WHERE pebr.examination_record_id  = #{examination_record_id}
+		pebr.big_item_id,
+		pebr.check_score,
+		pebr.gen_quanzhong,
+		cbi.name,
+		(SELECT
+		cpl.name
+		FROM cf_pingfen_leve cpl
+		WHERE cpl.id = pebr.leve_id) AS leve,
+    	cbi.tips_content,
+    	cbi.icon,
+    	cbi.order_by
+		FROM physical_examination_big_result pebr
+		LEFT JOIN check_big_item cbi
+		ON pebr.big_item_id = cbi.id
+		WHERE pebr.examination_record_id  =  #{examination_record_id} ORDER BY cbi.order_by ASC
+
 	</select>
+
+
+
 
 </mapper>

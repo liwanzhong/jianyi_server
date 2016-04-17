@@ -85,6 +85,8 @@
 				/denied.jsp = anon
 				/lanyuan.shtml = anon
 				/citfc/client_call/** = anon
+				/examination/physicalExamination/report_big_item_pdf_gen.shtml = anon
+				/examination/physicalExamination/report_pdf_gen.shtml = anon
 			</value>
 		</property>
 	</bean>

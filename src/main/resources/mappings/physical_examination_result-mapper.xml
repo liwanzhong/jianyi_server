@@ -79,6 +79,13 @@ SELECT
 FROM physical_examination_result per
   LEFT JOIN check_small_item csi
     ON csi.id = per.small_item_id WHERE per.examination_record_id = #{examination_record_id}
+    <if test="big_item_id != null">
+      AND  per.bit_item_id = #{big_item_id}
+    </if>
 	</select>
+
+
+
+
 
 </mapper>

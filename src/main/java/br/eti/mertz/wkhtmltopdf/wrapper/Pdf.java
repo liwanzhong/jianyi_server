@@ -52,8 +52,8 @@ public class Pdf implements PdfService {
         }
     }
 
-    public void saveAs(String path) throws IOException, InterruptedException {
-        saveAs(path, getPDF());
+    public File saveAs(String path) throws IOException, InterruptedException {
+        return saveAs(path, getPDF());
     }
 
     private File saveAs(String path, byte[] document) throws IOException {
@@ -63,6 +63,7 @@ public class Pdf implements PdfService {
         bufferedOutputStream.write(document);
         bufferedOutputStream.flush();
         bufferedOutputStream.close();
+        System.out.println(file.getAbsolutePath());
 
         return file;
     }

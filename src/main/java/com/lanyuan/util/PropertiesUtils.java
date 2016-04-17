@@ -23,6 +23,12 @@ import org.apache.ibatis.io.Resources;
  * @version 3.0v
  */
 public class PropertiesUtils {
+	public static final String REPORT_URL_PDF_GEN_MAIN = "REPORT_URL_PDF_GEN_MAIN";
+	public static final String REPORT_URL_PDF_GEN_ITEM = "REPORT_URL_PDF_GEN_ITEM";
+	public static final String REPORT_PDF_SAVED_PAHT = "REPORT_PDF_SAVED_PAHT";
+
+
+
 	/**
 	 * 获取属性文件的数据 根据key获取值
 	 * @param fileName 文件名　(注意：加载的是src下的文件,如果在某个包下．请把包名加上)

@@ -14,10 +14,11 @@ public class PdfTest {
     @Test
     public void testCommand() throws Exception {
         Pdf pdf = new Pdf();
-        pdf.addToc();
-        pdf.addParam(new Param("--enable-javascript"), new Param("--html-header", "file:///example.html"));
-        pdf.addPage("http://www.google.com", PageType.url);
-        System.out.println(pdf.getCommand());;
+//        pdf.addToc();
+        pdf.addParam(new Param("--enable-javascript"));
+        pdf.addPage("D:\\idea-workspack\\works\\需求\\人体机能检测报告\\人体机能检测报告\\index.html", PageType.url);
+        pdf.saveAs("baidu.pdf");
+        System.out.println(pdf.getCommand());
     }
 
     @Test
@@ -27,7 +28,7 @@ public class PdfTest {
         Pdf pdf = new Pdf();
         pdf.addPage("<html><head><meta charset=\"utf-8\"></head><h1>contetns</h1></html>", PageType.htmlAsString);
         pdf.addToc();
-        pdf.addParam(new Param("--enable-javascript"), new Param("--html-header", "file:///example.html"));
+        pdf.addParam(new Param("--enable-javascript"));
         pdf.saveAs("output.pdf");
 
         // WHEN

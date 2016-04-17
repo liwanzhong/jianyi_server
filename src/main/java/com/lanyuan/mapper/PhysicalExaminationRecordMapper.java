@@ -14,4 +14,6 @@ public interface PhysicalExaminationRecordMapper extends BaseMapper{
 	public List<PhysicalExaminationRecordFormMap> findEnterprisePage_Front(PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap);
 
 	List<PhysicalExaminationRecordFormMap> findExaminationRecordCustomInfo(PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap);
+
+	List<PhysicalExaminationRecordFormMap> findListWill2GenPdfReport(PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap);
 }

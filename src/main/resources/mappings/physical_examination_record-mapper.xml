@@ -99,4 +99,20 @@ WHERE per.id = ${id}
 	</select>
 
 
+	<select id="findListWill2GenPdfReport" resultType="com.lanyuan.entity.PhysicalExaminationRecordFormMap">
+SELECT
+  per.id,
+  per.custom_id,
+  per.organization_id,
+  per.instrument_id,
+  per.status,
+  per.report_gentime,
+  per.report_path,
+  per.check_time,
+  per.update_time
+FROM physical_examination_record per
+WHERE per.status = 2 AND per.report_path IS NULL OR per.report_path = '' ORDER BY per.id ASC
+	</select>
+
+
 </mapper>
