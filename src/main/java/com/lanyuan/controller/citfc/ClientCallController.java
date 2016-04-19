@@ -6,6 +6,7 @@ import com.lanyuan.entity.UserEntrelationFormMap;
 import com.lanyuan.entity.UserFormMap;
 import com.lanyuan.mapper.CustomInfoMapper;
 import com.lanyuan.mapper.UserEntrelationMapper;
+import com.lanyuan.mapper.UserMapper;
 import com.lanyuan.util.Common;
 import com.lanyuan.vo.CustomVO;
 import org.apache.commons.lang.StringUtils;
@@ -122,7 +123,7 @@ public class ClientCallController extends BaseController {
 
 
 	@Autowired
-	private UserEntrelationMapper userEntrelationMapper;
+	private UserMapper userMapper;
 
 	/**
 	 * 查询客户信息（通过客户名称）
@@ -144,9 +145,14 @@ public class ClientCallController extends BaseController {
 
 			//获取企业id和检测点id
 
-			UserEntrelationFormMap userEntrelationFormMap = userEntrelationMapper.findbyFrist("user_id",userid+"", UserEntrelationFormMap.class);
+			/*UserEntrelationFormMap userEntrelationFormMap = userEntrelationMapper.findbyFrist("user_id",userid+"", UserEntrelationFormMap.class);
 			if(userEntrelationFormMap==null){
 				throw new Exception("无此系统用户!");
+			}*/
+
+			UserFormMap userFormMap = userMapper.findbyFrist("id",userid+"",UserFormMap.class);
+			if(userFormMap == null){
+				 throw new Exception("系统异常！");
 			}
 
 
@@ -158,9 +164,8 @@ public class ClientCallController extends BaseController {
 			if(StringUtils.isNotBlank(customName)){
 				customInfoFormMap.set("name",customName);
 			}
-			customInfoFormMap.set("ent_id",userEntrelationFormMap.get("ent_id").toString());
-			customInfoFormMap.set("sub_point_id",userEntrelationFormMap.get("sub_point_id").toString());
-			List<CustomInfoFormMap> customInfoFormMapList =  customInfoMapper.findEnterprisePage(customInfoFormMap);
+			customInfoFormMap.set("organization_id",userFormMap.get("organization_id").toString());
+			List<CustomInfoFormMap> customInfoFormMapList =  customInfoMapper.findEnterprisePage_front(customInfoFormMap);
 
 
 			//todo 返回列表给客户端展示
