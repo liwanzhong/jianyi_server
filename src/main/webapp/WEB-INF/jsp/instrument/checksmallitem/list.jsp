@@ -80,15 +80,20 @@
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="pingfenRoutConf(\'{0}\');" >评分概率</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >检测项关联设置</a>', row.id);
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >BMI关联设置</a>', row.id);
+						str += $.formatString('<a href="javascript:void(0)" onclick="sickRiskConfig(\'{0}\');" >疾病关联</a>', row.id);
+						/*str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >BMI关联设置</a>', row.id);*/
 						return str;
 					}
 				}] ],
 				toolbar : '#toolbar'
 			});
 		});
+
+
+		function sickRiskConfig(id){
+			window.location.href = '${ctx}/instrument/sickRisk/list.shtml?checkItemId='+id+'&checkItemType=2';
+		}
 
 
 

@@ -90,9 +90,10 @@
 			}
 			parent.$.modalDialog({
 				title : '配  置',
-				width : '30%',
-				height : '75%',
+				width : '60%',
+				height : '80%',
 				href : '${ctx}/instrument/cut_item/configRefPage.shtml?cutItemFormMap.id='+id,
+				scroll:'yes',
 				buttons : [ {
 					text : '配  置',
 					handler : function() {

@@ -7,12 +7,12 @@
 <head>
 	<jsp:include page="/inc.jsp"></jsp:include>
 	<meta http-equiv="X-UA-Compatible" content="edge" />
-	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/bigitem/edit.shtml')}">
+	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/pingfen_rout/edit.shtml')}">
 		<script type="text/javascript">
 			$.canEdit = true;
 		</script>
 	</c:if>
-	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/bigitem/delete.shtml')}">
+	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/pingfen_rout/delete.shtml')}">
 		<script type="text/javascript">
 		</script>
 	</c:if>
@@ -22,55 +22,64 @@
 		var dataGrid;
 		$(function() {
 			dataGrid = $('#dataGrid').datagrid({
-				url : '${ctx}/instrument/bigitem/dataGrid.shtml',
+				url : '${ctx}/instrument/pingfen_rout/dataGrid.shtml?cfPingfenRoutFormMap.small_id='+${checkSmallItemFormMap.id},
 				fit : true,
 				striped : true,
 				rownumbers : true,
 				pagination : true,
 				singleSelect : true,
 				idField : 'id',
-				sortName : 'insert_time',
+				sortName : 'id',
 				sortOrder : 'desc',
 				pageSize : 50,
 				pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 				columns : [ [ {
 					width : '120',
-					title : '大项名称',
-					field : 'name'
+					title : '年龄范围',
+					field : 'age_min'
 				}, {
-					width : '120',
-					title : '是否显示',
-					field : 'show_exc_tips',
-					sortable : true,
-					formatter : function(value, row, index) {
-						return value==0?'不显示':'显示';
-					}
-				},{
-					width : '80',
-					title : '排序',
-					field : 'order_by',
-					sortable : true
+					width : '150',
+					title : '年龄范围',
+					field : 'age_max'
 				},{
 					width : '150',
-					title : '最近一次更新',
+					title : '原评分范围',
+					field : 'orgin_pingfen_leve_name',
+					formatter : function(value, row, index) {
+						return value+'('+row.orgin_pingfen_min+'--'+row.orgin_pingfen_max+')';
+					}
+				},{
+					width : '120',
+					title : '调整后评分范围',
+					field : 'tz_pingfen_leve_name',
+					formatter : function(value, row, index) {
+						return value+'('+row.tz_pingfen_min+'--'+row.tz_pingfen_max+')';
+					}
+				},{
+					width : '140',
+					title : '最后更新时间',
 					field : 'update_time',
+					sortable : true,
 					formatter : function(value, row, index) {
 						return (new Date(parseFloat(value))).format("yyyy-MM-dd hh:mm:ss");
-					},
-					sortable : true
+					}
+				},{
+					width : '140',
+					title : '是否有效',
+					field : 'valid',
+					sortable : true,
+					formatter : function(value, row, index) {
+						return value==1?'有效':'无效';
+					}
 				},{
 					field : 'action',
 					title : '操作',
-					width : 300,
+					width : 350,
 					formatter : function(value, row, index) {
 						var str = '';
 						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >删除</a>', row.id);
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="smallCheckItemFun(\'{0}\');" >检测小项</a>', row.id);
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="sickRiskConfig(\'{0}\');" >疾病关联</a>', row.id);
 						return str;
 					}
 				}] ],
@@ -85,8 +94,8 @@
 			parent.$.modalDialog({
 				title : '添加',
 				width : '50%',
-				height : '60%',
-				href : '${ctx}/instrument/bigitem/addPage.shtml',
+				height : '40%',
+				href : '${ctx}/instrument/pingfen_rout/addPage.shtml?smallItemId=${checkSmallItemFormMap.id}',
 				buttons : [ {
 					text : '添加',
 					handler : function() {
@@ -105,11 +114,11 @@
 			} else {//点击操作里面的删除图标会触发这个
 				dataGrid.datagrid('unselectAll').datagrid('uncheckAll');
 			}
-			parent.$.messager.confirm('询问', '是否需要删除当前大项？', function(b) {
+			parent.$.messager.confirm('询问', '是否需要删除当前项？', function(b) {
 				if (b) {
 					progressLoad();
-					$.post('${ctx}/instrument/bigitem/delete.shtml', {
-						'checkBigItemFormMap.id' : id
+					$.post('${ctx}/instrument/pingfen_rout/delete.shtml', {
+						'cfPingfenRoutFormMap.id' : id
 					}, function(result) {
 						if (result.status == 1) {
 							parent.$.messager.alert('提示', result.msg, 'info');
@@ -122,13 +131,10 @@
 		}
 
 
-		function smallCheckItemFun(id){
-			window.location.href = '${ctx}/instrument/smallitem/list.shtml?bigItemId='+id;
-		}
 
 
-		function sickRiskConfig(id){
-			window.location.href = '${ctx}/instrument/sickRisk/list.shtml?checkItemId='+id+'&checkItemType=1';
+		function pingfenRoutConf(id){
+			window.location.href = '${ctx}/instrument/pingfen_rout/list.shtml?smallItemId='+id;
 		}
 
 		function editFun(id) {
@@ -141,8 +147,8 @@
 			parent.$.modalDialog({
 				title : '编辑',
 				width : '50%',
-				height : '60%',
-				href : '${ctx}/instrument/bigitem/editPage.shtml?id=' + id,
+				height : '40%',
+				href : '${ctx}/instrument/pingfen_rout/editPage.shtml?id=' + id,
 				buttons : [ {
 					text : '编辑',
 					handler : function() {
@@ -168,16 +174,16 @@
 	<form id="searchForm">
 		<table>
 			<tr>
-				<th>检测大项:</th>
+				<th>检测小项名称:</th>
 				<td>
-					<input name="checkBigItemFormMap.name" placeholder="请输入检测大项名称"/>
+					<input name="cfPingfenRoutFormMap.name" placeholder="请输入检测小项名称"/>
 					<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" onclick="cleanFun();">清空</a>
 				</td>
 			</tr>
 		</table>
 	</form>
 </div>
-<div data-options="region:'center',border:true,title:'检测大项'" >
+<div data-options="region:'center',border:true,title:'评分概率---[${checkSmallItemFormMap.name}]'" >
 	<table id="dataGrid" data-options="fit:true,border:false"></table>
 </div>
 <div id="toolbar" style="display: none;">

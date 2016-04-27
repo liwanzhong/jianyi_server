@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.SickRiskItemMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+
+	</sql>
+
+	<select id="findEnterprisePage" resultType="com.lanyuan.entity.SickRiskFormMap">
+		SELECT
+  srcc.id,
+  srcc.check_item_id,
+  srcc.check_item_type,
+  srcc.risk_rout,
+  sri.name
+FROM sick_risk_checkitem_config srcc
+  LEFT JOIN sick_risk_item sri
+    ON sri.id = srcc.sick_risk_id
+WHERE srcc.check_item_id = ${check_item_id} AND srcc.check_item_type = ${check_item_type} ORDER by srcc.id DESC
+	</select>
+
+
+
+	<select id="findSmallItemRout" resultType="com.lanyuan.entity.SickRiskItemFormMap">
+
+		SELECT
+		cpr.id,
+		cpr.age_max,
+		cpr.age_min,
+		cpr.rout_min,
+		cpr.rout_max,
+		cpr.update_time,
+		cpr.valid,
+		cpr.small_id,
+		cpr.orgin_pingfen_id,
+		cpr.tz_pingfen_id
+		FROM cf_pingfen_rout cpr
+		WHERE
+		<if test="small_id != null">
+			cpr.small_id = ${small_id}
+		</if>
+
+		<if test="orgin_pingfen_id !=null">
+			AND cpr.orgin_pingfen_id = ${orgin_pingfen_id}
+		</if>
+
+		<if test="age !=null">
+			AND cpr.age_min &lt;= ${age} AND cpr.age_max  &gt;= ${age}
+		</if>
+		ORDER BY cpr.id DESC
+
+	</select>
+
+</mapper>

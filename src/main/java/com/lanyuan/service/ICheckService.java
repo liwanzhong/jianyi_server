@@ -18,7 +18,7 @@ public interface ICheckService {
 
 
     //todo 记录小项检测记录
-    void recordCheckResult()throws Exception;
+    void recordCheckResult(CustomBelonetoEntFormMap customBelonetoEntFormMap,PhysicalExaminationRecordFormMap recordFormMap) throws Exception;
 
 
 
