@@ -3,6 +3,7 @@ package com.lanyuan.mapper;
 import com.lanyuan.entity.CustomInfoFormMap;
 import com.lanyuan.entity.PhysicalExaminationRecordFormMap;
 import com.lanyuan.mapper.base.BaseMapper;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 

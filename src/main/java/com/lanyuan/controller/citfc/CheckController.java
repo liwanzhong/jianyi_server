@@ -3,8 +3,10 @@ package com.lanyuan.controller.citfc;
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.*;
 import com.lanyuan.mapper.*;
+import com.lanyuan.service.ICheckService;
 import com.lanyuan.util.AgeCal;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,6 +68,9 @@ public class CheckController extends BaseController {
 
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+	@Autowired
+	private ICheckService checkService;
+
 
 
 
@@ -99,17 +104,11 @@ public class CheckController extends BaseController {
 
 			// 保存检测记录
 			PhysicalExaminationRecordFormMap recordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
-			recordFormMap.put("custom_id",customBelonetoEntFormMap.getLong("custom_id"));
-			recordFormMap.put("organization_id",customBelonetoEntFormMap.get("organization_id").toString());
-			recordFormMap.put("instrument_id",instrumentId);
-			recordFormMap.put("status",PhysicalExaminationRecordFormMap.STATUS_CHECKED);
-			recordFormMap.put("check_time",dateFormat.format(new Date()));
-			recordFormMap.put("update_time",dateFormat.format(new Date()));
-			physicalExaminationRecordMapper.addEntity(recordFormMap);
+			recordFormMap = checkService.saveCheckRecord(recordFormMap,customBelonetoEntFormMap,instrumentId);
 
 
 			// 获取所有的项目（排除切割项目关联项 ）
-			List<CheckSmallItemFormMap> checkSmallItemFormMapList =  checkSmallItemMapper.getAllButCustomCutedItem(customBelonetoEntFormMap.get("custom_id").toString());
+			List<CheckSmallItemFormMap> checkSmallItemFormMapList = checkService.getCustomerCheckSmallItemsList(customBelonetoEntFormMap.get("custom_id").toString());
 			if(CollectionUtils.isNotEmpty(checkSmallItemFormMapList)){
 
 				// 获取评分标准
