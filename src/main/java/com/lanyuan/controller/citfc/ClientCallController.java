@@ -135,21 +135,14 @@ public class ClientCallController extends BaseController {
      */
 	@ResponseBody
 	@RequestMapping(value = "querycustom", method = RequestMethod.POST, produces = "text/json; charset=utf-8")
-	public Map<String,Object> queryCustom(String customName,String phone,String meathcode,Long userid) {
-		Map<String,Object> retMap = new HashMap<String, Object>();
-		retMap.put("status",0);
+	public List<CustomInfoFormMap> queryCustom(String customName,String phone,String meathcode,Long userid) {
+		List<CustomInfoFormMap> customInfoFormMapList = null;
 		try {
 			if (StringUtils.isBlank(customName) && StringUtils.isBlank(phone)){
 				throw new Exception("参数异常[客户名称或者手机号必须]!");
 			}
 
-			//获取企业id和检测点id
-
-			/*UserEntrelationFormMap userEntrelationFormMap = userEntrelationMapper.findbyFrist("user_id",userid+"", UserEntrelationFormMap.class);
-			if(userEntrelationFormMap==null){
-				throw new Exception("无此系统用户!");
-			}*/
-
+			//todo 这里不适用系统用户id，而是机器码
 			UserFormMap userFormMap = userMapper.findbyFrist("id",userid+"",UserFormMap.class);
 			if(userFormMap == null){
 				 throw new Exception("系统异常！");
@@ -165,17 +158,12 @@ public class ClientCallController extends BaseController {
 				customInfoFormMap.set("name",customName);
 			}
 			customInfoFormMap.set("organization_id",userFormMap.get("organization_id").toString());
-			List<CustomInfoFormMap> customInfoFormMapList =  customInfoMapper.findEnterprisePage_front(customInfoFormMap);
+			customInfoFormMapList =  customInfoMapper.findEnterprisePage_front(customInfoFormMap);
 
-
-			//todo 返回列表给客户端展示
-			retMap.put("data",customInfoFormMapList);
-			retMap.put("status",1);
 		} catch (Exception e) {
 			e.printStackTrace();
-			retMap.put("error","登录异常["+e.getMessage()+"]，请联系管理员！");
 		}
-		return retMap;
+		return customInfoFormMapList;
 	}
 
 
