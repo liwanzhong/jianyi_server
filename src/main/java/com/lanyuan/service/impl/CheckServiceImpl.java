@@ -1,16 +1,19 @@
 package com.lanyuan.service.impl;
 
-import com.lanyuan.entity.CheckSmallItemFormMap;
-import com.lanyuan.entity.CustomBelonetoEntFormMap;
-import com.lanyuan.entity.PhysicalExaminationRecordFormMap;
+import com.lanyuan.entity.*;
 import com.lanyuan.mapper.*;
 import com.lanyuan.service.ICheckService;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/4/26.
@@ -260,19 +263,115 @@ public class CheckServiceImpl implements ICheckService {
         return;
     }
 
+    @Autowired
+    private SickRiskItemMapper sickRiskItemMapper;
+
+    @Autowired
+    private SickRiskMapper sickRiskMapper;
+
+    @Autowired
+    private PhysicalExaminationResultMapper physicalExaminationResultMapper;
+
+    @Autowired
+    private PhysicalExaminationBigResultMapper physicalExaminationBigResultMapper;
+
+
     public void genSickRiskResult(PhysicalExaminationRecordFormMap recordFormMap) throws Exception {
-        //todo 获取大项的疾病配置
+        //todo 获取所有的疾病风险
+        List<SickRiskItemFormMap> sickRiskItemFormMapList =  sickRiskItemMapper.findEnterprisePage(new SickRiskItemFormMap());
+        if(CollectionUtils.isEmpty(sickRiskItemFormMapList)){
+            throw new Exception("没有配置疾病项");
+        }
 
-        //todo 通过检测记录，查询检测检测小项的检测值
+        for(SickRiskItemFormMap sickRiskItemFormMap:sickRiskItemFormMapList){
+            //todo 查询当前疾病项关联的所有配置
+            SickRiskFormMap sickRiskFormMap = new SickRiskFormMap();
+            sickRiskFormMap.put("sick_risk_id",sickRiskItemFormMap.getLong("id"));
+            List<SickRiskFormMap> sickRiskFormMapList = sickRiskMapper.findByNames(sickRiskFormMap);
+            if(CollectionUtils.isEmpty(sickRiskFormMapList)){
+                continue;
+            }
+            StringBuffer smallItemIds =new StringBuffer("(");
+            StringBuffer bigItemIds =new StringBuffer("(");
+            for(int i=0;i<sickRiskFormMapList.size();i++){
+                SickRiskFormMap sickItem =sickRiskFormMapList.get(i);
+                if(sickItem!=null){
+                    if(sickItem.getInt("check_item_type")==1){//大项
+                        if(i==sickRiskFormMapList.size()-1){
+                            bigItemIds.append(sickItem.getLong("check_item_id")).append(")");
+                        }else{
+                            bigItemIds.append(sickItem.getLong("check_item_id")).append(",");
+                        }
+                    }else{
+                        if(i==sickRiskFormMapList.size()-1){
+                            smallItemIds.append(sickItem.getLong("check_item_id")).append(")");
+                        }else{
+                            smallItemIds.append(sickItem.getLong("check_item_id")).append(",");
+                        }
+                    }
+                }
+            }
 
-        //todo 查询疾病配置信息记录列表
+            //todo 获取当前用户的检测结果记录
+            PhysicalExaminationResultFormMap physicalExaminationResultFormMap = new PhysicalExaminationResultFormMap();
+            physicalExaminationResultFormMap.put("where","examination_record_id="+recordFormMap.getLong("id")+" and  small_item_id in "+smallItemIds.toString()+" order by id desc");
+            List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = physicalExaminationResultMapper.findByWhere(physicalExaminationResultFormMap);
+            if(CollectionUtils.isNotEmpty(physicalExaminationResultFormMapList)){
+                for(PhysicalExaminationResultFormMap item:physicalExaminationResultFormMapList){
+                    //todo 计算检测小项的风险值
+                    Map<String,BigDecimal> sickReskMap = this.calSickRiskVal(item.getBigDecimal("quanzhong_score"),item.getLong("small_item_id"),sickRiskFormMapList);
 
-        //todo 循环检测值，根据疾病风险配置信息，计算风险值（大项和小项都有）
+                    //todo 保存检测风险值
+                }
+            }
+
+            PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = new PhysicalExaminationBigResultFormMap();
+            physicalExaminationBigResultFormMap.put("where","examination_record_id="+recordFormMap.getLong("id")+" and  big_item_id in "+bigItemIds.toString()+" order by id desc");
+            List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = physicalExaminationBigResultMapper.findByWhere(physicalExaminationBigResultFormMap);
+            if(CollectionUtils.isNotEmpty(physicalExaminationBigResultFormMapList)){
+                for(PhysicalExaminationBigResultFormMap item:physicalExaminationBigResultFormMapList){
+                    //todo 计算检测大项的风险值
+                    Map<String,BigDecimal> sickReskMap = this.calSickRiskVal(item.getBigDecimal("check_score"),item.getLong("big_item_id"),sickRiskFormMapList);
+
+                    //todo 保存检测风险值
+                }
+
+            }
+
+            //todo 获取当前疾病
+
+            //todo 根据大小项的风险值，计算疾病风险得分
 
 
-        //todo 根据大小项的风险值，计算疾病风险得分
+        }
 
 
 
+
+
+
+
+    }
+
+
+    /**
+     * 根据疾病风险系数和权重得分计算出疾病风险值
+     * @param quanzhong_score
+     * @param sickRiskFormMapList
+     * @return
+     */
+    private Map<String,BigDecimal> calSickRiskVal(BigDecimal quanzhong_score, Long checkItemid, List<SickRiskFormMap> sickRiskFormMapList) {
+        BigDecimal sickRiskValue= null;
+        BigDecimal rout = null;
+        for(SickRiskFormMap sickRiskFormMap:sickRiskFormMapList){
+            if(sickRiskFormMap.getLong("check_item_id").longValue()==checkItemid){
+                rout=sickRiskFormMap.getBigDecimal("risk_rout");
+                sickRiskValue = quanzhong_score.multiply(rout);
+            }
+        }
+        Map<String,BigDecimal> resultMap = new HashMap<String, BigDecimal>();
+        resultMap.put("sickRiskValue",sickRiskValue);
+        resultMap.put("rout",rout);
+        return resultMap;
     }
 }
