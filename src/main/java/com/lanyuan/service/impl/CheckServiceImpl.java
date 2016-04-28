@@ -259,4 +259,20 @@ public class CheckServiceImpl implements ICheckService {
 
         return;
     }
+
+    public void genSickRiskResult(PhysicalExaminationRecordFormMap recordFormMap) throws Exception {
+        //todo 获取大项的疾病配置
+
+        //todo 通过检测记录，查询检测检测小项的检测值
+
+        //todo 查询疾病配置信息记录列表
+
+        //todo 循环检测值，根据疾病风险配置信息，计算风险值（大项和小项都有）
+
+
+        //todo 根据大小项的风险值，计算疾病风险得分
+
+
+
+    }
 }

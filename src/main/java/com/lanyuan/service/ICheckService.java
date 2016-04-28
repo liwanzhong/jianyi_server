@@ -17,8 +17,11 @@ public interface ICheckService {
     List<CheckSmallItemFormMap> getCustomerCheckSmallItemsList(String customid) throws Exception;
 
 
-    //todo 记录小项检测记录
+
     void recordCheckResult(CustomBelonetoEntFormMap customBelonetoEntFormMap,PhysicalExaminationRecordFormMap recordFormMap) throws Exception;
+
+
+    void genSickRiskResult(PhysicalExaminationRecordFormMap recordFormMap)throws Exception;
 
 
 
