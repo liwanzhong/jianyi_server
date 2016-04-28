@@ -21,6 +21,9 @@ public interface ICheckService {
     void recordCheckResult(CustomBelonetoEntFormMap customBelonetoEntFormMap,PhysicalExaminationRecordFormMap recordFormMap) throws Exception;
 
 
+    void genCheckResult(PhysicalExaminationRecordFormMap recordFormMap) throws Exception;
+
+
     void genSickRiskResult(PhysicalExaminationRecordFormMap recordFormMap)throws Exception;
 
 
