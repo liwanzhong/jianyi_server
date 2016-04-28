@@ -7,12 +7,12 @@
 <head>
 	<jsp:include page="/inc.jsp"></jsp:include>
 	<meta http-equiv="X-UA-Compatible" content="edge" />
-	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/pingfen_rout/edit.shtml')}">
+	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/sickRiskItem/edit.shtml')}">
 		<script type="text/javascript">
 			$.canEdit = true;
 		</script>
 	</c:if>
-	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/pingfen_rout/delete.shtml')}">
+	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/sickRiskItem/delete.shtml')}">
 		<script type="text/javascript">
 		</script>
 	</c:if>
@@ -22,7 +22,7 @@
 		var dataGrid;
 		$(function() {
 			dataGrid = $('#dataGrid').datagrid({
-				url : '${ctx}/instrument/pingfen_rout/dataGrid.shtml?cfPingfenRoutFormMap.small_id='+${checkSmallItemFormMap.id},
+				url : '${ctx}/instrument/sickRiskItem/dataGrid.shtml',
 				fit : true,
 				striped : true,
 				rownumbers : true,
@@ -34,43 +34,9 @@
 				pageSize : 50,
 				pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 				columns : [ [ {
-					width : '120',
-					title : '年龄范围',
-					field : 'age_min'
-				}, {
-					width : '150',
-					title : '年龄范围',
-					field : 'age_max'
-				},{
-					width : '150',
-					title : '原评分范围',
-					field : 'orgin_pingfen_leve_name',
-					formatter : function(value, row, index) {
-						return value+'('+row.orgin_pingfen_min+'--'+row.orgin_pingfen_max+')';
-					}
-				},{
-					width : '120',
-					title : '调整后评分范围',
-					field : 'tz_pingfen_leve_name',
-					formatter : function(value, row, index) {
-						return value+'('+row.tz_pingfen_min+'--'+row.tz_pingfen_max+')';
-					}
-				},{
-					width : '140',
-					title : '最后更新时间',
-					field : 'update_time',
-					sortable : true,
-					formatter : function(value, row, index) {
-						return (new Date(parseFloat(value))).format("yyyy-MM-dd hh:mm:ss");
-					}
-				},{
-					width : '140',
-					title : '是否有效',
-					field : 'valid',
-					sortable : true,
-					formatter : function(value, row, index) {
-						return value==1?'有效':'无效';
-					}
+					width : '180',
+					title : '疾病风险名称',
+					field : 'name'
 				},{
 					field : 'action',
 					title : '操作',
@@ -95,7 +61,7 @@
 				title : '添加',
 				width : '50%',
 				height : '40%',
-				href : '${ctx}/instrument/pingfen_rout/addPage.shtml?smallItemId=${checkSmallItemFormMap.id}',
+				href : '${ctx}/instrument/sickRiskItem/addPage.shtml',
 				buttons : [ {
 					text : '添加',
 					handler : function() {
@@ -117,8 +83,8 @@
 			parent.$.messager.confirm('询问', '是否需要删除当前项？', function(b) {
 				if (b) {
 					progressLoad();
-					$.post('${ctx}/instrument/pingfen_rout/delete.shtml', {
-						'cfPingfenRoutFormMap.id' : id
+					$.post('${ctx}/instrument/sickRiskItem/delete.shtml', {
+						'sickRiskItemFormMap.id' : id
 					}, function(result) {
 						if (result.status == 1) {
 							parent.$.messager.alert('提示', result.msg, 'info');
@@ -133,10 +99,6 @@
 
 
 
-		function pingfenRoutConf(id){
-			window.location.href = '${ctx}/instrument/pingfen_rout/list.shtml?smallItemId='+id;
-		}
-
 		function editFun(id) {
 			if (id == undefined) {
 				var rows = dataGrid.datagrid('getSelections');
@@ -148,7 +110,7 @@
 				title : '编辑',
 				width : '50%',
 				height : '40%',
-				href : '${ctx}/instrument/pingfen_rout/editPage.shtml?id=' + id,
+				href : '${ctx}/instrument/sickRiskItem/editPage.shtml?id=' + id,
 				buttons : [ {
 					text : '编辑',
 					handler : function() {
@@ -171,19 +133,8 @@
 </head>
 <body class="easyui-layout" data-options="fit:true,border:false">
 <div data-options="region:'north',border:false" style="height: 30px; overflow: hidden;background-color: #fff">
-	<form id="searchForm">
-		<table>
-			<tr>
-				<th>检测小项名称:</th>
-				<td>
-					<input name="cfPingfenRoutFormMap.name" placeholder="请输入检测小项名称"/>
-					<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" onclick="cleanFun();">清空</a>
-				</td>
-			</tr>
-		</table>
-	</form>
 </div>
-<div data-options="region:'center',border:true,title:'评分概率---[${checkSmallItemFormMap.name}]'" >
+<div data-options="region:'center',border:true,title:'疾病风险管理'" >
 	<table id="dataGrid" data-options="fit:true,border:false"></table>
 </div>
 <div id="toolbar" style="display: none;">

@@ -4,8 +4,8 @@
 <script type="text/javascript">
 	$(function() {
 
-		$('#orginid').combotree({
-			url : '${ctx}${ctx}/instrument/sickRisk/tree.shtml',
+		$('#sick_risk_id').combotree({
+			url : '${ctx}${ctx}/instrument/sickRiskItem/tree.shtml',
 			parentField : 'pid',
 			lines : true,
 			panelHeight : 'auto',

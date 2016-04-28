@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2016/4/26.
@@ -30,23 +27,7 @@ public class CheckServiceImpl implements ICheckService {
 
 
     @Inject
-    private CustomInfoMapper customInfoMapper;
-
-
-    @Inject
-    private CustomBelonetoEntMapper customBelonetoEntMapper;
-
-
-
-
-
-    @Inject
     private CheckBigItemMapper checkBigItemMapper;
-
-
-
-
-
 
 
     @Inject
@@ -55,11 +36,6 @@ public class CheckServiceImpl implements ICheckService {
 
     @Inject
     private PhysicalExaminationMainReportMapper physicalExaminationMainReportMapper;
-
-
-    @Inject
-    private PhysicalExaminationBigResultMapper physicalExaminationBigResultMapper;
-
 
     @Inject
     private CfPingfenRoutMapper cfPingfenRoutMapper;
@@ -86,7 +62,8 @@ public class CheckServiceImpl implements ICheckService {
 
     public void recordCheckResult(CustomBelonetoEntFormMap customBelonetoEntFormMap,PhysicalExaminationRecordFormMap recordFormMap) throws Exception {
         // 获取所有的项目（排除切割项目关联项 ）
-        /*List<CheckSmallItemFormMap> checkSmallItemFormMapList = getCustomerCheckSmallItemsList(customBelonetoEntFormMap.get("custom_id").toString());
+        List<CheckSmallItemFormMap> checkSmallItemFormMapList = getCustomerCheckSmallItemsList(customBelonetoEntFormMap.get("custom_id").toString());
+/*
         if(CollectionUtils.isNotEmpty(checkSmallItemFormMapList)){
 
             // 获取评分标准
@@ -258,10 +235,12 @@ public class CheckServiceImpl implements ICheckService {
             }
 
             physicalExaminationMainReportMapper.addEntity(physicalExaminationMainReportFormMap);
-        }*/
+        }
+*/
 
         return;
     }
+
 
     @Autowired
     private SickRiskItemMapper sickRiskItemMapper;
@@ -274,6 +253,13 @@ public class CheckServiceImpl implements ICheckService {
 
     @Autowired
     private PhysicalExaminationBigResultMapper physicalExaminationBigResultMapper;
+
+
+    @Autowired
+    private PhysicalExaminationSickRiskResultMapper physicalExaminationSickRiskResultMapper;
+
+    @Autowired
+    private PhysicalExaminationSickRiskMainResultMapper physicalExaminationSickRiskMainResultMapper;
 
 
     public void genSickRiskResult(PhysicalExaminationRecordFormMap recordFormMap) throws Exception {
@@ -313,6 +299,9 @@ public class CheckServiceImpl implements ICheckService {
             }
 
             //todo 获取当前用户的检测结果记录
+
+            List<PhysicalExaminationSickRiskResultFormMap> physicalExaminationSickRiskResultFormMapList = new ArrayList<PhysicalExaminationSickRiskResultFormMap>();
+
             PhysicalExaminationResultFormMap physicalExaminationResultFormMap = new PhysicalExaminationResultFormMap();
             physicalExaminationResultFormMap.put("where","examination_record_id="+recordFormMap.getLong("id")+" and  small_item_id in "+smallItemIds.toString()+" order by id desc");
             List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = physicalExaminationResultMapper.findByWhere(physicalExaminationResultFormMap);
@@ -320,8 +309,14 @@ public class CheckServiceImpl implements ICheckService {
                 for(PhysicalExaminationResultFormMap item:physicalExaminationResultFormMapList){
                     //todo 计算检测小项的风险值
                     Map<String,BigDecimal> sickReskMap = this.calSickRiskVal(item.getBigDecimal("quanzhong_score"),item.getLong("small_item_id"),sickRiskFormMapList);
-
-                    //todo 保存检测风险值
+                    PhysicalExaminationSickRiskResultFormMap physicalExaminationSickRiskResultFormMap = new PhysicalExaminationSickRiskResultFormMap();
+                    physicalExaminationSickRiskResultFormMap.put("examination_record_id",recordFormMap.getLong("id"));
+                    physicalExaminationSickRiskResultFormMap.put("check_item_id",item.getLong("big_item_id"));
+                    physicalExaminationSickRiskResultFormMap.put("check_item_type",2);
+                    physicalExaminationSickRiskResultFormMap.put("sick_risk_item_id",sickRiskItemFormMap.getLong("sick_risk_id"));
+                    physicalExaminationSickRiskResultFormMap.put("risk_rout",(BigDecimal)sickReskMap.get("sickRiskValue"));
+                    physicalExaminationSickRiskResultFormMap.put("score",(BigDecimal)sickReskMap.get("rout"));
+                    physicalExaminationSickRiskResultFormMapList.add(physicalExaminationSickRiskResultFormMap);
                 }
             }
 
@@ -332,25 +327,77 @@ public class CheckServiceImpl implements ICheckService {
                 for(PhysicalExaminationBigResultFormMap item:physicalExaminationBigResultFormMapList){
                     //todo 计算检测大项的风险值
                     Map<String,BigDecimal> sickReskMap = this.calSickRiskVal(item.getBigDecimal("check_score"),item.getLong("big_item_id"),sickRiskFormMapList);
-
+                    PhysicalExaminationSickRiskResultFormMap physicalExaminationSickRiskResultFormMap = new PhysicalExaminationSickRiskResultFormMap();
+                    physicalExaminationSickRiskResultFormMap.put("examination_record_id",recordFormMap.getLong("id"));
+                    physicalExaminationSickRiskResultFormMap.put("check_item_id",item.getLong("big_item_id"));
+                    physicalExaminationSickRiskResultFormMap.put("check_item_type",1);
+                    physicalExaminationSickRiskResultFormMap.put("sick_risk_item_id",sickRiskItemFormMap.getLong("sick_risk_id"));
+                    physicalExaminationSickRiskResultFormMap.put("risk_rout",(BigDecimal)sickReskMap.get("sickRiskValue"));
+                    physicalExaminationSickRiskResultFormMap.put("score",(BigDecimal)sickReskMap.get("rout"));
+                    physicalExaminationSickRiskResultFormMapList.add(physicalExaminationSickRiskResultFormMap);
                     //todo 保存检测风险值
                 }
 
+
             }
 
-            //todo 获取当前疾病
+            if(CollectionUtils.isNotEmpty(physicalExaminationSickRiskResultFormMapList)){
+                physicalExaminationSickRiskResultMapper.batchSave(physicalExaminationSickRiskResultFormMapList);
+            }
+
+
 
             //todo 根据大小项的风险值，计算疾病风险得分
+            PhysicalExaminationSickRiskMainResultFormMap physicalExaminationSickRiskMainResultFormMap = this.calSickRiskScore(physicalExaminationSickRiskResultFormMapList);
+            physicalExaminationSickRiskMainResultFormMap.put("examination_record_id",recordFormMap.getLong("id"));
+            physicalExaminationSickRiskMainResultFormMap.put("sick_risk_item_id",sickRiskItemFormMap.getLong("sick_risk_id"));
+
+
+            //todo 生成评分等级
+            List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList = cfPingfenLeveMapper.findByNames(new CfPingfenLeveFormMap());
+            if(CollectionUtils.isEmpty(cfPingfenLeveFormMapList)){
+                throw new Exception("没有配置得分等级!");
+            }
+            for(CfPingfenLeveFormMap cfPingfenLeveFormMap:cfPingfenLeveFormMapList){
+                if(cfPingfenLeveFormMap.getBigDecimal("pingfen_min").doubleValue()<physicalExaminationSickRiskMainResultFormMap.getBigDecimal("risk_score").doubleValue() && cfPingfenLeveFormMap.getBigDecimal("pingfen_max").doubleValue()>=physicalExaminationSickRiskMainResultFormMap.getBigDecimal("risk_score").doubleValue()){
+                    physicalExaminationSickRiskMainResultFormMap.put("risk_leve",cfPingfenLeveFormMap.getLong("id"));
+                    break;
+                }
+            }
+            physicalExaminationSickRiskMainResultMapper.addEntity(physicalExaminationSickRiskMainResultFormMap);
 
 
         }
 
+    }
 
 
 
 
 
-
+    /**
+     *
+     * 计算疾病风险得分
+     * 计算公式   FM=60%+（80-YM）*2.5*100%
+     * @param physicalExaminationSickRiskResultFormMapList
+     * @return
+     * @throws Exception
+     */
+    private PhysicalExaminationSickRiskMainResultFormMap calSickRiskScore(List<PhysicalExaminationSickRiskResultFormMap> physicalExaminationSickRiskResultFormMapList) throws Exception{
+        if(CollectionUtils.isEmpty(physicalExaminationSickRiskResultFormMapList)){
+            throw new Exception("数据异常！");
+        }
+        //todo 计算风险得分
+        BigDecimal sumSickRiskValue = new BigDecimal(0);
+        for(PhysicalExaminationSickRiskResultFormMap item:physicalExaminationSickRiskResultFormMapList){
+            BigDecimal sickRiskValue = item.getBigDecimal("score");
+            sumSickRiskValue = sumSickRiskValue.add(sickRiskValue);
+        }
+        BigDecimal score = new BigDecimal(0.6).add(new BigDecimal(80).subtract(sumSickRiskValue).multiply(new BigDecimal(2.5)).multiply(new BigDecimal(1)));
+        PhysicalExaminationSickRiskMainResultFormMap physicalExaminationSickRiskMainResultFormMap = new PhysicalExaminationSickRiskMainResultFormMap();
+        physicalExaminationSickRiskMainResultFormMap.put("risk_value",sumSickRiskValue);
+        physicalExaminationSickRiskMainResultFormMap.put("risk_score",score);
+        return physicalExaminationSickRiskMainResultFormMap;
     }
 
 

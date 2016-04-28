@@ -79,7 +79,7 @@
 				if (b) {
 					progressLoad();
 					$.post('${ctx}/instrument/sickRisk/delete.shtml', {
-						'cfPingfenRoutFormMap.id' : id
+						'sickRiskFormMap.id' : id
 					}, function(result) {
 						if (result.status == 1) {
 							parent.$.messager.alert('提示', result.msg, 'info');

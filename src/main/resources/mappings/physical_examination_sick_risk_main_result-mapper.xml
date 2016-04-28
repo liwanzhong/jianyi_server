@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.PhysicalExaminationSickRiskMainResultMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache"
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+  cbe.id,
+  cbe.custom_id,
+  cbe.organization_id,
+  cbe.insert_time,
+  cbe.isdelete,
+  cbe.last_check_time,
+  ci.idcard,
+  ci.vipcard,
+  ci.mobile,
+  ci.username,
+  ci.password,
+  ci.name,
+  ci.sex,
+  ci.birthday,
+  ci.body_height,
+  ci.weight,
+  ci.zhiwen_code,
+  ci.zhiwen_path,
+  lo.name AS organization_name
+	</sql>
+
+	<select id="findEnterprisePage" resultType="com.lanyuan.entity.PhysicalExaminationSickRiskMainResultFormMap">
+		select
+		<include refid="selectId" />
+		FROM custom_beloneto_ent cbe
+		LEFT JOIN custom_info ci
+		ON ci.id = cbe.custom_id
+		LEFT JOIN ly_organization lo
+		ON cbe.organization_id = lo.id
+		where  cbe.isdelete = 0 AND ci.isvalid = 1
+		<if test="organization_id != null">
+			AND  cbe.organization_id = ${organization_id}
+		</if>
+		<if test="insert_time_start != null">
+			AND  cbe.insert_time &gt;= '${sub_point_id}'
+		</if>
+		<if test="insert_time_end != null">
+			AND cbe.insert_time &lt;= '${insert_time_end}'
+		</if>
+		<if test="name != null">
+			AND ci.name = '${name}'
+		</if>
+		<if test="orderby != null">
+			ORDER BY ${orderby}
+		</if>
+	</select>
+
+
+
+	<select id="findAllByOrderby" resultType="com.lanyuan.entity.PhysicalExaminationBigResultFormMap">
+		SELECT
+		pebr.big_item_id,
+		pebr.check_score,
+		pebr.gen_quanzhong,
+		cbi.name,
+		cpl.name AS leve,
+		cpl.show_color AS show_color,
+		cbi.tips_content,
+		cbi.icon,
+		cbi.order_by,
+		pebr.examination_record_id
+		FROM physical_examination_big_result pebr
+		LEFT JOIN check_big_item cbi
+		ON pebr.big_item_id = cbi.id
+		LEFT JOIN cf_pingfen_leve cpl
+		ON cpl.id = pebr.leve_id
+		WHERE pebr.examination_record_id  =  ${examination_record_id}
+		 <if test="big_item_id != null">
+			 AND pebr.big_item_id = ${big_item_id}
+		 </if>
+		 ORDER BY cbi.order_by ASC
+	</select>
+
+
+
+	<select id="findItemCheckResultList" resultType="com.lanyuan.entity.PhysicalExaminationBigResultFormMap">
+SELECT
+		pebr.big_item_id,
+		pebr.check_score,
+		pebr.gen_quanzhong,
+		cbi.name,
+		(SELECT
+		cpl.name
+		FROM cf_pingfen_leve cpl
+		WHERE cpl.id = pebr.leve_id) AS leve,
+    	cbi.tips_content,
+    	cbi.icon,
+    	cbi.order_by
+		FROM physical_examination_big_result pebr
+		LEFT JOIN check_big_item cbi
+		ON pebr.big_item_id = cbi.id
+		WHERE pebr.examination_record_id  =  #{examination_record_id} ORDER BY cbi.order_by ASC
+
+	</select>
+
+
+
+
+</mapper>

@@ -63,26 +63,7 @@ public class SickRiskConfigController extends BaseController {
 	}
 
 
-	@ResponseBody
-	@RequestMapping("tree")
-	@SystemLog(module="组织管理",methods="加载组织树形列表")//凡需要处理业务逻辑的.都需要记录操作日志
-	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	public List<Tree> tree()throws Exception {
-		List<Tree> lt = new ArrayList<Tree>();
-		SickRiskFormMap sickRiskFormMap = getFormMap(SickRiskFormMap.class);
-		sickRiskFormMap.put("orderby","  id asc");
-		List<SickRiskFormMap> sickRiskFormMapList = sickRiskMapper.findEnterprisePage(sickRiskFormMap);
 
-		if (CollectionUtils.isNotEmpty(sickRiskFormMapList)) {
-			for (SickRiskFormMap r : sickRiskFormMapList) {
-				Tree tree = new Tree();
-				tree.setId(r.get("id").toString());
-				tree.setText(r.get("name").toString());
-				lt.add(tree);
-			}
-		}
-		return lt;
-	}
 
 
 	@ResponseBody

@@ -7,7 +7,7 @@
 	$(function() {
 
 		$('#sick_risk_id').combotree({
-			url : '${ctx}/instrument/sickRisk/tree.shtml',
+			url : '${ctx}/instrument/sickRiskItem/tree.shtml',
 			parentField : 'pid',
 			lines : true,
 			panelHeight : 'auto'

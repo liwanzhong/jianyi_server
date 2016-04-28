@@ -4,6 +4,7 @@ package com.lanyuan.controller.instrument;
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.SickRiskItemFormMap;
+import com.lanyuan.entity.SickRiskItemFormMap;
 import com.lanyuan.mapper.SickRiskItemMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
@@ -95,7 +96,6 @@ public class SickRiskItemController extends BaseController {
 		retMap.put("status",0);
 		try {
 			SickRiskItemFormMap sickRiskItemFormMap = getFormMap(SickRiskItemFormMap.class);
-			sickRiskItemFormMap.put("update_time",dateFormat.format(new Date()));
 			sickRiskItemMapper.addEntity(sickRiskItemFormMap);
 			retMap.put("msg","添加成功");
 			retMap.put("status",1);
@@ -147,6 +147,26 @@ public class SickRiskItemController extends BaseController {
 			ex.printStackTrace();
 		}
 		return retMap;
+	}
+
+
+	@ResponseBody
+	@RequestMapping("tree")
+	@SystemLog(module="组织管理",methods="加载组织树形列表")//凡需要处理业务逻辑的.都需要记录操作日志
+	@Transactional(readOnly=false)//需要事务操作必须加入此注解
+	public List<Tree> tree()throws Exception {
+		List<Tree> lt = new ArrayList<Tree>();
+		List<SickRiskItemFormMap> sickRiskFormMapList = sickRiskItemMapper.findByNames(getFormMap(SickRiskItemFormMap.class));
+
+		if (CollectionUtils.isNotEmpty(sickRiskFormMapList)) {
+			for (SickRiskItemFormMap r : sickRiskFormMapList) {
+				Tree tree = new Tree();
+				tree.setId(r.get("id").toString());
+				tree.setText(r.get("name").toString());
+				lt.add(tree);
+			}
+		}
+		return lt;
 	}
 
 
