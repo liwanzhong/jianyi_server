@@ -7,22 +7,13 @@
 <head>
 	<jsp:include page="/inc.jsp"></jsp:include>
 	<meta http-equiv="X-UA-Compatible" content="edge" />
-	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/sickRiskItem/edit.shtml')}">
-		<script type="text/javascript">
-			$.canEdit = true;
-		</script>
-	</c:if>
-	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/sickRiskItem/delete.shtml')}">
-		<script type="text/javascript">
-		</script>
-	</c:if>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>检测项管理</title>
 	<script type="text/javascript">
 		var dataGrid;
 		$(function() {
 			dataGrid = $('#dataGrid').datagrid({
-				url : '${ctx}/instrument/sickRiskItem/dataGrid.shtml',
+				url : '${ctx}/instrument/sickRisk/dataGrid.shtml?sickRiskFormMap.check_item_id=${checkItemId}&sickRiskFormMap.check_item_type=${checkItemType}',
 				fit : true,
 				striped : true,
 				rownumbers : true,
@@ -34,9 +25,13 @@
 				pageSize : 50,
 				pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 				columns : [ [ {
-					width : '180',
+					width : '120',
 					title : '疾病风险名称',
 					field : 'name'
+				}, {
+					width : '150',
+					title : '风险系数',
+					field : 'risk_rout'
 				},{
 					field : 'action',
 					title : '操作',
@@ -46,25 +41,12 @@
 						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >删除</a>', row.id);
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="bmiConfig(\'{0}\');" >BMI关联疾病风险率</a>', row.id);
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="ageConfig(\'{0}\');" >年龄关联疾病分先率</a>', row.id);
 						return str;
 					}
 				}] ],
 				toolbar : '#toolbar'
 			});
 		});
-
-
-		function bmiConfig(id){
-			window.location.href = '${ctx}/instrument/bmiRiskRoutConfig/list.shtml?bmiSickRiskRoutFormMap.sick_risk_id='+id;
-		}
-
-		function ageConfig(id){
-			window.location.href = '${ctx}/instrument/ageRiskRoutConfig/list.shtml?ageSickRiskRoutFormMap.sick_risk_id='+id;
-		}
 
 
 
@@ -74,7 +56,7 @@
 				title : '添加',
 				width : '50%',
 				height : '40%',
-				href : '${ctx}/instrument/sickRiskItem/addPage.shtml',
+				href : '${ctx}/instrument/sickRisk/addPage.shtml?checkItemId=${checkItemId}&checkItemType=${checkItemType}',
 				buttons : [ {
 					text : '添加',
 					handler : function() {
@@ -96,8 +78,8 @@
 			parent.$.messager.confirm('询问', '是否需要删除当前项？', function(b) {
 				if (b) {
 					progressLoad();
-					$.post('${ctx}/instrument/sickRiskItem/delete.shtml', {
-						'sickRiskItemFormMap.id' : id
+					$.post('${ctx}/instrument/sickRisk/delete.shtml', {
+						'sickRiskFormMap.id' : id
 					}, function(result) {
 						if (result.status == 1) {
 							parent.$.messager.alert('提示', result.msg, 'info');
@@ -112,6 +94,10 @@
 
 
 
+		function pingfenRoutConf(id){
+			window.location.href = '${ctx}/instrument/sickRisk/list.shtml?smallItemId='+id;
+		}
+
 		function editFun(id) {
 			if (id == undefined) {
 				var rows = dataGrid.datagrid('getSelections');
@@ -123,7 +109,7 @@
 				title : '编辑',
 				width : '50%',
 				height : '40%',
-				href : '${ctx}/instrument/sickRiskItem/editPage.shtml?id=' + id,
+				href : '${ctx}/instrument/sickRisk/editPage.shtml?id=' + id,
 				buttons : [ {
 					text : '编辑',
 					handler : function() {
@@ -146,8 +132,19 @@
 </head>
 <body class="easyui-layout" data-options="fit:true,border:false">
 <div data-options="region:'north',border:false" style="height: 30px; overflow: hidden;background-color: #fff">
+	<%--<form id="searchForm">
+		<table>
+			<tr>
+				<th>检测小项名称:</th>
+				<td>
+					<input name="cfPingfenRoutFormMap.name" placeholder="请输入检测小项名称"/>
+					<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" onclick="cleanFun();">清空</a>
+				</td>
+			</tr>
+		</table>
+	</form>--%>
 </div>
-<div data-options="region:'center',border:true,title:'疾病风险管理'" >
+<div data-options="region:'center',border:true,title:'疾病风险配置'" >
 	<table id="dataGrid" data-options="fit:true,border:false"></table>
 </div>
 <div id="toolbar" style="display: none;">
