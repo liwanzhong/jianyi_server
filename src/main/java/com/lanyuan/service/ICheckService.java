@@ -11,14 +11,14 @@ import java.util.List;
  */
 public interface ICheckService {
 
-    PhysicalExaminationRecordFormMap saveCheckRecord(PhysicalExaminationRecordFormMap recordFormMap, CustomBelonetoEntFormMap customBelonetoEntFormMap, String instrumentId) throws Exception;
-
-
-    List<CheckSmallItemFormMap> getCustomerCheckSmallItemsList(String customid) throws Exception;
 
 
 
-    void recordCheckResult(CustomBelonetoEntFormMap customBelonetoEntFormMap,PhysicalExaminationRecordFormMap recordFormMap) throws Exception;
+
+
+
+
+    void recordCheckResult(Long instrumentId,Long customerId,Long customBelongToId) throws Exception;
 
 
     void genCheckResult(PhysicalExaminationRecordFormMap recordFormMap) throws Exception;

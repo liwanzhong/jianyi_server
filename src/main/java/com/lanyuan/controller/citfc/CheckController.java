@@ -88,23 +88,11 @@ public class CheckController extends BaseController {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
 		try {
-			// 根据用户id获取用户相关信息
-			CustomBelonetoEntFormMap customBelonetoEntFormMap = customBelonetoEntMapper.findbyFrist("id",customBelongToId,CustomBelonetoEntFormMap.class);
-			if(null == customBelonetoEntFormMap){
-				throw new Exception("无此用户!");
-			}
-
-			CustomInfoFormMap customInfoFormMap = getFormMap(CustomInfoFormMap.class);
-			customInfoFormMap.put("id",customBelonetoEntFormMap.getLong("custom_id"));
-			List<CustomInfoFormMap> customInfoFormMapList = customInfoMapper.findByNames(customInfoFormMap);
-			if(CollectionUtils.isEmpty(customInfoFormMapList)){
-				throw new Exception("无此用户!");
-			}
-			customInfoFormMap = customInfoFormMapList.get(0);
+			/*
 
 			// 保存检测记录
 			PhysicalExaminationRecordFormMap recordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
-			recordFormMap = checkService.saveCheckRecord(recordFormMap,customBelonetoEntFormMap,instrumentId);
+			recordFormMap = checkService.saveCheckRecord(recordFormMap,customBelonetoEntFormMap,instrumentId);*/
 
 
 
