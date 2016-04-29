@@ -53,6 +53,10 @@ public class CheckServiceImpl implements ICheckService {
     private CustomInfoMapper customInfoMapper;
 
 
+    @Autowired
+    private EquipmentMapper equipmentMapper;
+
+
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
@@ -62,16 +66,27 @@ public class CheckServiceImpl implements ICheckService {
      * 记录检测项
      * @throws Exception
      */
-    public void recordCheckResult(Long instrumentId,Long customerId) throws Exception {
-        //todo 获取仪器对象
-        Long customBelongToId = null;
+    public void recordCheckResult(String instrumentCode,Long customerId) throws Exception {
+        // 获取仪器对象
+        EquipmentFormMap equipmentFormMap = equipmentMapper.findbyFrist("istmt_code",instrumentCode,EquipmentFormMap.class);
+        if(null == equipmentFormMap){
+            throw new Exception("无效检测!");
+        }
+
+        Long instrumentId = equipmentFormMap.getLong("id");
 
 
         // 根据用户id获取用户相关信息
-        CustomBelonetoEntFormMap customBelonetoEntFormMap = customBelonetoEntMapper.findbyFrist("id",String.valueOf(customBelongToId),CustomBelonetoEntFormMap.class);
-        if(null == customBelonetoEntFormMap){
+        CustomBelonetoEntFormMap customBelonetoEntFormMap = new CustomBelonetoEntFormMap();
+        customBelonetoEntFormMap.put("custom_id",customerId);
+        customBelonetoEntFormMap.put("organization_id",equipmentFormMap.getLong("organization_id"));
+        customBelonetoEntFormMap.put("isdelete",0);
+        List<CustomBelonetoEntFormMap> customBelonetoEntFormMapList = customBelonetoEntMapper.findByNames(customBelonetoEntFormMap);
+        if(CollectionUtils.isEmpty(customBelonetoEntFormMapList)){
             throw new Exception("无此用户!");
         }
+        customBelonetoEntFormMap = customBelonetoEntFormMapList.get(0);
+
         CustomInfoFormMap customInfoFormMap = customInfoMapper.findbyFrist("id", String.valueOf(customerId),CustomInfoFormMap.class);
         if(null == customInfoFormMap){
             throw new Exception("无此用户!");
@@ -103,6 +118,13 @@ public class CheckServiceImpl implements ICheckService {
     }
 
 
+    /**
+     * 保存检测记录
+     * @param customBelonetoEntFormMap
+     * @param instrumentId
+     * @return
+     * @throws Exception
+     */
     private PhysicalExaminationRecordFormMap saveCheckRecord(CustomBelonetoEntFormMap customBelonetoEntFormMap,Long instrumentId) throws Exception {
         // 保存检测记录
         PhysicalExaminationRecordFormMap recordFormMap = new PhysicalExaminationRecordFormMap();

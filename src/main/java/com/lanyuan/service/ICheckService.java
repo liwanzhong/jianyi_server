@@ -18,7 +18,7 @@ public interface ICheckService {
 
 
 
-    void recordCheckResult(Long instrumentId,Long customerId) throws Exception;
+    void recordCheckResult(String instrumentCode,Long customerId) throws Exception;
 
 
     void genCheckResult(PhysicalExaminationRecordFormMap recordFormMap) throws Exception;
