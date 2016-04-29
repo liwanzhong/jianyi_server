@@ -26,47 +26,8 @@ import java.util.*;
 @RequestMapping("/citfc/client_call/check")
 public class CheckController extends BaseController {
 
-	@Inject
-	private CustomInfoMapper customInfoMapper;
 
 
-	@Inject
-	private CustomBelonetoEntMapper customBelonetoEntMapper;
-
-
-	@Inject
-	private CheckSmallItemMapper checkSmallItemMapper;
-
-
-	@Inject
-	private CheckBigItemMapper checkBigItemMapper;
-
-
-	@Inject
-	private PhysicalExaminationRecordMapper physicalExaminationRecordMapper;
-
-
-	@Inject
-	private PhysicalExaminationResultMapper physicalExaminationResultMapper;
-
-
-	@Inject
-	private CfPingfenLeveMapper cfPingfenLeveMapper;
-
-
-	@Inject
-	private PhysicalExaminationMainReportMapper physicalExaminationMainReportMapper;
-
-
-	@Inject
-	private PhysicalExaminationBigResultMapper physicalExaminationBigResultMapper;
-
-
-	@Inject
-	private CfPingfenRoutMapper cfPingfenRoutMapper;
-
-
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Autowired
 	private ICheckService checkService;
@@ -77,25 +38,18 @@ public class CheckController extends BaseController {
 
 	/**
 	 * 上传用户检测数据
-	 * @param customBelongToId
 	 * @param instrumentId
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "upload",  produces = "text/json; charset=utf-8")
 //	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	public Map<String,Object> login(@RequestParam(value = "customBelongToId",defaultValue = "1") String customBelongToId,@RequestParam(value = "instrumentId",defaultValue = "7") String instrumentId) {
+	public Map<String,Object> login(@RequestParam(value = "customBelongToId",defaultValue = "1") Long customerId,@RequestParam(value = "instrumentId",defaultValue = "7") Long instrumentId) {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
 		try {
-			/*
 
-			// 保存检测记录
-			PhysicalExaminationRecordFormMap recordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
-			recordFormMap = checkService.saveCheckRecord(recordFormMap,customBelonetoEntFormMap,instrumentId);*/
-
-
-
+			checkService.recordCheckResult(instrumentId,customerId);
 			retMap.put("status",1);
 
 		} catch (Exception e) {

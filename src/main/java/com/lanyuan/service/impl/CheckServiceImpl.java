@@ -55,37 +55,17 @@ public class CheckServiceImpl implements ICheckService {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    private PhysicalExaminationRecordFormMap saveCheckRecord(CustomBelonetoEntFormMap customBelonetoEntFormMap,Long instrumentId) throws Exception {
-        // 保存检测记录
-        PhysicalExaminationRecordFormMap recordFormMap = new PhysicalExaminationRecordFormMap();
-        recordFormMap.put("custom_id",customBelonetoEntFormMap.getLong("custom_id"));
-        recordFormMap.put("organization_id",customBelonetoEntFormMap.get("organization_id").toString());
-        recordFormMap.put("instrument_id",instrumentId);
-        recordFormMap.put("status",PhysicalExaminationRecordFormMap.STATUS_CHECKED);
-        recordFormMap.put("check_time",dateFormat.format(new Date()));
-        recordFormMap.put("update_time",dateFormat.format(new Date()));
-        physicalExaminationRecordMapper.addEntity(recordFormMap);
-        return recordFormMap;
-    }
 
-
-    /**
-     *
-     * @param customid
-     * @return
-     * @throws Exception
-     */
-    private List<CheckSmallItemFormMap> getCustomerCheckSmallItemsList(String customid) throws Exception {
-        List<CheckSmallItemFormMap> checkSmallItemFormMapList =  checkSmallItemMapper.getAllButCustomCutedItem(customid);
-        return checkSmallItemFormMapList;
-    }
 
 
     /**
      * 记录检测项
      * @throws Exception
      */
-    public void recordCheckResult(Long instrumentId,Long customerId,Long customBelongToId) throws Exception {
+    public void recordCheckResult(Long instrumentId,Long customerId) throws Exception {
+        //todo 获取仪器对象
+        Long customBelongToId = null;
+
 
         // 根据用户id获取用户相关信息
         CustomBelonetoEntFormMap customBelonetoEntFormMap = customBelonetoEntMapper.findbyFrist("id",String.valueOf(customBelongToId),CustomBelonetoEntFormMap.class);
@@ -121,6 +101,32 @@ public class CheckServiceImpl implements ICheckService {
         }
 
         physicalExaminationResultMapper.batchSave(physicalExaminationResultFormMapList);
+    }
+
+
+    private PhysicalExaminationRecordFormMap saveCheckRecord(CustomBelonetoEntFormMap customBelonetoEntFormMap,Long instrumentId) throws Exception {
+        // 保存检测记录
+        PhysicalExaminationRecordFormMap recordFormMap = new PhysicalExaminationRecordFormMap();
+        recordFormMap.put("custom_id",customBelonetoEntFormMap.getLong("custom_id"));
+        recordFormMap.put("organization_id",customBelonetoEntFormMap.get("organization_id").toString());
+        recordFormMap.put("instrument_id",instrumentId);
+        recordFormMap.put("status",PhysicalExaminationRecordFormMap.STATUS_CHECKED);
+        recordFormMap.put("check_time",dateFormat.format(new Date()));
+        recordFormMap.put("update_time",dateFormat.format(new Date()));
+        physicalExaminationRecordMapper.addEntity(recordFormMap);
+        return recordFormMap;
+    }
+
+
+    /**
+     *
+     * @param customid
+     * @return
+     * @throws Exception
+     */
+    private List<CheckSmallItemFormMap> getCustomerCheckSmallItemsList(String customid) throws Exception {
+        List<CheckSmallItemFormMap> checkSmallItemFormMapList =  checkSmallItemMapper.getAllButCustomCutedItem(customid);
+        return checkSmallItemFormMapList;
     }
 
 
