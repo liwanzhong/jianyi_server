@@ -85,7 +85,6 @@ public class CheckServiceImpl implements ICheckService {
             throw new Exception("没有配置检测项");
         }
 
-        //todo 排除性别相关项
 
 
 
@@ -125,6 +124,7 @@ public class CheckServiceImpl implements ICheckService {
      * @throws Exception
      */
     private List<CheckSmallItemFormMap> getCustomerCheckSmallItemsList(String customid) throws Exception {
+        //todo sql 中需要排除性别相关的项
         List<CheckSmallItemFormMap> checkSmallItemFormMapList =  checkSmallItemMapper.getAllButCustomCutedItem(customid);
         return checkSmallItemFormMapList;
     }
@@ -142,7 +142,7 @@ public class CheckServiceImpl implements ICheckService {
 
         CustomInfoFormMap customInfoFormMap = customInfoMapper.findbyFrist("id",recordFormMap.getLong("custom_id").toString(),CustomInfoFormMap.class);
         if(null == customInfoFormMap){
-            throw new Exception("无此用户!");
+            throw new Exception("无效用户!");
         }
 
         //获取用户检测小项检测结果列表
@@ -177,6 +177,15 @@ public class CheckServiceImpl implements ICheckService {
 
     }
 
+
+    /**
+     * 生成检测项检测结果
+     * @param customInfoFormMap
+     * @param physicalExaminationResultFormMapList
+     * @param checkSmallItemFormMapList
+     * @param cfPingfenLeveFormMapList
+     * @throws Exception
+     */
     private void genCheckSmallItemResult(CustomInfoFormMap customInfoFormMap, List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList, List<CheckSmallItemFormMap> checkSmallItemFormMapList, List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList) throws Exception {
         // 循环检测结果，计算各项内容，并更新
         for(PhysicalExaminationResultFormMap checkSmallItemResult:physicalExaminationResultFormMapList){
