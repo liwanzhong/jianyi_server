@@ -5,14 +5,18 @@ import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.AgeSickRiskRoutFormMap;
 import com.lanyuan.entity.AgeSickRiskRoutFormMap;
-import com.lanyuan.entity.BmiSickRiskRoutFormMap;
+import com.lanyuan.entity.AgeSickRiskRoutFormMap;
+import com.lanyuan.entity.SickRiskItemFormMap;
 import com.lanyuan.mapper.AgeSickRiskRoutMapper;
+import com.lanyuan.mapper.BmiSickRiskRoutMapper;
+import com.lanyuan.mapper.SickRiskItemMapper;
 import com.lanyuan.mapper.SickRiskMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
 import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.PageFilter;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -42,22 +46,26 @@ public class AgeSickRiskConfigController extends BaseController {
 	private AgeSickRiskRoutMapper ageSickRiskRoutMapper;
 
 
+	@Autowired
+	private SickRiskItemMapper sickRiskItemMapper;
+
+
 
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
-		List<AgeSickRiskRoutFormMap> ageSickRiskRoutFormMapList = ageSickRiskRoutMapper.findByNames(getFormMap(AgeSickRiskRoutFormMap.class));
-		model.addAttribute("sickId",getFormMap(AgeSickRiskRoutFormMap.class).get("sickId").toString());
-		model.addAttribute("ageSickRiskRoutFormMapList",ageSickRiskRoutFormMapList);
+		SickRiskItemFormMap sickRiskItemFormMap = getFormMap(SickRiskItemFormMap.class);
+		sickRiskItemFormMap = sickRiskItemMapper.findbyFrist("id",sickRiskItemFormMap.get("id").toString(),SickRiskItemFormMap.class);
+		model.addAttribute("sickId",sickRiskItemFormMap.getLong("id"));
+		model.addAttribute("sickRiskItemFormMap",sickRiskItemFormMap);
 		return Common.BACKGROUND_PATH + "/instrument/agesickriskroutconfig/list";
 	}
 
 	@RequestMapping("addPage")
-	public String addPage(Model model,String checkItemId,Integer checkItemType) throws Exception {
-		model.addAttribute("checkItemId",checkItemId);
-		model.addAttribute("checkItemType",checkItemType);
+	public String addPage(Model model,String sickId) throws Exception {
+		model.addAttribute("sickId",sickId);
 		return Common.BACKGROUND_PATH + "/instrument/agesickriskroutconfig/add";
 	}
 

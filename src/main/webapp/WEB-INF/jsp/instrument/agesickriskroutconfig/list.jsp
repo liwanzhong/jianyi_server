@@ -13,7 +13,7 @@
 		var dataGrid;
 		$(function() {
 			dataGrid = $('#dataGrid').datagrid({
-				url : '${ctx}/instrument/sickRisk/dataGrid.shtml?sickRiskFormMap.check_item_id=${checkItemId}&sickRiskFormMap.check_item_type=${checkItemType}',
+				url : '${ctx}/instrument/ageRiskRoutConfig/dataGrid.shtml?ageSickRiskRoutFormMap.sick_risk_id=${sickId}',
 				fit : true,
 				striped : true,
 				rownumbers : true,
@@ -25,13 +25,27 @@
 				pageSize : 50,
 				pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 				columns : [ [ {
-					width : '120',
-					title : '疾病风险名称',
-					field : 'name'
+					width : '150',
+					title : '最小年龄',
+					field : 'age_min'
 				}, {
 					width : '150',
-					title : '风险系数',
-					field : 'risk_rout'
+					title : '最大年龄',
+					field : 'age_max'
+				}, {
+					width : '150',
+					title : '性别',
+					field : 'sex',
+					formatter : function(value, row, index) {
+						return value == 1 ? '男':'女';
+					}
+				}, {
+					width : '150',
+					title : '疾病风险率',
+					field : 'rout',
+					formatter : function(value, row, index) {
+						return value+"  %";
+					}
 				},{
 					field : 'action',
 					title : '操作',
@@ -56,7 +70,7 @@
 				title : '添加',
 				width : '50%',
 				height : '40%',
-				href : '${ctx}/instrument/sickRisk/addPage.shtml?checkItemId=${checkItemId}&checkItemType=${checkItemType}',
+				href : '${ctx}/instrument/ageRiskRoutConfig/addPage.shtml?sickId=${sickId}',
 				buttons : [ {
 					text : '添加',
 					handler : function() {
@@ -78,8 +92,8 @@
 			parent.$.messager.confirm('询问', '是否需要删除当前项？', function(b) {
 				if (b) {
 					progressLoad();
-					$.post('${ctx}/instrument/sickRisk/delete.shtml', {
-						'sickRiskFormMap.id' : id
+					$.post('${ctx}/instrument/ageRiskRoutConfig/delete.shtml', {
+						'ageSickRiskRoutFormMap.id' : id
 					}, function(result) {
 						if (result.status == 1) {
 							parent.$.messager.alert('提示', result.msg, 'info');
@@ -95,7 +109,7 @@
 
 
 		function pingfenRoutConf(id){
-			window.location.href = '${ctx}/instrument/sickRisk/list.shtml?smallItemId='+id;
+			window.location.href = '${ctx}/instrument/ageRiskRoutConfig/list.shtml?smallItemId='+id;
 		}
 
 		function editFun(id) {
@@ -109,7 +123,7 @@
 				title : '编辑',
 				width : '50%',
 				height : '40%',
-				href : '${ctx}/instrument/sickRisk/editPage.shtml?id=' + id,
+				href : '${ctx}/instrument/ageRiskRoutConfig/editPage.shtml?id=' + id,
 				buttons : [ {
 					text : '编辑',
 					handler : function() {
@@ -144,7 +158,7 @@
 		</table>
 	</form>--%>
 </div>
-<div data-options="region:'center',border:true,title:'疾病风险配置'" >
+<div data-options="region:'center',border:true,title:'年龄关联疾病风险配置[${sickRiskItemFormMap.name}]'" >
 	<table id="dataGrid" data-options="fit:true,border:false"></table>
 </div>
 <div id="toolbar" style="display: none;">

@@ -6,18 +6,9 @@
 
 	$(function() {
 
-		$('#sick_risk_id').combotree({
-			url : '${ctx}/instrument/sickRiskItem/tree.shtml',
-			parentField : 'pid',
-			lines : true,
-			panelHeight : 'auto'
-		});
-
-
-
 
 		$('#userAddForm').form({
-			url : '${ctx}/instrument/sickRisk/add.shtml',
+			url : '${ctx}/instrument/bmiRiskRoutConfig/add.shtml',
 			onSubmit : function() {
 				progressLoad();
 				var isValid = $(this).form('validate');
@@ -43,19 +34,24 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;padding: 3px;">
 		<form id="userAddForm" method="post">
-			<input type="hidden" value="${checkItemId}" name="sickRiskFormMap.check_item_id">
-			<input type="hidden" value="${checkItemType}" name="sickRiskFormMap.check_item_type">
+			<input type="hidden" value="${sickId}" name="bmiSickRiskRoutFormMap.sick_risk_id">
 			<table class="grid">
 				<tr>
-					<td>关联的疾病风险项</td>
+					<td>最小BMI</td>
 					<td colspan="3">
-						<select id="sick_risk_id" name="sickRiskFormMap.sick_risk_id" style="width:200px;height: 29px;" data-options="required:true"></select>
+						<input name="bmiSickRiskRoutFormMap.bmi_min" type="text" placeholder="最小BMI" style="width:200px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="">
 					</td>
 				</tr>
 				<tr>
-					<td>风险系数</td>
+					<td>最大BMI</td>
 					<td colspan="3">
-						<input name="sickRiskFormMap.risk_rout" type="text" placeholder="风险系数" style="width:200px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="">
+						<input name="bmiSickRiskRoutFormMap.bmi_max" type="text" placeholder="最大BMI" style="width:200px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="">
+					</td>
+				</tr>
+				<tr>
+					<td>疾病风险率</td>
+					<td colspan="3">
+						<input name="bmiSickRiskRoutFormMap.rout" type="text" placeholder="疾病风险率" style="width:200px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="">&nbsp;&nbsp;&nbsp;%
 					</td>
 				</tr>
 			</table>

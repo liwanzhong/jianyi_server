@@ -4,18 +4,12 @@
 <script type="text/javascript">
 	$(function() {
 
-		$('#sick_risk_id').combotree({
-			url : '${ctx}${ctx}/instrument/sickRiskItem/tree.shtml',
-			parentField : 'pid',
-			lines : true,
-			panelHeight : 'auto',
-			value : '${sickRiskFormMap.sick_risk_id}'
-		});
+
 
 		
 
 		$('#userEditForm').form({
-			url : '${ctx}/instrument/sickRisk/update.shtml',
+			url : '${ctx}/instrument/ageRiskRoutConfig/update.shtml',
 			onSubmit : function() {
 				progressLoad();
 				var isValid = $(this).form('validate');
@@ -41,20 +35,40 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;padding: 3px;">
 		<form id="userEditForm" method="post">
-			<input type="hidden" value="${sickRiskFormMap.check_item_id}" name="sickRiskFormMap.check_item_id">
-			<input type="hidden" value="${sickRiskFormMap.check_item_type}" name="sickRiskFormMap.check_item_type">
-			<input type="hidden" value="${sickRiskFormMap.id}" name="sickRiskFormMap.id">
+			<input type="hidden" value="${ageSickRiskRoutFormMap.sick_risk_id}" name="ageSickRiskRoutFormMap.sick_risk_id">
+			<input type="hidden" value="${ageSickRiskRoutFormMap.id}" name="ageSickRiskRoutFormMap.id">
 			<table class="grid">
 				<tr>
-					<td>关联的疾病风险项</td>
+					<td>最小年龄</td>
 					<td colspan="3">
-						<select id="sick_risk_id" name="sickRiskFormMap.sick_risk_id"  style="width:200px;height: 29px;" data-options="required:true"></select>
+						<input name="ageSickRiskRoutFormMap.age_min" type="text" placeholder="最小年龄" style="width:200px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="${ageSickRiskRoutFormMap.age_min}">
 					</td>
 				</tr>
 				<tr>
-					<td>风险系数</td>
+					<td>最大年龄</td>
 					<td colspan="3">
-						<input name="sickRiskFormMap.risk_rout" type="text" placeholder="风险系数" style="width:200px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="${sickRiskFormMap.risk_rout}">
+						<input name="ageSickRiskRoutFormMap.age_max" type="text" placeholder="最大年龄" style="width:200px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="${ageSickRiskRoutFormMap.age_max}">
+					</td>
+				</tr>
+				<tr>
+					<td>性别</td>
+					<td colspan="3">
+						<c:choose>
+							<c:when test="${ageSickRiskRoutFormMap.sex eq '1'}">
+								<input name="ageSickRiskRoutFormMap.sex" type="radio" class="easyui-validatebox" data-options="required:true" value="1" checked>男
+								<input name="ageSickRiskRoutFormMap.sex" type="radio" class="easyui-validatebox" data-options="required:true" value="2">女
+							</c:when>
+							<c:when test="${ageSickRiskRoutFormMap.sex eq '2'}">
+								<input name="ageSickRiskRoutFormMap.sex" type="radio" class="easyui-validatebox" data-options="required:true" value="1" >男
+								<input name="ageSickRiskRoutFormMap.sex" type="radio" class="easyui-validatebox" data-options="required:true" value="2" checked>女
+							</c:when>
+						</c:choose>
+					</td>
+				</tr>
+				<tr>
+					<td>疾病风险率</td>
+					<td colspan="3">
+						<input name="ageSickRiskRoutFormMap.rout" type="text" placeholder="疾病风险率" style="width:200px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="${ageSickRiskRoutFormMap.rout}">&nbsp;&nbsp;&nbsp;%
 					</td>
 				</tr>
 			</table>

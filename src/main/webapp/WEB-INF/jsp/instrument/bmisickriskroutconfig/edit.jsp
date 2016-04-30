@@ -4,18 +4,12 @@
 <script type="text/javascript">
 	$(function() {
 
-		$('#sick_risk_id').combotree({
-			url : '${ctx}${ctx}/instrument/sickRiskItem/tree.shtml',
-			parentField : 'pid',
-			lines : true,
-			panelHeight : 'auto',
-			value : '${sickRiskFormMap.sick_risk_id}'
-		});
+
 
 		
 
 		$('#userEditForm').form({
-			url : '${ctx}/instrument/sickRisk/update.shtml',
+			url : '${ctx}/instrument/bmiRiskRoutConfig/update.shtml',
 			onSubmit : function() {
 				progressLoad();
 				var isValid = $(this).form('validate');
@@ -41,20 +35,25 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;padding: 3px;">
 		<form id="userEditForm" method="post">
-			<input type="hidden" value="${sickRiskFormMap.check_item_id}" name="sickRiskFormMap.check_item_id">
-			<input type="hidden" value="${sickRiskFormMap.check_item_type}" name="sickRiskFormMap.check_item_type">
-			<input type="hidden" value="${sickRiskFormMap.id}" name="sickRiskFormMap.id">
+			<input type="hidden" value="${bmiSickRiskRoutFormMap.sick_risk_id}" name="bmiSickRiskRoutFormMap.sick_risk_id">
+			<input type="hidden" value="${bmiSickRiskRoutFormMap.id}" name="bmiSickRiskRoutFormMap.id">
 			<table class="grid">
 				<tr>
-					<td>关联的疾病风险项</td>
+					<td>最小BMI</td>
 					<td colspan="3">
-						<select id="sick_risk_id" name="sickRiskFormMap.sick_risk_id"  style="width:200px;height: 29px;" data-options="required:true"></select>
+						<input name="bmiSickRiskRoutFormMap.bmi_min" type="text" placeholder="最小BMI" style="width:200px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="${bmiSickRiskRoutFormMap.bmi_min}">
 					</td>
 				</tr>
 				<tr>
-					<td>风险系数</td>
+					<td>最大BMI</td>
 					<td colspan="3">
-						<input name="sickRiskFormMap.risk_rout" type="text" placeholder="风险系数" style="width:200px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="${sickRiskFormMap.risk_rout}">
+						<input name="bmiSickRiskRoutFormMap.bmi_max" type="text" placeholder="最大BMI" style="width:200px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="${bmiSickRiskRoutFormMap.bmi_max}">
+					</td>
+				</tr>
+				<tr>
+					<td>疾病风险率</td>
+					<td colspan="3">
+						<input name="bmiSickRiskRoutFormMap.rout" type="text" placeholder="疾病风险率" style="width:200px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="${bmiSickRiskRoutFormMap.rout}">&nbsp;&nbsp;&nbsp;%
 					</td>
 				</tr>
 			</table>

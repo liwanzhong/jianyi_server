@@ -59,11 +59,11 @@
 
 
 		function bmiConfig(id){
-			window.location.href = '${ctx}/instrument/bmiRiskRoutConfig/list.shtml?bmiSickRiskRoutFormMap.sick_risk_id='+id;
+			window.location.href = '${ctx}/instrument/bmiRiskRoutConfig/list.shtml?sickRiskItemFormMap.id='+id;
 		}
 
 		function ageConfig(id){
-			window.location.href = '${ctx}/instrument/ageRiskRoutConfig/list.shtml?ageSickRiskRoutFormMap.sick_risk_id='+id;
+			window.location.href = '${ctx}/instrument/ageRiskRoutConfig/list.shtml?sickRiskItemFormMap.id='+id;
 		}
 
 
