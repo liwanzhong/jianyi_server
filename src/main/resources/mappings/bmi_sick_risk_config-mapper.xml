@@ -22,5 +22,19 @@
 
 
 
+	<select id="findFixConfig" resultType="com.lanyuan.entity.BmiSickRiskRoutFormMap">
+		SELECT
+		bsrc.id,
+		bsrc.bmi_min,
+		bsrc.bmi_max,
+		bsrc.sick_risk_id,
+		bsrc.rout
+		FROM bmi_sick_risk_config bsrc
+		WHERE bsrc.bmi_min &lt;= ${bmi} AND bsrc.bmi_max &gt;= ${bmi} AND bsrc.sick_risk_id = ${sick_risk_id}
+		ORDER BY bsrc.id DESC
+	</select>
+
+
+
 
 </mapper>

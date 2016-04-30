@@ -42,7 +42,6 @@ public class CheckController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "upload",  produces = "text/json; charset=utf-8")
-//	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	public Map<String,Object> login(@RequestParam(value = "customerId",required = true) Long customerId,@RequestParam(value = "instrumentCode",required = true) String instrumentCode) {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);

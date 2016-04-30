@@ -12,4 +12,5 @@ public interface AgeSickRiskRoutMapper extends BaseMapper{
 	 List<AgeSickRiskRoutFormMap> findEnterprisePage(AgeSickRiskRoutFormMap ageSickRiskRoutFormMap);
 
 
+	List<AgeSickRiskRoutFormMap> findFixConfig(AgeSickRiskRoutFormMap ageSickRiskRoutFormMap);
 }

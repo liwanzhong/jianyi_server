@@ -28,4 +28,20 @@ ORDER BY asrc.id DESC
 
 
 
+
+
+    <select id="findFixConfig" resultType="com.lanyuan.entity.AgeSickRiskRoutFormMap">
+        SELECT
+        asrc.id,
+        asrc.age_min,
+        asrc.age_max,
+        asrc.sex,
+        asrc.rout,
+        asrc.sick_risk_id
+        FROM age_sick_risk_config asrc
+        WHERE asrc.age_min &lt;= ${age} AND asrc.age_max &gt;= ${age} AND asrc.sick_risk_id = ${sick_risk_id} ORDER BY asrc.id DESC
+    </select>
+
+
+
 </mapper>

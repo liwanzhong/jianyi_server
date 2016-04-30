@@ -40,7 +40,7 @@
 
     <select id="getAllButCustomCutedItem" resultType="com.lanyuan.entity.CheckSmallItemFormMap" parameterType="String">
 
-  SELECT
+    SELECT
   csi.id,
   csi.big_item_id,
   csi.name,
@@ -53,12 +53,22 @@
   csi.insert_time,
   csi.update_time
 FROM check_small_item csi
-LEFT JOIN (SELECT
-    circ.ref_checksmall_id
-  FROM custom_cut_items cci
-    LEFT JOIN cut_item_refsmallitem_config circ
-      ON cci.cut_item_id = circ.cut_item_id
-  WHERE cci.custom_id = #{customid}) lf ON csi.id = lf.ref_checksmall_id WHERE lf.ref_checksmall_id IS NULL;
+  LEFT JOIN (SELECT
+      circ.ref_checksmall_id
+    FROM custom_cut_items cci
+      LEFT JOIN cut_item_refsmallitem_config circ
+        ON cci.cut_item_id = circ.cut_item_id
+    WHERE cci.custom_id = ${customid}) lf
+    ON csi.id = lf.ref_checksmall_id
+  LEFT JOIN (SELECT
+      csi.id
+    FROM check_big_item cbi
+      LEFT JOIN check_small_item csi
+        ON cbi.id = csi.big_item_id
+    WHERE !(cbi.withsex = 0 OR cbi.withsex = ${withsex})) notInCheck
+    ON notInCheck.id = csi.id
+WHERE lf.ref_checksmall_id IS NULL AND notInCheck.id IS NULL
+
 	</select>
 
     <select id="findLasyOrderItemCout" resultType="java.lang.Integer">

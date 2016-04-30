@@ -12,4 +12,5 @@ public interface BmiSickRiskRoutMapper extends BaseMapper{
 	 List<BmiSickRiskRoutFormMap> findEnterprisePage(BmiSickRiskRoutFormMap bmiSickRiskRoutFormMap);
 
 
+	List<BmiSickRiskRoutFormMap> findFixConfig(BmiSickRiskRoutFormMap bmiSickRiskRoutFormMap);
 }
