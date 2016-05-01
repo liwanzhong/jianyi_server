@@ -81,7 +81,7 @@
 
 
 
-		function configFun(id){
+		/*function configFun(id){
 			if (id == undefined) {
 				var rows = dataGrid.datagrid('getSelections');
 				id = rows[0].id;
@@ -103,7 +103,12 @@
 					}
 				} ]
 			});
+		}*/
+
+		function configFun(id){
+			window.location.href=  '${ctx}/instrument/cut_item/configRefPage.shtml?cutItemFormMap.id='+id;
 		}
+
 
 		function deleteFun(id) {
 			if (id == undefined) {//点击右键菜单才会触发这个

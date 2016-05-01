@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<script src="${ctx}/js/components/easyui1.4.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
 
 
@@ -30,8 +31,8 @@
 	});
 </script>
 <div id="roleGrantLayout" class="easyui-layout" data-options="fit:true,border:false" style="width: 100%">
-	<form id="roleGrantForm" method="post">
-		切割项：<span style="color: red">《${cutItemFormMap.name}》</span>关联配置项
+	切割项：<span style="color: red">《${cutItemFormMap.name}》</span>关联配置项
+	<form id="roleGrantForm" method="post" action="${ctx}/instrument/cut_item/config.shtml">
 		<input name="cutItemId" type="hidden"  value="${cutItemFormMap.id}" readonly="readonly">
 		<table border="1" width="100%" align="center">
 			<thead>
@@ -80,6 +81,24 @@
 			</c:forEach>
 
 		</table>
+		<input type="button" onclick="saveConfig()" value="保存配置">
 	</form>
+	<script>
+		function saveConfig(){
+			$.ajax({
+				type: "POST",
+				dataType: "JSON",
+				url: '${ctx}/instrument/cut_item/config.shtml',
+				data: $('#roleGrantForm').serialize(),
+				success: function (result) {
+					alert("保存配置成功!");
+				},
+				error: function(data) {
+					alert("error:"+data.responseText);
+				}
+			});
+
+		}
+	</script>
 
 </div>

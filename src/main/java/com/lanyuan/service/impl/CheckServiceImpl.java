@@ -375,6 +375,8 @@ public class CheckServiceImpl implements ICheckService {
     }
 
 
+    @Autowired
+    private ZongpingLeveDescConfigMapper zongpingLeveDescConfigMapper;
 
     /**
      * 生成总评
@@ -399,6 +401,30 @@ public class CheckServiceImpl implements ICheckService {
             if(item.getDouble("pingfen_min")<=physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").doubleValue() && item.getDouble("pingfen_max")>=physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").doubleValue()){
                 physicalExaminationMainReportFormMap.put("level",item.getLong("id"));
                 break;
+            }
+        }
+
+
+        //todo 生成总评内容
+        ZongpingLeveDescConfigFormMap zongpingLeveDescConfigFormMap = new ZongpingLeveDescConfigFormMap();
+        zongpingLeveDescConfigFormMap.put("check_total_score",physicalExaminationMainReportFormMap.getBigDecimal("check_total_score"));
+        zongpingLeveDescConfigFormMap = zongpingLeveDescConfigMapper.findFixedItem(zongpingLeveDescConfigFormMap);
+        if(null!=zongpingLeveDescConfigFormMap){
+            StringBuffer zongPingBuffer = new StringBuffer();
+
+            PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = new PhysicalExaminationBigResultFormMap();
+            physicalExaminationBigResultFormMap.put("examination_record_id",recordid);
+            List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapListOrdered =  physicalExaminationBigResultMapper.findCheckResultOrderByCheckScoreAsc(physicalExaminationBigResultFormMap);
+            if(CollectionUtils.isNotEmpty(physicalExaminationBigResultFormMapListOrdered) && physicalExaminationBigResultFormMapListOrdered.size()>5){
+                String zuicha = physicalExaminationBigResultFormMapListOrdered.get(0).getStr("name")+"、"+physicalExaminationBigResultFormMapListOrdered.get(1).getStr("name")+"、"+physicalExaminationBigResultFormMapListOrdered.get(2).getStr("name");
+                String cicha = physicalExaminationBigResultFormMapListOrdered.get(3).getStr("name")+"、"+physicalExaminationBigResultFormMapListOrdered.get(4).getStr("name");
+
+                zongPingBuffer.append("健康特工007提醒您：您的身体总分")
+                        .append(physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue()) .append("分，您的健康状态处于").append(zongpingLeveDescConfigFormMap.getStr("leve_name")).append("，")
+                        .append(zongpingLeveDescConfigFormMap.getStr("leve_des"))
+                        .append("您身体的短板是（").append(zuicha).append("），同时需要注意的还有（").append(cicha).append(").");
+
+                physicalExaminationMainReportFormMap.put("with_flow",zongPingBuffer.toString());
             }
         }
 

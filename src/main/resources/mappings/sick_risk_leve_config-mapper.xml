@@ -11,49 +11,20 @@
 
 	</sql>
 
-	<select id="findEnterprisePage" resultType="com.lanyuan.entity.SickRiskFormMap">
-		SELECT
-  srcc.id,
-  srcc.check_item_id,
-  srcc.check_item_type,
-  srcc.risk_rout,
-  sri.name
-FROM sick_risk_checkitem_config srcc
-  LEFT JOIN sick_risk_item sri
-    ON sri.id = srcc.sick_risk_id
-WHERE srcc.check_item_id = ${check_item_id} AND srcc.check_item_type = ${check_item_type} ORDER by srcc.id DESC
+	<select id="findEnterprisePage" resultType="com.lanyuan.entity.SickRiskLeveFormMap">
+SELECT
+  srlc.id,
+  srlc.sick_risk_leve,
+  srlc.sick_risk_name,
+  srlc.rout_min,
+  srlc.rout_max,
+  srlc.color
+FROM sick_risk_leve_config srlc
+ORDER BY srlc.id DESC
 	</select>
 
 
 
-	<select id="findSmallItemRout" resultType="com.lanyuan.entity.SickRiskLeveFormMap">
 
-		SELECT
-		cpr.id,
-		cpr.age_max,
-		cpr.age_min,
-		cpr.rout_min,
-		cpr.rout_max,
-		cpr.update_time,
-		cpr.valid,
-		cpr.small_id,
-		cpr.orgin_pingfen_id,
-		cpr.tz_pingfen_id
-		FROM cf_pingfen_rout cpr
-		WHERE
-		<if test="small_id != null">
-			cpr.small_id = ${small_id}
-		</if>
-
-		<if test="orgin_pingfen_id !=null">
-			AND cpr.orgin_pingfen_id = ${orgin_pingfen_id}
-		</if>
-
-		<if test="age !=null">
-			AND cpr.age_min &lt;= ${age} AND cpr.age_max  &gt;= ${age}
-		</if>
-		ORDER BY cpr.id DESC
-
-	</select>
 
 </mapper>

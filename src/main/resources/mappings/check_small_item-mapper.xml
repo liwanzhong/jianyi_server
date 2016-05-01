@@ -18,7 +18,8 @@
        csi.check_max,
        csi.quanzhong,
        csi.insert_time,
-       csi.update_time
+       csi.update_time,
+       csi.check_desc
 	</sql>
 
     <select id="findEnterprisePage" resultType="com.lanyuan.entity.CheckSmallItemFormMap">

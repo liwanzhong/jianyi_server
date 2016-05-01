@@ -67,8 +67,14 @@
 				</tr>
 				<tr>
 					<td>权重系数</td>
-					<td >
+					<td colspan="3">
 						<input type="text" name="checkSmallItemFormMap.quanzhong" value="${checkSmallItemFormMap.quanzhong}">
+					</td>
+				</tr>
+				<tr>
+					<td>检测说明</td>
+					<td colspan="3">
+						<textarea name="checkSmallItemFormMap.check_desc" rows="5" cols="80">${checkSmallItemFormMap.check_desc}</textarea>
 					</td>
 				</tr>
 			</table>

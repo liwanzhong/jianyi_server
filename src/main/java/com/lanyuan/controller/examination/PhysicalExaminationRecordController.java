@@ -81,7 +81,7 @@ public class PhysicalExaminationRecordController extends BaseController {
         List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = physicalExaminationBigResultMapper.findAllByOrderby(physicalExaminationBigResultFormMap);
 
         model.addAttribute("physicalExaminationBigResultFormMapList",physicalExaminationBigResultFormMapList);
-        return Common.BACKGROUND_PATH + "/front/examination/report";
+        return Common.BACKGROUND_PATH + "/front/examination/report_version2/report";
     }
 
 
@@ -125,7 +125,7 @@ public class PhysicalExaminationRecordController extends BaseController {
         }
 
 
-        return Common.BACKGROUND_PATH + "/front/examination/report_item";
+        return Common.BACKGROUND_PATH + "/front/examination/report_version2/report_item";
     }
 
 

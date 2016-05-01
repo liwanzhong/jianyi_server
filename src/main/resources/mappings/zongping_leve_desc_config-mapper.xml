@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.ZongpingLeveDescConfigMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache"
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+
+	</sql>
+
+
+
+	<select id="findEnterprisePage" resultType="com.lanyuan.entity.ZongpingLeveDescConfigFormMap">
+SELECT
+  zldc.id,
+  zldc.leve,
+  zldc.leve_name,
+  zldc.score_min,
+  zldc.score_max,
+  zldc.leve_des
+FROM zongping_leve_desc_config zldc
+ORDER BY zldc.id ASC
+	</select>
+
+
+
+	<select id="findFixedItem" resultType="com.lanyuan.entity.ZongpingLeveDescConfigFormMap">
+		SELECT
+		zldc.id,
+		zldc.leve,
+		zldc.leve_name,
+		zldc.score_min,
+		zldc.score_max,
+		zldc.leve_des
+		FROM zongping_leve_desc_config zldc
+		WHERE zldc.score_min &lt;= ${check_total_score} AND zldc.score_max &gt;= ${check_total_score}
+		ORDER BY zldc.id DESC LIMIT 1
+	</select>
+
+
+</mapper>

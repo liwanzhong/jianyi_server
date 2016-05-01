@@ -1,0 +1,143 @@
+@charset "utf-8";
+/* CSS Document */
+
+.wrap{ width: 720px; height: auto; background-color:#fff; margin:0 auto;}
+
+/* ----------- header ----------- */
+.header{ width: 100%; height: 66px; border-bottom: 1px solid #248aaa; padding:0 10px;}
+.header li{ position:absolute;
+-webkit-transform:translateY(-50%);
+-moz-transform:translateY(-50%);
+transform:translateY(-50%);}
+.header li:nth-of-type(1){ left: 0;top: 50%;}
+.header li:nth-of-type(2){ left:50%;top: 50%;
+-webkit-transform:translate(-50%,-50%);
+-moz-transform:translate(-50%,-50%);
+transform:translate(-50%,-50%);}
+.header li:nth-of-type(3){ right: 0;top: 50%;}
+.header .logo{ display:block;}
+.header h1{ font-size:24px; color:#47b1d6; font-weight:700;}
+.s-btn{ font-size:12px; color:#fff; background-color: #269ec4; border-radius:5px;padding: 3px 16px;}
+
+/* ----------- cell ----------- */
+.cell{padding:30px 16px 20px;}
+.cell>div{ float: left; }
+.cell .pic{ width: 11%; border:2px solid #f5c743; border-radius:50%;}
+.cell .pic img{ border-radius:50%;}
+.cell .cell-msg{ width: 89%; padding-left:20px;}
+.cell .cell-msg li{ float: left; font-size:18px; font-weight:700; }
+.cell li.cell-name{ color:#343434; margin-left: 110px;}
+.cell li.cell-score{ color:#f4b40d; padding: 0 16px;}
+.cell li.cell-detail{ font-size:14px; color:#4b4a4a; font-weight:normal; text-indent:2em;}
+
+/* ----------- column ----------- */
+.w{ width: 95%; margin:0 auto;}
+.column{padding:16px 50px 20px; border: 1px solid #47b1d6; border-radius:10px;}
+.column li{ position:relative; float: left; width: 16.66%; text-align:center; color:#343434; font-size:14px;}
+.column .column-bg{ height:172px; position:relative; background:url(../img/score-bg.png) no-repeat center bottom; margin: 28px 0 6px;}
+.column .column-real{ position:absolute; left:51%; bottom: 53px; width:30px; height:70%; 
+-webkit-transform:translateX(-50%);
+-moz-transform:translateX(-50%);
+transform:translateX(-50%);}
+.column .column-score{ width: 100%; position:absolute; left:50%; top: 0;
+-webkit-transform:translateX(-50%);
+-moz-transform:translateX(-50%);
+transform:translateX(-50%);}
+
+.column-real-green{background:url(../img/score-green.png) repeat-y;}
+.column-real-blue{background:url(../img/score-blue.png) repeat-y;}
+.column-real-yellow{background:url(../img/score-yellow.png) repeat-y;}
+
+/* ----------- table ----------- */
+.table{ margin-top:20px;}
+.table .thead{ width: 100%; height:32px; background-color: #47b1d6; margin-bottom:4px; }
+.table .thead li{ float: left; width: 25%; line-height:32px; color:#fff; font-size:14px; text-align: center; }
+.table .thead li:nth-of-type(1){ width: 17%;}
+.table .thead li:nth-of-type(2){ width: 15%;}
+.table .thead li:nth-of-type(3){ width: 26%;}
+.table .thead li:nth-of-type(4){ width: 42%;}
+
+.table .tbody{ margin-bottom:70px;}
+.table .tbody ul{ border-bottom: 1px solid #d3eef8;}
+.table .tbody li{ float: left; width: 25%; line-height:48px; color:#343434; font-size:14px; text-align: center; }
+.table .tbody li:nth-of-type(1){ width: 17%; position:relative; padding-left:22px; text-align:left;}
+.table .tbody li:nth-of-type(1) em{ width:8px; height:8px; position:absolute; left:6px; top: 50%; border-radius:50%;
+-webkit-transform:translateY(-50%);
+-moz-transform:translateY(-50%);
+transform:translateY(-50%);}
+.table .tbody li:nth-of-type(2){ width: 15%;}
+.table .tbody li:nth-of-type(3){ width: 26%;}
+.table .tbody li:nth-of-type(4){ width: 42%; line-height:14px; padding:10px 0; text-align:left;}
+
+.color-green{ color:#249214 !important;}
+.color-blue{ color:#469fee !important;}
+.color-yellow{ color:#f1b61b !important;}
+.bg-green{ background-color:#249214;}
+.bg-blue{ background-color:#469fee;}
+.bg-yellow{ background-color:#f1b61b;}
+
+/* ----------- 风险评估 ----------- */
+.disease{ width: 100%; height: 513px; margin:80px 0; padding:66px 15% 0; background:url(../img/disease-bg.png) no-repeat center center;}
+.disease li{ float: left; min-width:51px; color:#fff; font-size:12px; text-align:center; margin-right: 20px;}
+
+.disease-red{ height: 90px; padding:20px 0 0 40px;}
+.disease-red li:nth-of-type(2){ margin-left:36px;}
+
+.disease-yellow{ padding: 10px 0 0 36px;height: 98px;}
+.disease-yellow li{ margin-right:16px;}
+.disease-lyellow{ height: 96px;}
+.disease-blue{padding: 5px 0 0 34px;}
+.disease-blue li{ margin-right:14px;}
+.disease-blue li:nth-of-type(3){ margin-left:154px;}
+.disease-per{ width:100%;height: 51px; line-height: 49px; }
+.disease-per-red{ background:url(../img/circle-red.png) no-repeat center center;}
+.disease-per-yellow{ background:url(../img/circle-yellow.png) no-repeat center center;}
+.disease-per-blue{ background:url(../img/circle-blue.png) no-repeat center center;}
+.disease-name{ font-size:14px;}
+.disease li .disease-name-b{color:#343434;}
+
+/* ----------- msg ----------- */
+.msg{ position:relative; line-height: 32px; text-align:center; margin-bottom:8px;}
+.msg span:last-of-type{ position:absolute; right: 0; top: 0; color:#9e9c9c;}
+.msg .sex{ margin:0 12px;}
+
+/* ----------- details ----------- */
+.details{ line-height: 18px; color:#4b4a4a; text-indent:2em; margin-bottom:10px;}
+
+/* ----------- grade ----------- */
+.body-bg{ height:auto; background:url(../img/body-bg.png) no-repeat center bottom; background-size:contain;}
+
+.grade{ position:relative; padding-left:16%;}
+.grade>div{ float: left; margin-right:30px;}
+.grade-1 li{ width: 27px; height: 27px; margin-bottom:3px;}
+.s-pic-green{ background:url(../img/2.png) no-repeat center center;}
+.s-pic-blue{ background:url(../img/3.png) no-repeat center center;}
+.s-pic-yellow{ background:url(../img/7.png) no-repeat center center;}
+.s-pic-orange{ background:url(../img/2-2.png) no-repeat center center;}
+.s-pic-red{ background:url(../img/0.png) no-repeat center center;}
+
+.grade-2{ width: 150px; height: 150px; background:url(../img/b-circle.png) no-repeat center center;}
+.grade-3{ width: 90px; height: 90px; position: absolute; left: 346px; bottom: 0;background:url(../img/bim.png) no-repeat center center;}
+.grade-4{ position: absolute; right:98px; bottom: 10px;}
+.grade-4 li{ line-height:20px; font-size:14px; color:#343434; }
+
+/* ----------- main ----------- */
+.main-bottom{ height: auto; position:relative;text-align:center;margin-bottom: 30px;}
+.main-bottom span{ position:absolute;font-size:13px; font-weight:700; color:#108fd5;}
+
+.container{ width:100%; height: 600px; position:relative; margin:45px auto 0;}
+.dot{ width:100px; height:100px; position:absolute; left: 0; top: 0;}
+#indicatorContainer2{ position:relative;}
+#indicatorContainer2 canvas{ position:absolute;}
+
+
+/* ----------- footer ----------- */
+.footer{ font-size:12px; color:#343434;}
+.footer li{ float: left;}
+.footer-t{ padding:0 10px; }
+.footer-t li{line-height: 34px;}
+.footer-t li:last-of-type{ float: right;}
+.footer-b{height: 50px; line-height: 32px; padding:0 10px; border-top: 1px solid #2489a9;}
+.footer-b li:last-of-type{ float: right;}
+
+

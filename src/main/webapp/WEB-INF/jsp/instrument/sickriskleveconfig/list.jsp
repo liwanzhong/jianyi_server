@@ -7,12 +7,12 @@
 <head>
 	<jsp:include page="/inc.jsp"></jsp:include>
 	<meta http-equiv="X-UA-Compatible" content="edge" />
-	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/smallitem/edit.shtml')}">
+	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/sickRiskLeveConfig/edit.shtml')}">
 		<script type="text/javascript">
 			$.canEdit = true;
 		</script>
 	</c:if>
-	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/smallitem/delete.shtml')}">
+	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/sickRiskLeveConfig/delete.shtml')}">
 		<script type="text/javascript">
 		</script>
 	</c:if>
@@ -22,65 +22,47 @@
 		var dataGrid;
 		$(function() {
 			dataGrid = $('#dataGrid').datagrid({
-				url : '${ctx}/instrument/smallitem/dataGrid.shtml?checkSmallItemFormMap.big_item_id='+${checkBigItemFormMap.id},
+				url : '${ctx}/instrument/sickRiskLeveConfig/dataGrid.shtml',
 				fit : true,
 				striped : true,
 				rownumbers : true,
 				pagination : true,
 				singleSelect : true,
 				idField : 'id',
-				sortName : 'insert_time',
+				sortName : 'id',
 				sortOrder : 'desc',
 				pageSize : 50,
 				pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 				columns : [ [ {
 					width : '120',
-					title : '检测小项名称',
-					field : 'name'
+					title : '风险率等级名称',
+					field : 'sick_risk_name'
 				}, {
-					width : '150',
-					title : '检测指标-基准值（n1）',
-					field : 'min_value'
-				},{
-					width : '150',
-					title : '检测基准-衰退值（n2）',
-					field : 'max_value'
-				},{
 					width : '120',
-					title : '区间值（n2-n1）',
-					field : 'in_value',
+					title : '风险率范围',
+					field : 'pingfen_min',
+					sortable : true,
 					formatter : function(value, row, index) {
-						return (row.max_value - row.min_value).toFixed(3);
+						return row.rout_min+'%--'+row.rout_max+'%';
 					}
 				},{
-					width : '140',
-					title : '实际检测范围最小值',
-					field : 'check_min'
-				},{
-					width : '140',
-					title : '实际检测范围最大值',
-					field : 'check_max'
-				},{
-					width : '80',
-					title : '权重系数',
-					field : 'quanzhong'
-				},{
-					width : '360',
-					title : '检测说明',
-					field : 'check_desc'
+					width : '100',
+					title : '颜色展示',
+					field : 'color',
+					align : 'center',
+					formatter : function(value, row, index) {
+						return '<span style="background-color:'+value+';width:100% ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
+					},
+					sortable : true
 				},{
 					field : 'action',
 					title : '操作',
-					width : 350,
+					width : 300,
 					formatter : function(value, row, index) {
 						var str = '';
 						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >删除</a>', row.id);
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="pingfenRoutConf(\'{0}\');" >评分概率</a>', row.id);
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="sickRiskConfig(\'{0}\');" >疾病关联</a>', row.id);
 						return str;
 					}
 				}] ],
@@ -89,19 +71,14 @@
 		});
 
 
-		function sickRiskConfig(id){
-			window.location.href = '${ctx}/instrument/sickRisk/list.shtml?checkItemId='+id+'&checkItemType=2';
-		}
-
-
 
 
 		function addFun() {
 			parent.$.modalDialog({
 				title : '添加',
-				width : '60%',
-				height : '65%',
-				href : '${ctx}/instrument/smallitem/addPage.shtml?bigItemId=${checkBigItemFormMap.id}',
+				width : '50%',
+				height : '40%',
+				href : '${ctx}/instrument/sickRiskLeveConfig/addPage.shtml',
 				buttons : [ {
 					text : '添加',
 					handler : function() {
@@ -123,8 +100,8 @@
 			parent.$.messager.confirm('询问', '是否需要删除当前项？', function(b) {
 				if (b) {
 					progressLoad();
-					$.post('${ctx}/instrument/smallitem/delete.shtml', {
-						'checkSmallItemFormMap.id' : id
+					$.post('${ctx}/instrument/sickRiskLeveConfig/delete.shtml', {
+						'sickRiskLeveFormMap.id' : id
 					}, function(result) {
 						if (result.status == 1) {
 							parent.$.messager.alert('提示', result.msg, 'info');
@@ -137,12 +114,6 @@
 		}
 
 
-
-
-		function pingfenRoutConf(id){
-			window.location.href = '${ctx}/instrument/pingfen_rout/list.shtml?smallItemId='+id;
-		}
-
 		function editFun(id) {
 			if (id == undefined) {
 				var rows = dataGrid.datagrid('getSelections');
@@ -152,9 +123,9 @@
 			}
 			parent.$.modalDialog({
 				title : '编辑',
-				width : '60%',
-				height : '65%',
-				href : '${ctx}/instrument/smallitem/editPage.shtml?id=' + id,
+				width : '50%',
+				height : '40%',
+				href : '${ctx}/instrument/sickRiskLeveConfig/editPage.shtml?id=' + id,
 				buttons : [ {
 					text : '编辑',
 					handler : function() {
@@ -176,20 +147,8 @@
 	</script>
 </head>
 <body class="easyui-layout" data-options="fit:true,border:false">
-<div data-options="region:'north',border:false" style="height: 30px; overflow: hidden;background-color: #fff">
-	<form id="searchForm">
-		<table>
-			<tr>
-				<th>检测小项名称:</th>
-				<td>
-					<input name="checkSmallItemFormMap.name" placeholder="请输入检测小项名称"/>
-					<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" onclick="cleanFun();">清空</a>
-				</td>
-			</tr>
-		</table>
-	</form>
-</div>
-<div data-options="region:'center',border:true,title:'检测大项---[${checkBigItemFormMap.name}]'" >
+
+<div data-options="region:'center',border:true,title:'疾病风险等级配置'" >
 	<table id="dataGrid" data-options="fit:true,border:false"></table>
 </div>
 <div id="toolbar" style="display: none;">

@@ -14,4 +14,7 @@ public interface PhysicalExaminationBigResultMapper extends BaseMapper{
 	List<PhysicalExaminationBigResultFormMap> findItemCheckResultList(Long examination_record_id);
 
 	List<PhysicalExaminationBigResultFormMap> findAllByOrderby(PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap);
+
+
+	List<PhysicalExaminationBigResultFormMap> findCheckResultOrderByCheckScoreAsc(PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap);
 }

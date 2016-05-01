@@ -105,5 +105,21 @@ SELECT
 
 
 
+	<select id="findCheckResultOrderByCheckScoreAsc" resultType="com.lanyuan.entity.PhysicalExaminationBigResultFormMap">
+SELECT
+  pebr.id,
+  pebr.examination_record_id,
+  pebr.big_item_id,
+  pebr.check_score,
+  cbi.name
+FROM physical_examination_big_result pebr
+  LEFT JOIN check_big_item cbi
+    ON cbi.id = pebr.big_item_id
+WHERE pebr.examination_record_id = ${examination_record_id}
+ORDER BY pebr.check_score ASC
+	</select>
+
+
+
 
 </mapper>
