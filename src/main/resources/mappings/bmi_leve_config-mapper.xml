@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.BmiLeveConfigMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+
+	</sql>
+
+
+
+
+
+	<select id="findFixConfig" resultType="com.lanyuan.entity.BmiLeveConfigFormMap">
+		SELECT
+		blc.id,
+		blc.bmi_min,
+		blc.bmi_max,
+		blc.health_leve,
+		blc.health_leve_name
+		FROM bmi_leve_config blc
+		WHERE blc.bmi_min &lt;= ${bmi} AND blc.bmi_max &gt;= ${bmi} ORDER BY blc.id DESC
+	</select>
+
+
+
+
+</mapper>

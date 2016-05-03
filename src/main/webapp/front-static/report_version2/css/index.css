@@ -26,19 +26,27 @@ transform:translate(-50%,-50%);}
 .cell .pic img{ border-radius:50%;}
 .cell .cell-msg{ width: 89%; padding-left:20px;}
 .cell .cell-msg li{ float: left; font-size:18px; font-weight:700; }
+.cell .cell-msg li span{ display:inline-block; width: 27px; height: 27px; text-align:center; line-height:27px; font-size:14px; color:#fff; font-weight:normal;}
+.lev-green{ background:url(../img/green.png) no-repeat center center;}
+.lev-blue{ background:url(../img/blue.png) no-repeat center center;}
+.lev-yellow{ background:url(../img/yellow.png) no-repeat center center;}
+.lev-orange{ background:url(../img/orange.png) no-repeat center center;}
+.lev-red{ background:url(../img/red.png) no-repeat center center;}
+
 .cell li.cell-name{ color:#343434; margin-left: 110px;}
 .cell li.cell-score{ color:#f4b40d; padding: 0 16px;}
-.cell li.cell-detail{ font-size:14px; color:#4b4a4a; font-weight:normal; text-indent:2em;}
+.cell li.cell-detail{ font-size:14px; color:#4b4a4a; font-weight:normal; text-indent:2em; margin-top:5px;}
 
 /* ----------- column ----------- */
 .w{ width: 95%; margin:0 auto;}
 .column{padding:16px 50px 20px; border: 1px solid #47b1d6; border-radius:10px;}
 .column li{ position:relative; float: left; width: 16.66%; text-align:center; color:#343434; font-size:14px;}
 .column .column-bg{ height:172px; position:relative; background:url(../img/score-bg.png) no-repeat center bottom; margin: 28px 0 6px;}
-.column .column-real{ position:absolute; left:51%; bottom: 53px; width:30px; height:70%; 
+.column .column-h{ width: 30px; height: 120px; position:absolute; left:50%; bottom: 53px;
 -webkit-transform:translateX(-50%);
 -moz-transform:translateX(-50%);
 transform:translateX(-50%);}
+.column .column-real{ width: 100%; height: 100%; position:absolute; left: 0; bottom: 0;}
 .column .column-score{ width: 100%; position:absolute; left:50%; top: 0;
 -webkit-transform:translateX(-50%);
 -moz-transform:translateX(-50%);
@@ -47,6 +55,46 @@ transform:translateX(-50%);}
 .column-real-green{background:url(../img/score-green.png) repeat-y;}
 .column-real-blue{background:url(../img/score-blue.png) repeat-y;}
 .column-real-yellow{background:url(../img/score-yellow.png) repeat-y;}
+.column-real-orange{background:url(../img/score-orange.png) repeat-y;}
+.column-real-red{background:url(../img/score-red.png) repeat-y;}
+
+/* ----------- shade ----------- */
+.shade{ display:inline-block; width: 100%; margin:20px 0;}
+.shade ul{ width: 558px; margin:0 auto;}
+.shade li{ width: 93px; height: 168px; float: left; padding:50px 0; background:url(../img/1-1.png) no-repeat left top;line-height: 34px; text-align:center; font-size:12px; color:#343434;}
+.shade li span{ font-size:22px;}
+
+/* ----------- vv ----------- */
+.vv{ height: 250px; background:url(../img/1-2.png) no-repeat left bottom; padding: 19px 126px 68px 82px; margin-top:20px;}
+.vv ul{ position:relative;}
+.vv li{ position:absolute; width:50px; height:50px; line-height:50px; color:#fff;  font-size:13px; text-align:center;}
+.vv li:nth-of-type(1){ left: 0; top: 0; }
+.vv li:nth-of-type(2){ left:170px; top: 0; }
+.vv li:nth-of-type(3){ left:340px; top: 0; }
+.vv li:nth-of-type(4){ left: 84px; top: 114px;}
+.vv li:nth-of-type(5){ left: 254px; top: 114px;}
+.vv li:nth-of-type(6){ left: 424px; top: 114px;}
+.vv p{ color:#343434; line-height:18px; margin-top: 10px;}
+
+/* ----------- six ----------- */
+.six{ height: 245px;}
+.six ul{ position: relative; width:340px; height: 100%; margin: 0 auto;}
+.six li{ position:absolute; width: 75px; text-align:center; color:#343434;}
+.six li:nth-of-type(1){ left: 0; top: 0; }
+.six li:nth-of-type(2){ left: 173px; top: 0; }
+.six li:nth-of-type(3){ left: 86px; top: 60px; }
+.six li:nth-of-type(4){ left: 258px; top: 60px}
+.six li:nth-of-type(5){ left: 0px; top: 104px;}
+.six li:nth-of-type(6){ left: 173px; top: 104px;}
+.six li:nth-of-type(7){ left: 86px; top: 154px;}
+.six li span{ display:inline-block; line-height:66px;}
+.six li p{ line-height: 24px; font-size:14px;}
+
+.six-green{ background:url(../img/six-green.png) no-repeat center top;}
+.six-blue{ background:url(../img/six-blue.png) no-repeat center top;}
+.six-yellow{ background:url(../img/six-yellow.png) no-repeat center top;}
+.six-orange{ background:url(../img/six-orange.png) no-repeat center top;}
+.six-red{ background:url(../img/six-red.png) no-repeat center top;}
 
 /* ----------- table ----------- */
 .table{ margin-top:20px;}
@@ -72,9 +120,13 @@ transform:translateY(-50%);}
 .color-green{ color:#249214 !important;}
 .color-blue{ color:#469fee !important;}
 .color-yellow{ color:#f1b61b !important;}
+.color-orange{ color:#f67510 !important;}
+.color-red{ color:#fa0000 !important;}
 .bg-green{ background-color:#249214;}
 .bg-blue{ background-color:#469fee;}
 .bg-yellow{ background-color:#f1b61b;}
+.bg-orange{ background-color:#f67510;}
+.bg-red{ background-color:#fa0000;}
 
 /* ----------- 风险评估 ----------- */
 .disease{ width: 100%; height: 513px; margin:80px 0; padding:66px 15% 0; background:url(../img/disease-bg.png) no-repeat center center;}
@@ -83,18 +135,24 @@ transform:translateY(-50%);}
 .disease-red{ height: 90px; padding:20px 0 0 40px;}
 .disease-red li:nth-of-type(2){ margin-left:36px;}
 
-.disease-yellow{ padding: 10px 0 0 36px;height: 98px;}
-.disease-yellow li{ margin-right:16px;}
-.disease-lyellow{ height: 96px;}
+.disease-orange{ padding: 10px 0 0 36px;height: 98px;}
+.disease-orange li{ margin-right:16px;}
+.disease-yellow{ height: 96px;}
 .disease-blue{padding: 5px 0 0 34px;}
 .disease-blue li{ margin-right:14px;}
 .disease-blue li:nth-of-type(3){ margin-left:154px;}
+.disease-green{ height: 60px;}
+
 .disease-per{ width:100%;height: 51px; line-height: 49px; }
-.disease-per-red{ background:url(../img/circle-red.png) no-repeat center center;}
-.disease-per-yellow{ background:url(../img/circle-yellow.png) no-repeat center center;}
-.disease-per-blue{ background:url(../img/circle-blue.png) no-repeat center center;}
 .disease-name{ font-size:14px;}
 .disease li .disease-name-b{color:#343434;}
+
+.circle-green{ background:url(../img/circle-green.png) no-repeat center center;}
+.circle-blue{ background:url(../img/circle-blue.png) no-repeat center center;}
+.circle-yellow{ background:url(../img/circle-yellow.png) no-repeat center center;}
+.circle-orange{ background:url(../img/circle-orange.png) no-repeat center center;}
+.circle-red{ background:url(../img/circle-red.png) no-repeat center center;}
+
 
 /* ----------- msg ----------- */
 .msg{ position:relative; line-height: 32px; text-align:center; margin-bottom:8px;}
@@ -102,19 +160,22 @@ transform:translateY(-50%);}
 .msg .sex{ margin:0 12px;}
 
 /* ----------- details ----------- */
-.details{ line-height: 18px; color:#4b4a4a; text-indent:2em; margin-bottom:10px;}
+.details{ line-height:20px; color:#4b4a4a;margin-bottom:20px;}
+.details p{ font-size:13px;}
+.details .detaile-t{line-height: 27px; font-size:15px; background:url(../img/007.png) no-repeat left center; padding-left:30px;}
+.details span{ color:#f2b710;}
 
 /* ----------- grade ----------- */
 .body-bg{ height:auto; background:url(../img/body-bg.png) no-repeat center bottom; background-size:contain;}
 
 .grade{ position:relative; padding-left:16%;}
 .grade>div{ float: left; margin-right:30px;}
-.grade-1 li{ width: 27px; height: 27px; margin-bottom:3px;}
-.s-pic-green{ background:url(../img/2.png) no-repeat center center;}
-.s-pic-blue{ background:url(../img/3.png) no-repeat center center;}
-.s-pic-yellow{ background:url(../img/7.png) no-repeat center center;}
-.s-pic-orange{ background:url(../img/2-2.png) no-repeat center center;}
-.s-pic-red{ background:url(../img/0.png) no-repeat center center;}
+.grade-1 li{ width: 27px; height: 27px; text-align:center; line-height:30px; color:#fff; font-size:14px; margin-bottom:3px;}
+.s-pic-green{ background:url(../img/green.png) no-repeat center center;}
+.s-pic-blue{ background:url(../img/blue.png) no-repeat center center;}
+.s-pic-yellow{ background:url(../img/yellow.png) no-repeat center center;}
+.s-pic-orange{ background:url(../img/orange.png) no-repeat center center;}
+.s-pic-red{ background:url(../img/red.png) no-repeat center center;}
 
 .grade-2{ width: 150px; height: 150px; background:url(../img/b-circle.png) no-repeat center center;}
 .grade-3{ width: 90px; height: 90px; position: absolute; left: 346px; bottom: 0;background:url(../img/bim.png) no-repeat center center;}

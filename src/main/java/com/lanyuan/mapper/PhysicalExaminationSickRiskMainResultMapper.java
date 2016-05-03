@@ -11,4 +11,5 @@ public interface PhysicalExaminationSickRiskMainResultMapper extends BaseMapper{
 
 	public List<PhysicalExaminationSickRiskMainResultFormMap> findEnterprisePage(PhysicalExaminationSickRiskMainResultFormMap physicalExaminationSickRiskMainResultFormMap);
 
+	List<PhysicalExaminationSickRiskMainResultFormMap> findAllShowInReportSickRiskList(PhysicalExaminationSickRiskMainResultFormMap physicalExaminationSickRiskMainResultFormMap);
 }

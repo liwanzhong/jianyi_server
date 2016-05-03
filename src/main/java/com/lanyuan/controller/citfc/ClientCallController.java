@@ -2,9 +2,11 @@ package com.lanyuan.controller.citfc;
 
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.CustomInfoFormMap;
+import com.lanyuan.entity.EquipmentFormMap;
 import com.lanyuan.entity.UserEntrelationFormMap;
 import com.lanyuan.entity.UserFormMap;
 import com.lanyuan.mapper.CustomInfoMapper;
+import com.lanyuan.mapper.EquipmentMapper;
 import com.lanyuan.mapper.UserEntrelationMapper;
 import com.lanyuan.mapper.UserMapper;
 import com.lanyuan.util.Common;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -123,33 +126,28 @@ public class ClientCallController extends BaseController {
 
 
 	@Autowired
-	private UserMapper userMapper;
+	private EquipmentMapper equipmentMapper;
 
-	/**
-	 * 查询客户信息（通过客户名称）
-	 * @param customName 客户名称
-	 * @param phone 手机号
-	 * @param meathcode 机器码
-	 * @param userid 用户id
-     * @return
-     */
+
 	@ResponseBody
 	@RequestMapping(value = "querycustom", method = RequestMethod.POST, produces = "text/json; charset=utf-8")
-	public List<CustomInfoFormMap> queryCustom(String customName,String phone,String meathcode,Long userid) {
+	public List<CustomInfoFormMap> queryCustom(@RequestParam(value = "customName",required = false)String customName,
+											   @RequestParam(value = "phone",required = false)String phone,
+											   @RequestParam(value = "idCard",required = false)String idCard,
+											   @RequestParam(value = "instrumentCode",required = true) String instrumentCode) {
 		List<CustomInfoFormMap> customInfoFormMapList = null;
 		try {
-			if (StringUtils.isBlank(customName) && StringUtils.isBlank(phone)){
-				throw new Exception("参数异常[客户名称或者手机号必须]!");
+			if (StringUtils.isBlank(customName) && StringUtils.isBlank(phone)&& StringUtils.isBlank(idCard)){
+				throw new Exception("参数异常[没有查询条件]!");
 			}
 
-			//todo 这里不适用系统用户id，而是机器码
-			UserFormMap userFormMap = userMapper.findbyFrist("id",userid+"",UserFormMap.class);
-			if(userFormMap == null){
-				 throw new Exception("系统异常！");
+			// 获取仪器对象
+			EquipmentFormMap equipmentFormMap = equipmentMapper.findbyFrist("istmt_code",instrumentCode,EquipmentFormMap.class);
+			if(null == equipmentFormMap){
+				throw new Exception("无效查询,请配置机器码！");
 			}
 
 
-			//todo 通过客户名称，所属企业和检测点查询所有同名的用户
 			CustomInfoFormMap customInfoFormMap = new CustomInfoFormMap();
 			if(StringUtils.isNotBlank(phone)){
 				customInfoFormMap.set("mobile",phone);
@@ -157,7 +155,10 @@ public class ClientCallController extends BaseController {
 			if(StringUtils.isNotBlank(customName)){
 				customInfoFormMap.set("name",customName);
 			}
-			customInfoFormMap.set("organization_id",userFormMap.get("organization_id").toString());
+			if(StringUtils.isNotBlank(idCard)){
+				customInfoFormMap.set("idcard",idCard);
+			}
+			customInfoFormMap.set("organization_id",equipmentFormMap.getLong("organization_id"));
 			customInfoFormMapList =  customInfoMapper.findEnterprisePage_front(customInfoFormMap);
 
 		} catch (Exception e) {

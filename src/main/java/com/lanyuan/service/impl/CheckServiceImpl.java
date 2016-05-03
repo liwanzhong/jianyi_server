@@ -491,17 +491,9 @@ public class CheckServiceImpl implements ICheckService {
                 SickRiskFormMap sickItem =sickRiskFormMapList.get(i);
                 if(sickItem!=null){
                     if(sickItem.getInt("check_item_type")==1){//大项
-                        if(i==sickRiskFormMapList.size()-1){
-                            bigItemIds.append(sickItem.getLong("check_item_id"));
-                        }else{
-                            bigItemIds.append(sickItem.getLong("check_item_id")).append(",");
-                        }
+                        bigItemIds.append(sickItem.getLong("check_item_id")).append(",");
                     }else{
-                        if(i==sickRiskFormMapList.size()-1){
-                            smallItemIds.append(sickItem.getLong("check_item_id"));
-                        }else{
-                            smallItemIds.append(sickItem.getLong("check_item_id")).append(",");
-                        }
+                        smallItemIds.append(sickItem.getLong("check_item_id")).append(",");
                     }
                 }
             }
@@ -512,19 +504,19 @@ public class CheckServiceImpl implements ICheckService {
 
             PhysicalExaminationResultFormMap physicalExaminationResultFormMap = new PhysicalExaminationResultFormMap();
             if(StringUtils.isNotBlank(smallItemIds.toString())){
-                physicalExaminationResultFormMap.put("where","where examination_record_id="+recordFormMap.getLong("id")+" and  small_item_id in ("+smallItemIds.toString()+") order by id desc");
+                physicalExaminationResultFormMap.put("where","where examination_record_id="+recordFormMap.getLong("id")+" and  small_item_id in ("+smallItemIds.toString().substring(0,smallItemIds.toString().lastIndexOf(","))+") order by id desc");
                 List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = physicalExaminationResultMapper.findByWhere(physicalExaminationResultFormMap);
                 if(CollectionUtils.isNotEmpty(physicalExaminationResultFormMapList)){
                     for(PhysicalExaminationResultFormMap item:physicalExaminationResultFormMapList){
                         //todo 计算检测小项的风险值
-                        Map<String,BigDecimal> sickReskMap = this.calSickRiskVal(item.getBigDecimal("quanzhong_score"),item.getLong("small_item_id"),sickRiskFormMapList);
+                        Map<String,BigDecimal> sickReskMap = this.calSickRiskVal(item.getBigDecimal("item_score"),item.getLong("small_item_id"),sickRiskFormMapList);
                         PhysicalExaminationSickRiskResultFormMap physicalExaminationSickRiskResultFormMap = new PhysicalExaminationSickRiskResultFormMap();
                         physicalExaminationSickRiskResultFormMap.put("examination_record_id",recordFormMap.getLong("id"));
-                        physicalExaminationSickRiskResultFormMap.put("check_item_id",item.getLong("big_item_id"));
+                        physicalExaminationSickRiskResultFormMap.put("check_item_id",item.getLong("small_item_id"));
                         physicalExaminationSickRiskResultFormMap.put("check_item_type",2);
-                        physicalExaminationSickRiskResultFormMap.put("sick_risk_item_id",sickRiskItemFormMap.getLong("sick_risk_id"));
-                        physicalExaminationSickRiskResultFormMap.put("risk_rout",(BigDecimal)sickReskMap.get("sickRiskValue"));
-                        physicalExaminationSickRiskResultFormMap.put("score",(BigDecimal)sickReskMap.get("rout"));
+                        physicalExaminationSickRiskResultFormMap.put("sick_risk_item_id",sickRiskItemFormMap.getLong("id"));
+                        physicalExaminationSickRiskResultFormMap.put("risk_rout",(BigDecimal)sickReskMap.get("rout"));
+                        physicalExaminationSickRiskResultFormMap.put("score",(BigDecimal)sickReskMap.get("sickRiskValue") );
                         physicalExaminationSickRiskResultMapper.addEntity(physicalExaminationSickRiskResultFormMap);
                         physicalExaminationSickRiskResultFormMapList.add(physicalExaminationSickRiskResultFormMap);
                     }
@@ -534,7 +526,7 @@ public class CheckServiceImpl implements ICheckService {
 
             if(StringUtils.isNotBlank(bigItemIds.toString())){
                 PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = new PhysicalExaminationBigResultFormMap();
-                physicalExaminationBigResultFormMap.put("where","where examination_record_id="+recordFormMap.getLong("id")+" and  big_item_id in ("+bigItemIds.toString()+") order by id desc");
+                physicalExaminationBigResultFormMap.put("where","where examination_record_id="+recordFormMap.getLong("id")+" and  big_item_id in ("+bigItemIds.toString().substring(0,bigItemIds.toString().lastIndexOf(","))+") order by id desc");
                 List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = physicalExaminationBigResultMapper.findByWhere(physicalExaminationBigResultFormMap);
                 if(CollectionUtils.isNotEmpty(physicalExaminationBigResultFormMapList)){
                     for(PhysicalExaminationBigResultFormMap item:physicalExaminationBigResultFormMapList){
@@ -673,6 +665,7 @@ public class CheckServiceImpl implements ICheckService {
             if(sickRiskFormMap.getLong("check_item_id").longValue()==checkItemid){
                 rout=sickRiskFormMap.getBigDecimal("risk_rout");
                 sickRiskValue = quanzhong_score.multiply(rout);
+                break;
             }
         }
         Map<String,BigDecimal> resultMap = new HashMap<String, BigDecimal>();

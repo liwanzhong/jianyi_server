@@ -67,11 +67,16 @@
         per.item_score,
         cpl.name AS orgin_leve_id,
         cpl.show_color AS org_show_color,
+        cpl.id AS orgin_leve_id_id,
+        cpl1.id AS tzed_leve_id_id,
         cpl1.name AS tzed_leve_id,
         cpl1.show_color AS tzed_show_color,
         per.gen_quanzhong,
         per.quanzhong_score,
-        csi.name
+        csi.name,
+        csi.check_desc,
+        csi.min_value,
+        csi.max_value
         FROM physical_examination_result per
         LEFT JOIN check_small_item csi
         ON csi.id = per.small_item_id
