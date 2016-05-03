@@ -11,4 +11,6 @@ public interface BmiLeveConfigMapper extends BaseMapper{
 
 
 	List<BmiLeveConfigFormMap> findFixConfig(BmiLeveConfigFormMap bmiLeveConfigFormMap);
+
+	List<BmiLeveConfigFormMap> findPage(BmiLeveConfigFormMap bmileveconfigFormMap);
 }

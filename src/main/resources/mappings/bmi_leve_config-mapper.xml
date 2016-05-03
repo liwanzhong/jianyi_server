@@ -7,12 +7,6 @@
 		/> -->
 	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
 	<!-- 以下与实体类的中字段一致 -->
-	<sql id="selectId">
-
-	</sql>
-
-
-
 
 
 	<select id="findFixConfig" resultType="com.lanyuan.entity.BmiLeveConfigFormMap">
@@ -25,6 +19,18 @@
 		FROM bmi_leve_config blc
 		WHERE blc.bmi_min &lt;= ${bmi} AND blc.bmi_max &gt;= ${bmi} ORDER BY blc.id DESC
 	</select>
+
+
+	<select id="findPage" resultType="com.lanyuan.entity.BmiLeveConfigFormMap">
+		SELECT
+		blc.id,
+		blc.bmi_min,
+		blc.bmi_max,
+		blc.health_leve,
+		blc.health_leve_name
+		FROM bmi_leve_config blc  ORDER BY blc.id DESC
+	</select>
+
 
 
 

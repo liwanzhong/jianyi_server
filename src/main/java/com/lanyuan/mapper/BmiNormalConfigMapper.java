@@ -12,4 +12,5 @@ public interface BmiNormalConfigMapper extends BaseMapper{
 	 BmiNormalConfigFormMap findSexNormalConfig(BmiNormalConfigFormMap bmiNormalConfigFormMap);
 
 
+	List<BmiNormalConfigFormMap> findPage(BmiNormalConfigFormMap bmiNormalConfigFormMap);
 }

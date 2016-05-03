@@ -22,5 +22,15 @@ ORDER BY bnc.id DESC LIMIT 1
 
 
 
+    <select id="findPage" resultType="com.lanyuan.entity.BmiNormalConfigFormMap">
+        SELECT
+        bnc.id,
+        bnc.sex,
+        bnc.min_bmi,
+        bnc.max_bmi
+        FROM bmi_normal_config bnc
+        ORDER BY bnc.id ASC
+    </select>
+
 
 </mapper>
