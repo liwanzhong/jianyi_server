@@ -62,6 +62,14 @@ $(function(e){
 			$('.vv li').eq(index).addClass('bg-red');
 		}
     });
+	$('.ul-w').each(function(index, element) {
+        var liNum = $(element).children('li').length;
+		var liWidth = $(element).children('li').width();
+		$(element).css('width',liNum*liWidth);
+		
+    });
+        
+
 	
 	//六边形图表
 	$('.six span').each(function(index, element) {
@@ -117,6 +125,12 @@ $(function(e){
 		}else{
 			$(element).addClass('circle-green');
 		}
+    });
+
+	$('.ul-Width').each(function(index, element) {
+		var liNum = $(element).children('li').length;
+		var ulWidth = liNum*70;
+		$(element).css('width',ulWidth);
     });
 
 });

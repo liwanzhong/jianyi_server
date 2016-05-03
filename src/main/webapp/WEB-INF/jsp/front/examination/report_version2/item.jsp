@@ -82,7 +82,7 @@
 			<c:when test="${physicalExaminationBigResultFormMap.charts_item == 2}">
 				<!--渐变图表-->
 				<div class="shade">
-					<ul class="clearfix">
+					<ul class="ul-w clearfix">
 						<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
 							<li>
 								<p>${item.name}</p>
