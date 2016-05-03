@@ -91,7 +91,7 @@ public class ReportPDFGenController {
 
 			StringBuffer pdfFilePath = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_PDF_SAVED_PAHT));
 			pdfFilePath.append(File.separator);
-			pdfFilePath.append(dateFormat.format(new Date()));
+			pdfFilePath.append(dateFormat.format(physicalExaminationRecordFormMap.getDate("check_time")));
 			pdfFilePath.append(File.separator);
 			pdfFilePath.append(physicalExaminationRecordFormMap.getLong("id"));
 			File savePathFile = new File(pdfFilePath.toString());
