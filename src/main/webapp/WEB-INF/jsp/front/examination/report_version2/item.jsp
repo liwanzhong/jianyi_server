@@ -25,19 +25,19 @@
 			<li><h1>双螺旋机能检测报告</h1></li>
 			<li style="float:right;">
 				<c:choose>
+					<c:when test="${pageView.pageNow-1==0}">
+						<a class="s-btn" href="${ctx}/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id=${physicalExaminationBigResultFormMap.examination_record_id}">上一页</a>
+					</c:when>
+					<c:otherwise>
+						<a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=${pageView.pageNow-1}&recordId=${physicalExaminationBigResultFormMap.examination_record_id}">上一页</a>
+					</c:otherwise>
+				</c:choose>
+				<c:choose>
 					<c:when test="${pageView.pageNow==pageView.pageCount}">
 
 					</c:when>
 					<c:otherwise>
 						<a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=${pageView.pageNow+1}&recordId=${physicalExaminationBigResultFormMap.examination_record_id}">下一页</a>
-					</c:otherwise>
-				</c:choose>
-				<c:choose>
-					<c:when test="${pageView.pageNow-1==0}">
-						<a class="s-btn" href="${ctx}/examination/physicalExamination/sick_risk.shtml?physicalExaminationRecordFormMap.id=${physicalExaminationBigResultFormMap.examination_record_id}">上一页</a>
-					</c:when>
-					<c:otherwise>
-						<a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=${pageView.pageNow-1}&recordId=${physicalExaminationBigResultFormMap.examination_record_id}">上一页</a>
 					</c:otherwise>
 				</c:choose>
 			</li>
@@ -150,7 +150,7 @@
 					<ul class="clearfix">
 						<li><em></em>${item.name}</li>
 						<li class="font-color"><span>${item.quanzhong_score==null ?item.item_score:item.quanzhong_score}</span>分</li>
-						<li>${item.check_value}|${item.gen_min_value}-${item.gen_max_value}</li>
+						<li>${item.check_value}|${item.check_min}-${item.check_min}</li>
 						<li>${item.check_desc}</li>
 					</ul>
 				</c:forEach>
@@ -164,21 +164,20 @@
 			<ul class="clearfix">
 				<li>中瑞力佳（北京）生物科技有限公司</li>
 				<li>
-					<%--<a class="s-btn">下一页</a>--%>
-					<c:choose>
-						<c:when test="${pageView.pageNow==pageView.pageCount}">
-
-						</c:when>
-						<c:otherwise>
-							<a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=${pageView.pageNow+1}&recordId=${physicalExaminationBigResultFormMap.examination_record_id}">下一页</a>
-						</c:otherwise>
-					</c:choose>
 					<c:choose>
 						<c:when test="${pageView.pageNow-1==0}">
 							<a class="s-btn" href="${ctx}/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id=${physicalExaminationBigResultFormMap.examination_record_id}">上一页</a>
 						</c:when>
 						<c:otherwise>
 							<a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=${pageView.pageNow-1}&recordId=${physicalExaminationBigResultFormMap.examination_record_id}">上一页</a>
+						</c:otherwise>
+					</c:choose>
+					<c:choose>
+						<c:when test="${pageView.pageNow==pageView.pageCount}">
+
+						</c:when>
+						<c:otherwise>
+							<a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=${pageView.pageNow+1}&recordId=${physicalExaminationBigResultFormMap.examination_record_id}">下一页</a>
 						</c:otherwise>
 					</c:choose>
 				</li>

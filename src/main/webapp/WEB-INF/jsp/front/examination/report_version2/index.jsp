@@ -50,7 +50,7 @@
             </li>
             <li><h1>双螺旋机能检测报告</h1></li>
             <li style="float:right;">
-                <a class="s-btn" href="${ctx}/examination/physicalExamination/sick_risk.shtml?physicalExaminationRecordFormMap.id=${physicalExaminationRecordFormMap.id}">下一页</a>
+                <a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=1&recordId=${physicalExaminationRecordFormMap.id}">下一页</a>
             </li>
         </ul>
     </div>

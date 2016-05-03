@@ -46,14 +46,6 @@
                                                                 <label class=" control-label">会员手机:</label>
                                                                 <input type="text" class="input-sm form-control" id="physicalExaminationRecordFormMap_mobile" name="physicalExaminationRecordFormMap.mobile" placeholder="请输入会员手机">
                                                             </div>
-                                                            <%--<div class="form-group">
-                                                                <label class=" control-label">检测时间:</label>
-                                                                <input type="text" class="input-sm form-control" id="physicalExaminationRecordFormMap_check_time_start" name="physicalExaminationRecordFormMap.check_time_start" placeholder="">
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class=" control-label">至</label>
-                                                                <input type="text" class="input-sm form-control" id="physicalExaminationRecordFormMap_check_time_end" name="physicalExaminationRecordFormMap.check_time_end" placeholder="">
-                                                            </div>--%>
                                                             <div class="form-group">
                                                                 <button type="button" id="search" class="btn btn-sm">查  询</button>
                                                             </div>

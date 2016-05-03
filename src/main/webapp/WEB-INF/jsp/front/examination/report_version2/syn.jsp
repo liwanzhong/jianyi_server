@@ -24,8 +24,8 @@
 			</li>
 			<li><h1>疾病风险评估分析</h1></li>
 			<li style="float:right;">
-				<a class="s-btn"  href="${ctx}/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id=${physicalExaminationRecordFormMap.id}">上一页</a>
-				<a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=1&recordId=${physicalExaminationRecordFormMap.id}">下一页</a>
+				<%--<a class="s-btn"  href="${ctx}/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id=${physicalExaminationRecordFormMap.id}">上一页</a>
+				<a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=1&recordId=${physicalExaminationRecordFormMap.id}">下一页</a>--%>
 			</li>
 		</ul>
 	</div>
@@ -96,8 +96,8 @@
 			<ul class="clearfix">
 				<li>中瑞力佳（北京）生物科技有限公司</li>
 				<li>
-					<a class="s-btn"  href="${ctx}/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id=${physicalExaminationRecordFormMap.id}">上一页</a>
-					<a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=1&recordId=${physicalExaminationRecordFormMap.id}">下一页</a>
+					<%--<a class="s-btn"  href="${ctx}/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id=${physicalExaminationRecordFormMap.id}">上一页</a>
+					<a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=1&recordId=${physicalExaminationRecordFormMap.id}">下一页</a>--%>
 				</li>
 			</ul>
 		</div>
