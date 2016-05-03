@@ -150,7 +150,7 @@
 					<ul class="clearfix">
 						<li><em></em>${item.name}</li>
 						<li class="font-color"><span>${item.item_score}</span>分</li>
-						<li>${item.check_value}|${item.check_min}-${item.check_min}</li>
+						<li>${item.check_value}|${item.check_min}-${item.check_max}</li>
 						<li>${item.check_desc}</li>
 					</ul>
 				</c:forEach>
