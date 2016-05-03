@@ -406,7 +406,7 @@ public class CheckServiceImpl implements ICheckService {
 
 
         //todo 生成总评内容
-        ZongpingLeveDescConfigFormMap zongpingLeveDescConfigFormMap = new ZongpingLeveDescConfigFormMap();
+        /*ZongpingLeveDescConfigFormMap zongpingLeveDescConfigFormMap = new ZongpingLeveDescConfigFormMap();
         zongpingLeveDescConfigFormMap.put("check_total_score",physicalExaminationMainReportFormMap.getBigDecimal("check_total_score"));
         zongpingLeveDescConfigFormMap = zongpingLeveDescConfigMapper.findFixedItem(zongpingLeveDescConfigFormMap);
         if(null!=zongpingLeveDescConfigFormMap){
@@ -426,7 +426,7 @@ public class CheckServiceImpl implements ICheckService {
 
                 physicalExaminationMainReportFormMap.put("with_flow",zongPingBuffer.toString());
             }
-        }
+        }*/
 
         physicalExaminationMainReportMapper.addEntity(physicalExaminationMainReportFormMap);
     }
@@ -585,6 +585,25 @@ public class CheckServiceImpl implements ICheckService {
 
         }
 
+    }
+
+
+    /**
+     * 删除已经生成的数据
+     * @throws Exception
+     */
+    public void deleteGenedData(PhysicalExaminationRecordFormMap recordFormMap) throws Exception {
+        //todo 删除检测大项数据
+        physicalExaminationBigResultMapper.deleteByAttribute("examination_record_id",recordFormMap.get("id").toString(),PhysicalExaminationBigResultFormMap.class);
+
+        //todo 删除主报告记录
+        physicalExaminationMainReportMapper.deleteByAttribute("examination_record_id",recordFormMap.get("id").toString(),PhysicalExaminationMainReportFormMap.class);
+
+        //todo 删除疾病风险记录
+        physicalExaminationSickRiskMainResultMapper.deleteByAttribute("examination_record_id",recordFormMap.get("id").toString(),PhysicalExaminationSickRiskMainResultFormMap.class);
+
+
+        physicalExaminationSickRiskResultMapper.deleteByAttribute("examination_record_id",recordFormMap.get("id").toString(),PhysicalExaminationSickRiskResultFormMap.class);
     }
 
     @Autowired

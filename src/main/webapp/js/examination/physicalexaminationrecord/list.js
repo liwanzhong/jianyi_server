@@ -1,7 +1,7 @@
 var pageii = null;
 var grid = null;
 $(function() {
-	
+
 	grid = lyGrid({
 		pagId : 'paging',
 		l_column : [ {
@@ -30,24 +30,47 @@ $(function() {
 			colkey : "status",
 			name : "检测状态",
 			renderData : function(rowindex,data, rowdata, column) {
-				if(data==3){
+				if(data==2){
+					return '数据已经处理'
+				}else if(data==1){
+					return '数据已上传';
+				}else if(data==3){
 					return '报告生成中';
 				}else if(data == 4){
 					return '报告已经生成';
-				}else{
-					return '未生成报告';
 				}
 			}
 		}, {
 			name : "报告相关操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				return '<a target="_blank" href="'+rootPath + '/examination/physicalExamination/result.shtml?recordid='+rowdata.id+'">检测值</a>&nbsp;&nbsp;&nbsp;<a target="_blank" href="'+rootPath + '/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看报告</a>&nbsp;&nbsp;&nbsp;<a target="_blank" href="'+rootPath + '/examination/physicalExamination/sick_risk.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看疾病风险评估</a>&nbsp;&nbsp;&nbsp;<a href="'+rootPath + '/examination/physicalExamination/report.shtml">下载</a>';
+				return retActionChosen(rowindex,data,rowdata,colkeyn);
 			}
 		} ],
 		jsonUrl : rootPath + '/examination/physicalExamination/findByPage.shtml',
 		checkbox : false,
 		serNumber : true
 	});
+
+
+	function  retActionChosen(rowindex ,data, rowdata, colkeyn){
+		var actionStr = '';
+		if(rowdata.status == 2){
+			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/result.shtml?recordid='+rowdata.id+'">检测值</a>&nbsp;&nbsp;&nbsp;';
+			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看报告</a>&nbsp;&nbsp;&nbsp;';
+			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/sick_risk.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看疾病风险评估</a>&nbsp;&nbsp;&nbsp;';
+
+		}
+		if(rowdata.status==4){
+			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/result.shtml?recordid='+rowdata.id+'">检测值</a>&nbsp;&nbsp;&nbsp;';
+			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看报告</a>&nbsp;&nbsp;&nbsp;';
+			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/sick_risk.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看疾病风险评估</a>&nbsp;&nbsp;&nbsp;';
+			actionStr+='<a href="'+rootPath + '/examination/physicalExamination/report.shtml">下载</a>';
+		}
+		return actionStr;
+	}
+
+
+
 	$("#search").click("click", function() {// 绑定查询按扭
 		var searchParams = $("#searchForm").serializeJson();// 初始化传参数
 		grid.setOptions({

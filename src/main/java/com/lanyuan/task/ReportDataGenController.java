@@ -57,6 +57,7 @@ public class ReportDataGenController {
 			for(PhysicalExaminationRecordFormMap item:physicalExaminationRecordFormMapList){
 				try{
 					//todo 生成检测数据
+					checkService.deleteGenedData(item);
 					checkService.genCheckResult(item);
 					checkService.genSickRiskResult(item);
 					item.put("status",2);

@@ -342,20 +342,22 @@ public class PhysicalExaminationRecordController extends BaseController {
     @RequestMapping("result")
     @SystemLog(module="用户管理",methods="加载用户列表")
     public String result(Model model,String recordid)throws Exception {
-        PhysicalExaminationRecordFormMap recordFormMap = physicalExaminationRecordMapper.findbyFrist("id",recordid,PhysicalExaminationRecordFormMap.class);
-        model.addAttribute("record",recordFormMap);
+        try{
+            PhysicalExaminationRecordFormMap recordFormMap = physicalExaminationRecordMapper.findbyFrist("id",recordid,PhysicalExaminationRecordFormMap.class);
+            model.addAttribute("record",recordFormMap);
 
-        PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = physicalExaminationMainReportMapper.findbyFrist("examination_record_id",recordFormMap.get("id").toString(),PhysicalExaminationMainReportFormMap.class);
-        model.addAttribute("physicalExaminationMainReportFormMap",physicalExaminationMainReportFormMap);
+            PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = physicalExaminationMainReportMapper.findbyFrist("examination_record_id",recordFormMap.get("id").toString(),PhysicalExaminationMainReportFormMap.class);
+            model.addAttribute("physicalExaminationMainReportFormMap",physicalExaminationMainReportFormMap);
 
-        List<PhysicalExaminationBigResultFormMap> bigResultFormMapList = physicalExaminationBigResultMapper.findItemCheckResultList(recordFormMap.getLong("id"));
-        model.addAttribute("bigResultFormMapList",bigResultFormMapList);
-
-
-        List<PhysicalExaminationResultFormMap> resultList =physicalExaminationResultMapper .findItemCheckResultList(recordFormMap.getLong("id"),null);
-        model.addAttribute("resultList",resultList);
+            List<PhysicalExaminationBigResultFormMap> bigResultFormMapList = physicalExaminationBigResultMapper.findItemCheckResultList(recordFormMap.getLong("id"));
+            model.addAttribute("bigResultFormMapList",bigResultFormMapList);
 
 
+            List<PhysicalExaminationResultFormMap> resultList =physicalExaminationResultMapper .findItemCheckResultList(recordFormMap.getLong("id"),null);
+            model.addAttribute("resultList",resultList);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         return Common.BACKGROUND_PATH + "/examination/physicalexaminationrecord/checkResult";
     }
 

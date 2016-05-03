@@ -149,7 +149,7 @@
 				<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
 					<ul class="clearfix">
 						<li><em></em>${item.name}</li>
-						<li class="font-color"><span>${item.quanzhong_score==null ?item.item_score:item.quanzhong_score}</span>分</li>
+						<li class="font-color"><span>${item.item_score}</span>分</li>
 						<li>${item.check_value}|${item.check_min}-${item.check_min}</li>
 						<li>${item.check_desc}</li>
 					</ul>

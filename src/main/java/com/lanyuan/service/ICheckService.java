@@ -11,13 +11,6 @@ import java.util.List;
  */
 public interface ICheckService {
 
-
-
-
-
-
-
-
     void recordCheckResult(String instrumentCode,Long customerId) throws Exception;
 
 
@@ -27,5 +20,5 @@ public interface ICheckService {
     void genSickRiskResult(PhysicalExaminationRecordFormMap recordFormMap)throws Exception;
 
 
-
+    void deleteGenedData(PhysicalExaminationRecordFormMap recordFormMap)throws Exception;
 }
