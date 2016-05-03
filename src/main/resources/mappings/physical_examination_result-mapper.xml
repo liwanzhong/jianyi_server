@@ -76,7 +76,9 @@
         csi.name,
         csi.check_desc,
         csi.min_value,
-        csi.max_value
+        csi.max_value,
+        csi.check_min,
+        csi.check_max
         FROM physical_examination_result per
         LEFT JOIN check_small_item csi
         ON csi.id = per.small_item_id
