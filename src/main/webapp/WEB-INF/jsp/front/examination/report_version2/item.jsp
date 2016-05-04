@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!doctype html>
@@ -50,7 +51,7 @@
 		<div class="cell-msg">
 			<ul class="clearfix">
 				<li class="cell-name">${physicalExaminationBigResultFormMap.name}</li>
-				<li class="cell-score">${physicalExaminationBigResultFormMap.check_score}分</li>
+				<li class="cell-score"> <fmt:formatNumber value="${physicalExaminationBigResultFormMap.check_score}" pattern="#0.00"/>分</li>
 				<li class="cell-color">
 					<c:forEach items="${leveCountGroupBy}" var="entry">
 						<c:choose>
@@ -86,28 +87,42 @@
 						<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
 							<li>
 								<p>${item.name}</p>
-								<p class="shade-num"><span>${item.item_score}</span>分</p>
+								<p class="shade-num"><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分</p>
 							</li>
 						</c:forEach>
 					</ul>
 				</div>
 			</c:when>
 			<c:when test="${physicalExaminationBigResultFormMap.charts_item == 3}">
-				<!--渐变图表-->
-				<div class="vv">
-					<ul class="clearfix">
-						<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
-							<li><span>${item.item_score}</span>分<p>${item.name}</p></li>
-						</c:forEach>
-					</ul>
-				</div>
+				<c:choose>
+					<c:when test="${fn:length(physicalExaminationResultFormMapList)==6}">
+						<!--渐变图表-->
+						<div class="vv">
+							<ul class="clearfix">
+								<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
+									<li><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分<p>${item.name}</p></li>
+								</c:forEach>
+							</ul>
+						</div>
+					</c:when>
+					<c:when test="${fn:length(physicalExaminationResultFormMapList)==5}">
+						<div class="vvv">
+							<ul class="clearfix">
+									<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
+										<li><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分<p>${item.name}</p></li>
+									</c:forEach>
+							</ul>
+						</div>
+					</c:when>
+				</c:choose>
+
 			</c:when>
 			<c:when test="${physicalExaminationBigResultFormMap.charts_item == 4}">
 				<!--六边形图表-->
 				<div class="six">
 					<ul>
 						<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
-							<li><p class="six-color"><span>${item.item_score}</span>分</p><p>${item.name}</p></li>
+							<li><p class="six-color"><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分</p><p>${item.name}</p></li>
 						</c:forEach>
 					</ul>
 				</div>
@@ -118,7 +133,7 @@
 					<ul class="clearfix">
 						<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
 							<li>
-								<div class="column-score"><span>${item.item_score}</span>分</div>
+								<div class="column-score"><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分</div>
 								<div class="column-bg">
 									<div class="column-h">
 										<div class="column-real"></div>
@@ -149,8 +164,8 @@
 				<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
 					<ul class="clearfix">
 						<li><em></em>${item.name}</li>
-						<li class="font-color"><span>${item.item_score}</span>分</li>
-						<li>${item.check_value}|${item.check_min}-${item.check_max}</li>
+						<li class="font-color"><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分</li>
+						<li><fmt:formatNumber value="${item.check_value}" pattern="#0.00"/>|<fmt:formatNumber value="${item.check_min}" pattern="#0.00"/>-<fmt:formatNumber value="${item.check_max}" pattern="#0.00"/></li>
 						<li>${item.check_desc}</li>
 					</ul>
 				</c:forEach>

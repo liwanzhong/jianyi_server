@@ -70,7 +70,7 @@
             <%--<p class="detaile-t">
                 ${physicalExaminationMainReportFormMap.with_flow}
             </p>--%>
-            <p class="detaile-t">健康特工007提醒您：您的身体总分<span> ${physicalExaminationMainReportFormMap.check_total_score}分</span>，您的<span>健康状态处于${zongpingLeveDescConfigFormMap.leve_name}</span>！<img src=""${ctx}/front-static/report_version2/img/nanguo.png" alt=""></p>
+            <p class="detaile-t">健康特工007提醒您：您的身体总分<span> <fmt:formatNumber value="${physicalExaminationMainReportFormMap.check_total_score}" pattern="#0"/>分</span>，您的<span>健康状态处于${zongpingLeveDescConfigFormMap.leve_name}</span>！<img src=""${ctx}/front-static/report_version2/img/nanguo.png" alt=""></p>
             <p>${zongpingLeveDescConfigFormMap.leve_des}您身体的短板是（<span>${zuicha}</span>），同时需要注意的还有（<span>${cicha}</span>）。</p>
         </div>
         <!--main-->
@@ -115,7 +115,7 @@
                                 100: '#239811'
                             }, //刻度条的颜色
                             barWidth: 10, //刻度条的宽度，默认5
-                            initValue: ${physicalExaminationMainReportFormMap.check_total_score}, //圆形指示器初始化的值
+                            initValue: <fmt:formatNumber value="${physicalExaminationMainReportFormMap.check_total_score}" pattern="#0"/>, //圆形指示器初始化的值
                             roundCorner:false, //刻度条是否圆角
                             percentage: false //显示百分数
                         });
