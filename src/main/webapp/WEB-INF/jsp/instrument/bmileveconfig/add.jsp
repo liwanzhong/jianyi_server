@@ -51,6 +51,12 @@
 						<input name="bmileveconfigFormMap.bmi_max" type="text" placeholder="最大BMI" style="width:250px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="">
 					</td>
 				</tr>
+				<tr>
+					<td>等级显示颜色</td>
+					<td colspan="3">
+						<input name="bmileveconfigFormMap.show_color" type="text" placeholder="等级显示颜色" style="width:250px;height: 29px;" class="easyui-validatebox" data-options="required:true" value="">
+					</td>
+				</tr>
 			</table>
 		</form>
 	</div>

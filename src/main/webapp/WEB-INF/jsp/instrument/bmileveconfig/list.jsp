@@ -45,6 +45,13 @@
 						return row.bmi_min+"---"+row.bmi_max;
 					}
 				},{
+					width : '180',
+					title : '等级显示颜色',
+					field : 'show_color',
+					formatter : function(value, row, index) {
+						return '<span style="background-color:'+value+';width:100% ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
+					}
+				},{
 					field : 'action',
 					title : '操作',
 					width : 350,

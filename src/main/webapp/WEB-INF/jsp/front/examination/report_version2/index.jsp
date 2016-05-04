@@ -104,13 +104,13 @@
                         $('#indicatorContainer').radialIndicator({
                             radius: 66, //圆的半径，默认50
                             barBgColor: '#0aace8', //刻度条的背景颜色,默认#eee
-                            barColor: {
+                            barColor:'${physicalExaminationMainReportFormMap.show_color}' /*{
                                 0: '#f00',
                                 60: '#ff7014',
                                 70: '#e6bb1b',
                                 80: '#489eeb',
                                 100: '#239811'
-                            }, //刻度条的颜色
+                            }*/, //刻度条的颜色
                             barWidth: 10, //刻度条的宽度，默认5
                             initValue: <fmt:formatNumber value="${physicalExaminationMainReportFormMap.check_total_score}" pattern="#0"/>, //圆形指示器初始化的值
                             roundCorner:false, //刻度条是否圆角
@@ -120,16 +120,14 @@
                 </div>
                 <div class="grade-3">
                     <div id="indicatorContainer1">
-                        <!--<span class="grade">总体评分</span>
-                        <span class="bim">BIM</span>-->
                     </div>
                     <script>
                         $('#indicatorContainer1').radialIndicator({
                             radius: 38, //圆的半径，默认50
                             barBgColor: '#0aace8', //刻度条的背景颜色,默认#eee
-                            barColor:'#0aace8', //刻度条的背景颜色,默认#eee
+                            barColor:'${bmiLeveConfigFormMap.show_color}', //刻度条的背景颜色,默认#eee
                             barWidth: 8, //刻度条的宽度，默认5
-                            initValue:${physicalExaminationRecordFormMap.weight/((physicalExaminationRecordFormMap.body_height/100)*(physicalExaminationRecordFormMap.body_height/100))}, //圆形指示器初始化的值
+                            initValue:${bmi},//${physicalExaminationRecordFormMap.weight/((physicalExaminationRecordFormMap.body_height/100)*(physicalExaminationRecordFormMap.body_height/100))}, //圆形指示器初始化的值
                             roundCorner:false, //刻度条是否圆角
                             percentage: false //显示百分数
                         });
@@ -140,7 +138,7 @@
                         <li>身高：<span>${physicalExaminationRecordFormMap.body_height}</span></li>
                         <li>体重：<span>${physicalExaminationRecordFormMap.weight}</span>KG</li>
                         <li style="color:#27930b;">标准体重：<span>${minWeight}-${maxWeight}</span>KG</li>
-                        <li style="color:#f00; font-size:16px;">${bmiLeveConfigFormMap.health_leve_name}</li>
+                        <li style="color:${bmiLeveConfigFormMap.show_color}; font-size:16px;">${bmiLeveConfigFormMap.health_leve_name}</li>
                     </ul>
                 </div>
 
