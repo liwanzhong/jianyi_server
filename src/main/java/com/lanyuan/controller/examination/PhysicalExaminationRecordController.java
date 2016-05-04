@@ -93,7 +93,9 @@ public class PhysicalExaminationRecordController extends BaseController {
 
         physicalExaminationRecordFormMap = physicalExaminationRecordFormMapList.get(0);
 
-        PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = physicalExaminationMainReportMapper.findbyFrist("examination_record_id",physicalExaminationRecordFormMap.getLong("id").toString(),PhysicalExaminationMainReportFormMap.class);
+        PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = getFormMap(PhysicalExaminationMainReportFormMap.class);
+        physicalExaminationMainReportFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
+         physicalExaminationMainReportFormMap = physicalExaminationMainReportMapper.findMainResultWithColor(physicalExaminationMainReportFormMap);
         model.addAttribute("physicalExaminationMainReportFormMap",physicalExaminationMainReportFormMap);
 
         PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
@@ -130,6 +132,7 @@ public class PhysicalExaminationRecordController extends BaseController {
         }
 
         model.addAttribute("bmiLeveConfigFormMap",bmiLeveConfigFormMap);
+        model.addAttribute("bmi",bmi);
 
 
         //todo 计算当前用户的标准体重范围

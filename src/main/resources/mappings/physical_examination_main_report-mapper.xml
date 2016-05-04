@@ -55,4 +55,22 @@
 		</if>
 	</select>
 
+
+
+	<select id="findMainResultWithColor" resultType="com.lanyuan.entity.PhysicalExaminationMainReportFormMap">
+SELECT
+  pemr.id,
+  pemr.examination_record_id,
+  pemr.with_flow,
+  pemr.check_total_score,
+  cpl.name,
+  cpl.pingfen_min,
+  cpl.pingfen_max,
+  cpl.show_color
+FROM physical_examination_main_report pemr
+  LEFT JOIN cf_pingfen_leve cpl
+    ON pemr.level = cpl.id
+WHERE pemr.examination_record_id = ${examination_record_id}
+	</select>
+
 </mapper>
