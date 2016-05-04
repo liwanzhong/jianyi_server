@@ -67,9 +67,6 @@
         </div>
         <!--details-->
         <div class="details">
-            <%--<p class="detaile-t">
-                ${physicalExaminationMainReportFormMap.with_flow}
-            </p>--%>
             <p class="detaile-t">健康特工007提醒您：您的身体总分<span> <fmt:formatNumber value="${physicalExaminationMainReportFormMap.check_total_score}" pattern="#0"/>分</span>，您的<span>健康状态处于${zongpingLeveDescConfigFormMap.leve_name}</span>！<img src=""${ctx}/front-static/report_version2/img/nanguo.png" alt=""></p>
             <p>${zongpingLeveDescConfigFormMap.leve_des}您身体的短板是（<span>${zuicha}</span>），同时需要注意的还有（<span>${cicha}</span>）。</p>
         </div>
@@ -164,13 +161,13 @@
                     $('#indicatorContainer2').radialIndicator({
                         radius: 30, //圆的半径，默认50
                         barBgColor: '#8df8f1', //刻度条的背景颜色,默认#eee
-                        barColor: {
+                        barColor:'${item.show_color}' /*{
                             0: '#f00',
                             60: '#ff7014',
                             70: '#e6bb1b',
                             80: '#489eeb',
                             100: '#239811'
-                        }, //刻度条的颜色
+                        }*/, //刻度条的颜色
                         barWidth: 7, //刻度条的宽度，默认5
                         initValue:  ${item.check_score}, //圆形指示器初始化的值
                         roundCorner:false, //刻度条是否圆角
