@@ -267,6 +267,9 @@ public class PhysicalExaminationRecordController extends BaseController {
             ex.printStackTrace();
         }
 
+        //todo 加载评分等级
+        List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList = cfPingfenLeveMapper.findByNames(getFormMap(CfPingfenLeveFormMap.class));
+        model.addAttribute("cfPingfenLeveFormMapList",cfPingfenLeveFormMapList);
 
         return Common.BACKGROUND_PATH + "/front/examination/report_version2/item";
     }

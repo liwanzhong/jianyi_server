@@ -12,6 +12,15 @@
 	<link type="text/css" rel="stylesheet" href="${ctx}/front-static/report_version2/css/index.css">
 	<script src="${ctx}/front-static/report_version2/js/jquery-1.12.1.min.js"></script>
 	<script src="${ctx}/front-static/report_version2/js/index.js"></script>
+	<script>
+		//初始化评分等级
+		pingfen ={
+			<c:forEach items="${cfPingfenLeveFormMapList}" var="item" varStatus="status">
+			'pingfen_${status.index+1}min': ${item.pingfen_min},
+			'pingfen_${status.index+1}max': ${item.pingfen_max},
+			</c:forEach>
+		};
+	</script>
 </head>
 
 <body>

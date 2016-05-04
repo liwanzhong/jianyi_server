@@ -1,7 +1,23 @@
 // JavaScript Document
 
+
+var pingfen ={
+	'pingfen_1min': 86,
+	'pingfen_1max': 100,
+	'pingfen_2min': 73.01,
+	'pingfen_2max': 85.99,
+	'pingfen_3min': 60,
+	'pingfen_3max': 73,
+	'pingfen_4min': 60,
+	'pingfen_4max': 60.99,
+	'pingfen_5min': 40,
+	'pingfen_5max': 59.99
+};
+
+
 $(function(e){
 	//柱状图
+
 	$('.column>ul').each(function(index, element) {
 		var liW = 100/$(element).children('li').length+'%';
 		$(element).children('li').css('width',liW);
@@ -14,19 +30,19 @@ $(function(e){
 		//分数上下移动
 		$('.column-score').eq(index).css('top',Top);
 		//颜色变化
-		if( score>=90 ){
+		if( score>=pingfen.pingfen_1min && score<pingfen.pingfen_1max ){
 			$('.column-score').eq(index).addClass('color-green');
 			$('.column-real').eq(index).addClass('column-real-green');
-		}else if( score>=80 && score<89.99){
+		}else if( score>=pingfen.pingfen_2min && score<pingfen.pingfen_2max ){
 			$('.column-score').eq(index).addClass('color-blue');
 			$('.column-real').eq(index).addClass('column-real-blue');
-		}else if( score>=70 && score<79.99){
+		}else if( score>=pingfen.pingfen_3min && score<pingfen.pingfen_3max ){
 			$('.column-score').eq(index).addClass('color-yellow');
 			$('.column-real').eq(index).addClass('column-real-yellow');
-		}else if( score>=60 && score<69.99){
+		}else if( score>=pingfen.pingfen_4min && score<pingfen.pingfen_4max ){
 			$('.column-score').eq(index).addClass('color-orange');
 			$('.column-real').eq(index).addClass('column-real-orange');
-		}else{
+		}else if( score>=pingfen.pingfen_5min && score<pingfen.pingfen_5max ){
 			$('.column-score').eq(index).addClass('color-red');
 			$('.column-real').eq(index).addClass('column-real-red');
 		}
@@ -37,15 +53,15 @@ $(function(e){
 	$('.shade-num span').each(function(index, element) {
 		var score = $(element).text();
 		//颜色变化
-		if( score>=90 ){
+		if( score>=pingfen.pingfen_1min && score<pingfen.pingfen_1max ){
 			$('.shade-num').eq(index).addClass('color-green');
-		}else if( score>=80 && score<89.99){
+		}else if( score>=pingfen.pingfen_2min && score<pingfen.pingfen_2max ){
 			$('.shade-num').eq(index).addClass('color-blue');
-		}else if( score>=70 && score<79.99){
+		}else if( score>=pingfen.pingfen_3min && score<pingfen.pingfen_3max ){
 			$('.shade-num').eq(index).addClass('color-yellow');
-		}else if( score>=60 && score<69.99){
+		}else if( score>=pingfen.pingfen_4min && score<pingfen.pingfen_4max ){
 			$('.shade-num').eq(index).addClass('color-orange');
-		}else{
+		}else if( score>=pingfen.pingfen_5min && score<pingfen.pingfen_5max ){
 			$('.shade-num').eq(index).addClass('color-red');
 		}
     });
@@ -54,30 +70,30 @@ $(function(e){
 	$('.vv span').each(function(index, element) {
 		var score = $(element).text();
 		//颜色变化
-		if( score>=90 ){
+		if( score>=pingfen.pingfen_1min && score<pingfen.pingfen_1max ){
 			$('.vv li').eq(index).addClass('bg-green');
-		}else if( score>=80 && score<89.99){
+		}else if( score>=pingfen.pingfen_2min && score<pingfen.pingfen_2max ){
 			$('.vv li').eq(index).addClass('bg-blue');
-		}else if( score>=70 && score<79.99){
+		}else if( score>=pingfen.pingfen_3min && score<pingfen.pingfen_3max ){
 			$('.vv li').eq(index).addClass('bg-yellow');
-		}else if( score>=60 && score<69.99){
+		}else if( score>=pingfen.pingfen_4min && score<pingfen.pingfen_4max ){
 			$('.vv li').eq(index).addClass('bg-orange');
-		}else{
+		}else if( score>=pingfen.pingfen_5min && score<pingfen.pingfen_5max ){
 			$('.vv li').eq(index).addClass('bg-red');
 		}
     });
 	$('.vvv span').each(function(index, element) {
 		var score = $(element).text();
 		//颜色变化
-		if( score>=90 ){
+		if( score>=pingfen.pingfen_1min && score<pingfen.pingfen_1max ){
 			$('.vvv li').eq(index).addClass('bg-green');
-		}else if( score>=80 && score<89.99){
+		}else if( score>=pingfen.pingfen_2min && score<pingfen.pingfen_2max ){
 			$('.vvv li').eq(index).addClass('bg-blue');
-		}else if( score>=70 && score<79.99){
+		}else if( score>=pingfen.pingfen_3min && score<pingfen.pingfen_3max ){
 			$('.vvv li').eq(index).addClass('bg-yellow');
-		}else if( score>=60 && score<69.99){
+		}else if( score>=pingfen.pingfen_4min && score<pingfen.pingfen_4max ){
 			$('.vvv li').eq(index).addClass('bg-orange');
-		}else{
+		}else if( score>=pingfen.pingfen_5min && score<pingfen.pingfen_5max ){
 			$('.vvv li').eq(index).addClass('bg-red');
 		}
     });
@@ -92,15 +108,15 @@ $(function(e){
 	$('.six span').each(function(index, element) {
 		var score = $(element).text();
 		//颜色变化
-		if( score>=90 ){
+		if( score>=pingfen.pingfen_1min && score<pingfen.pingfen_1max ){
 			$('.six li').eq(index).addClass('six-green').children('.six-color').addClass('color-green');
-		}else if( score>=80 && score<89.99){
+		}else if( score>=pingfen.pingfen_2min && score<pingfen.pingfen_2max ){
 			$('.six li').eq(index).addClass('six-blue').children('.six-color').addClass('color-blue');
-		}else if( score>=70 && score<79.99){
+		}else if( score>=pingfen.pingfen_3min && score<pingfen.pingfen_3max ){
 			$('.six li').eq(index).addClass('six-yellow').children('.six-color').addClass('color-yellow');
-		}else if( score>=60 && score<69.99){
+		}else if( score>=pingfen.pingfen_4min && score<pingfen.pingfen_4max ){
 			$('.six li').eq(index).addClass('six-orange').children('.six-color').addClass('color-orange');
-		}else{
+		}else if( score>=pingfen.pingfen_5min && score<pingfen.pingfen_5max ){
 			$('.six li').eq(index).addClass('six-red').children('.six-color').addClass('color-red');
 		}
     });
@@ -109,19 +125,19 @@ $(function(e){
 	$('.font-color span').each(function(index, element) {
 		var score = $(element).text();
 		//颜色变化
-		if( score>=90 ){
+		if( score>=pingfen.pingfen_1min && score<pingfen.pingfen_1max ){
 			$('.font-color').eq(index).addClass('color-green');
 			$('.tbody em').eq(index).addClass('bg-green');
-		}else if( score>=80 && score<89.99){
+		}else if( score>=pingfen.pingfen_2min && score<pingfen.pingfen_2max ){
 			$('.font-color').eq(index).addClass('color-blue');
 			$('.tbody em').eq(index).addClass('bg-blue');
-		}else if( score>=70 && score<79.99){
+		}else if( score>=pingfen.pingfen_3min && score<pingfen.pingfen_3max ){
 			$('.font-color').eq(index).addClass('color-yellow');
 			$('.tbody em').eq(index).addClass('bg-yellow');
-		}else if( score>=60 && score<69.99){
+		}else if( score>=pingfen.pingfen_4min && score<pingfen.pingfen_4max ){
 			$('.font-color').eq(index).addClass('color-orange');
 			$('.tbody em').eq(index).addClass('bg-orange');
-		}else{
+		}else if( score>=pingfen.pingfen_5min && score<pingfen.pingfen_5max ){
 			$('.font-color').eq(index).addClass('color-red');
 			$('.tbody em').eq(index).addClass('bg-red');
 		}
@@ -132,14 +148,14 @@ $(function(e){
 		var score = $(element).text();
 		//颜色变化
 		if( score>='75%' ){
-			$(this).addClass('circle-red');
+			$(element).addClass('circle-red');
 		}else if( score>='70%' && score<'74.99%'){
 			$(element).addClass('circle-orange');
 		}else if( score>='60%' && score<'69.99%'){
 			$(element).addClass('circle-yellow');
 		}else if( score>='55%' && score<'59.99%'){
 			$(element).addClass('circle-blue');
-		}else{
+		}else if( score>='0%' && score<'54.99%'){
 			$(element).addClass('circle-green');
 		}
     });
