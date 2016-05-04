@@ -62,7 +62,6 @@
             <span class="name">${physicalExaminationRecordFormMap.name}</span>
             <span class="sex">${physicalExaminationRecordFormMap.sex==1?"男":"女"}</span>
             <span class="birth">${physicalExaminationRecordFormMap.birthday}</span>
-            <%--todo 检测时间需要格式化--%>
             <span class="time">   <fmt:formatDate value="${physicalExaminationRecordFormMap.check_time}" pattern="yyyy-MM-dd"/>检测</span>
         </div>
         <!--details-->
@@ -104,13 +103,7 @@
                         $('#indicatorContainer').radialIndicator({
                             radius: 66, //圆的半径，默认50
                             barBgColor: '#0aace8', //刻度条的背景颜色,默认#eee
-                            barColor:'${physicalExaminationMainReportFormMap.show_color}' /*{
-                                0: '#f00',
-                                60: '#ff7014',
-                                70: '#e6bb1b',
-                                80: '#489eeb',
-                                100: '#239811'
-                            }*/, //刻度条的颜色
+                            barColor:'${physicalExaminationMainReportFormMap.show_color}', //刻度条的颜色
                             barWidth: 10, //刻度条的宽度，默认5
                             initValue: <fmt:formatNumber value="${physicalExaminationMainReportFormMap.check_total_score}" pattern="#0"/>, //圆形指示器初始化的值
                             roundCorner:false, //刻度条是否圆角
@@ -127,7 +120,7 @@
                             barBgColor: '#0aace8', //刻度条的背景颜色,默认#eee
                             barColor:'${bmiLeveConfigFormMap.show_color}', //刻度条的背景颜色,默认#eee
                             barWidth: 8, //刻度条的宽度，默认5
-                            initValue:${bmi},//${physicalExaminationRecordFormMap.weight/((physicalExaminationRecordFormMap.body_height/100)*(physicalExaminationRecordFormMap.body_height/100))}, //圆形指示器初始化的值
+                            initValue:${bmi},
                             roundCorner:false, //刻度条是否圆角
                             percentage: false //显示百分数
                         });
@@ -159,13 +152,7 @@
                     $('#indicatorContainer2').radialIndicator({
                         radius: 30, //圆的半径，默认50
                         barBgColor: '#8df8f1', //刻度条的背景颜色,默认#eee
-                        barColor:'${item.show_color}' /*{
-                            0: '#f00',
-                            60: '#ff7014',
-                            70: '#e6bb1b',
-                            80: '#489eeb',
-                            100: '#239811'
-                        }*/, //刻度条的颜色
+                        barColor:'${item.show_color}', //刻度条的颜色
                         barWidth: 7, //刻度条的宽度，默认5
                         initValue:  ${item.check_score}, //圆形指示器初始化的值
                         roundCorner:false, //刻度条是否圆角
