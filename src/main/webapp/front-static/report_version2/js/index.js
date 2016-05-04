@@ -2,6 +2,10 @@
 
 $(function(e){
 	//柱状图
+	$('.column>ul').each(function(index, element) {
+		var liW = 100/$(element).children('li').length+'%';
+		$(element).children('li').css('width',liW);
+    });
 	$('.column-score span').each(function(index, element) {
 		var score = $(element).text();
 		var Height = score+'%', Top = 105-score+'px';
@@ -62,6 +66,21 @@ $(function(e){
 			$('.vv li').eq(index).addClass('bg-red');
 		}
     });
+	$('.vvv span').each(function(index, element) {
+		var score = $(element).text();
+		//颜色变化
+		if( score>=90 ){
+			$('.vvv li').eq(index).addClass('bg-green');
+		}else if( score>=80 && score<89.99){
+			$('.vvv li').eq(index).addClass('bg-blue');
+		}else if( score>=70 && score<79.99){
+			$('.vvv li').eq(index).addClass('bg-yellow');
+		}else if( score>=60 && score<69.99){
+			$('.vvv li').eq(index).addClass('bg-orange');
+		}else{
+			$('.vvv li').eq(index).addClass('bg-red');
+		}
+    });
 	$('.ul-w').each(function(index, element) {
         var liNum = $(element).children('li').length;
 		var liWidth = $(element).children('li').width();
@@ -69,8 +88,6 @@ $(function(e){
 		
     });
         
-
-	
 	//六边形图表
 	$('.six span').each(function(index, element) {
 		var score = $(element).text();
