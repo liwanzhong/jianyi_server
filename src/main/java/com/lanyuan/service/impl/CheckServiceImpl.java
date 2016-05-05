@@ -243,9 +243,12 @@ public class CheckServiceImpl implements ICheckService {
 
                     BigDecimal B = new BigDecimal(100).subtract((A.subtract(n1).divide(M,3,BigDecimal.ROUND_HALF_UP))) ;
 
-                    //  B = 100-(A?-n1/M)    100-(102.076-102.001)/0.129
+                    //  B = 100-(A?-n1/M)
 
-                    //A ? = (100-B)*M+n1
+
+                    //   100-(102.076-102.001)/0.129
+
+                    //A  = (100-B)*M+n1
 
 
                     checkSmallItemResult.put("item_score",B);
