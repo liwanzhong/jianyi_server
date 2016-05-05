@@ -136,6 +136,70 @@
 					</ul>
 				</div>
 			</c:when>
+			<c:when test="${physicalExaminationBigResultFormMap.charts_item == 1}">
+				<!--柱形图-->
+				<div class="column">
+					<ul class="clearfix">
+						<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
+							<li>
+								<div class="column-score"><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分</div>
+								<div class="column-bg">
+									<div class="column-h">
+										<div class="column-real"></div>
+									</div>
+								</div>
+								<span>${item.name}</span>
+							</li>
+						</c:forEach>
+					</ul>
+				</div>
+			</c:when>
+			<c:when test="${physicalExaminationBigResultFormMap.charts_item == 5}">
+				<!--圆形图表-->
+				<div class="run">
+					<div class="container2">
+						<div class="dot2">骨骼系统</div>
+						<div class="run-score"><span>88</span>分</div>
+						<div class="run-w">脊椎功能</div>
+						<div class="run-score"><span>73</span>分</div>
+						<div class="run-w">脊椎功能</div>
+						<div class="run-score"><span>67</span>分</div>
+						<div class="run-w">脊椎功能</div>
+						<div class="run-score"><span>93</span>分</div>
+						<div class="run-w">脊椎功能</div>
+						<div class="run-score"><span>87</span>分</div>
+						<div class="run-w">脊椎功能</div>
+						<div class="run-score"><span>82</span>分</div>
+						<div class="run-w">脊椎功能</div>
+						<div class="run-score"><span>47</span>分</div>
+						<div class="run-w">脊椎功能</div>
+					</div>
+				</div>
+			</c:when>
+			<c:when test="${physicalExaminationBigResultFormMap.charts_item == 6}">
+				<!--圆形图表-->
+				<div class="flower">
+					<ul>
+						<li>
+							<div class="flo-score"><span>85.55</span>分</div>
+							<div class="flo-w">α细胞</div>
+						</li>
+						<li>
+							<div class="flo-score"><span>98</span>分</div>
+							<div class="flo-w">α细胞</div>
+						</li>
+						<li>
+							<div class="flo-score"><span>64</span>分</div>
+							<div class="flo-w">α细胞</div>
+						</li>
+						<li>
+							<div class="flo-score"><span>73.55</span>分</div>
+							<div class="flo-w">α细胞</div>
+						</li>
+					</ul>
+
+				</div>
+			</c:when>
 			<c:otherwise>
 				<!--柱形图-->
 				<div class="column">
@@ -155,10 +219,6 @@
 				</div>
 			</c:otherwise>
 		</c:choose>
-
-
-
-
 		<!--表格-->
 		<div class="table">
 			<div class="thead">

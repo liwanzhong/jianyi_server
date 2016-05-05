@@ -102,7 +102,7 @@
                     <script>
                         $('#indicatorContainer').radialIndicator({
                             radius: 66, //圆的半径，默认50
-                            barBgColor: '#0aace8', //刻度条的背景颜色,默认#eee
+                            barBgColor: '#8df8f1', //刻度条的背景颜色,默认#eee
                             barColor:'${physicalExaminationMainReportFormMap.show_color}', //刻度条的颜色
                             barWidth: 10, //刻度条的宽度，默认5
                             initValue: <fmt:formatNumber value="${physicalExaminationMainReportFormMap.check_total_score}" pattern="#0"/>, //圆形指示器初始化的值
@@ -117,7 +117,7 @@
                     <script>
                         $('#indicatorContainer1').radialIndicator({
                             radius: 38, //圆的半径，默认50
-                            barBgColor: '#0aace8', //刻度条的背景颜色,默认#eee
+                            barBgColor: '#8df8f1', //刻度条的背景颜色,默认#eee
                             barColor:'${bmiLeveConfigFormMap.show_color}', //刻度条的背景颜色,默认#eee
                             barWidth: 8, //刻度条的宽度，默认5
                             initValue:${bmi},

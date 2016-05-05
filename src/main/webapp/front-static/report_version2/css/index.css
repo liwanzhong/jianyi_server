@@ -19,10 +19,28 @@ transform:translate(-50%,-50%);}
 .header h1{ font-size:24px; color:#47b1d6; font-weight:700;}
 .s-btn{ font-size:12px; color:#fff; background-color: #269ec4; border-radius:5px;padding: 3px 16px;}
 
+/* ----------- main ----------- */
+.main-bottom{ height: auto; position:relative;text-align:center;margin-bottom: 30px;}
+.main-bottom span{ position:absolute;font-size:13px; font-weight:700; color:#108fd5;}
+
+.container{ width:100%; height: 600px; position:relative; margin:5px auto 0;}
+.dot{ width:100px; height:100px; position:absolute; left: 0; top: 0;}
+#indicatorContainer2{ position:relative;}
+#indicatorContainer2 canvas{ position:absolute;}
+
+/* ----------- footer ----------- */
+.footer{ font-size:12px; color:#343434;}
+.footer li{ float: left;}
+.footer-t{ padding:0 10px; }
+.footer-t li{line-height: 34px;}
+.footer-t li:last-of-type{ float: right;}
+.footer-b{height: 50px; line-height: 32px; padding:0 10px; border-top: 1px solid #2489a9;}
+.footer-b li:last-of-type{ float: right;}
+
 /* ----------- cell ----------- */
 .cell{padding:30px 16px 20px;}
 .cell>div{ float: left; }
-.cell .pic{ width: 11%; border:2px solid #f5c743; border-radius:50%;}
+.cell .pic{ width: 11%; border:2px solid #f5c743; border-radius:50%; margin-top:2%;}
 .cell .pic img{ border-radius:50%;}
 .cell .cell-msg{ width: 89%; padding-left:20px;}
 .cell .cell-msg li{ float: left; font-size:18px; font-weight:700; }
@@ -102,6 +120,31 @@ transform:translateX(-50%);}
 .six-orange{ background:url(../img/six-orange.png) no-repeat center top;}
 .six-red{ background:url(../img/six-red.png) no-repeat center top;}
 
+/* ----------- run ----------- */
+.run{ display:inline-block; width: 100%; height: 250px; margin:20px 0; background:url(../img/run.png) no-repeat center center; font-size:12px;}
+.container2{ width:100%; height:100%; position:relative;}
+.dot2{ width:80px; height:80px; line-height: 80px; position:absolute; left: 0; top: 0; font-size:18px; color:#343434; font-weight:700; text-align:center;}
+.run-score,.run-w{ position:absolute;}
+.run-score{ width: 52px; height: 52px; line-height: 52px; border-radius:50%; color:#fff; text-align:center; font-size:14px; }
+
+/* ----------- run ----------- */
+.flower{ width: 100%; height:220px; background:url(../img/flower_bg.png) no-repeat center center; font-size:14px; color:#343434; padding-top:13px; margin-bottom:30px;}
+.flower ul{ position:relative}
+
+.flower .flo-score{ position:absolute; border-radius:50%; font-size:14px; color:#fff;text-align:center;}
+.flower li:nth-of-type(1) .flo-score{ width: 104px; height: 104px; line-height: 104px; left: 235px; top: 0;}
+.flower li:nth-of-type(2) .flo-score{ width: 90px; height: 90px; line-height: 90px; left: 359px; top: 17px; }
+.flower li:nth-of-type(3) .flo-score{ width: 54px; height: 54px; line-height: 54px; left: 291px;
+ top: 121px; }
+.flower li:nth-of-type(4) .flo-score{ width: 72px; height: 72px; line-height: 72px; left: 358px;
+ top: 122px;}
+
+.flower .flo-w{ position:absolute;}
+.flower li:nth-of-type(1) .flo-w{left:175px; top:35px;}
+.flower li:nth-of-type(2) .flo-w{right:176px; top:35px; }
+.flower li:nth-of-type(3) .flo-w{left: 240px; top:140px; }
+.flower li:nth-of-type(4) .flo-w{right:200px; top:140px;}
+
 /* ----------- table ----------- */
 .table{ margin-top:20px;}
 .table .thead{ width: 100%; height:32px; background-color: #47b1d6; margin-bottom:4px; }
@@ -135,33 +178,36 @@ transform:translateY(-50%);}
 .bg-red{ background-color:#fa0000;}
 
 /* ----------- 风险评估 ----------- */
-.disease{ width: 100%; height: 513px; margin:80px 0; padding-top:66px; background:url(../img/disease-bg.png) no-repeat center center;}
+.disease{ width: 100%; height: 513px; margin: 80px 0 120px; padding-top:66px; background:url(../img/disease-bg.png) no-repeat center center;}
 .disease li{ float: left; min-width:51px; color:#fff; font-size:12px; text-align:center; margin-right:8px;}
 .disease .ul-Width{ margin:0 auto;}
-.disease>div{ position:relative;}
+.disease>div{ position:relative; padding-top:20px; }
 
-.disease-red:after,.disease-orange:after,.disease-yellow:after,.disease-blue:after,.disease-green:after{ position:absolute; right: 0; top: 0; font-size:16px;}
+.disease-red:after,.disease-orange:after,.disease-yellow:after,.disease-blue:after,.disease-green:after{ position:absolute; right: 0; top: 0; font-size:16px; visibility: inherit;}
 
-.disease-red{ height:108px; padding-top:20px; border-top: 1px solid #fa0000;}
+.disease-red{ height:108px;border-top: 1px solid #fa0000;}
 .disease-red:after{ content:'高风险'; color:#fa0000;}
 
-.disease-orange{ padding-top:16px;height:109px; border-top: 1px solid #f67510;}
+.disease-orange{ height:109px;border-top: 1px solid #f67510;}
 .disease-orange:after{ content:'中风险'; color:#f67510;}
 
 .disease-yellow{ height:103px; border-top: 1px solid #f1b61b; padding-top:12px;}
-.disease-orange:after{ content:'低风险'; color:#f1b61b;}
+.disease-yellow:after{ content:'低风险'; color:#f1b61b;}
 
-.disease-blue{ border-top: 1px solid #469fee;}
-.disease-blue:after{ content:'基本风险'; color:#469fee;}
+.disease-blue{ height:98px; border-top: 1px solid #469fee;}
+.disease-blue:after{ content:'基本无风险'; color:#469fee;}
 
-.disease-green{ height: 60px; padding-top:8px; border-top: 1px solid #249214;}
+.disease-green{ height:90px; padding-top:8px; border-top: 1px solid #249214;}
 .disease-green:after{ content:'无风险'; color:#249214;}
 
-.disease-per{ width:100%;height: 51px; line-height: 49px; }
+.disease-per{ width:100%; height: 51px; line-height: 49px; }
 .disease-name{ font-size:12px; color:#343434;}
 
-.ul-Width { max-width:720px;}
+.ul-left{ float: left;}
+.ul-right{ float: right;}
+/*.ul-Width { max-width:720px;}*/
 .ul-Width li:last-of-type{ margin-right:0;}
+
 
 .circle-green{ background:url(../img/circle-green.png) no-repeat center center;}
 .circle-blue{ background:url(../img/circle-blue.png) no-repeat center center;}
@@ -198,23 +244,5 @@ transform:translateY(-50%);}
 .grade-4{ position: absolute; right:78px; bottom:4px;}
 .grade-4 li{ line-height:20px; font-size:14px; color:#343434; }
 
-/* ----------- main ----------- */
-.main-bottom{ height: auto; position:relative;text-align:center;margin-bottom: 30px;}
-.main-bottom span{ position:absolute;font-size:13px; font-weight:700; color:#108fd5;}
-
-.container{ width:100%; height: 600px; position:relative; margin:45px auto 0;}
-.dot{ width:100px; height:100px; position:absolute; left: 0; top: 0;}
-#indicatorContainer2{ position:relative;}
-#indicatorContainer2 canvas{ position:absolute;}
-
-
-/* ----------- footer ----------- */
-.footer{ font-size:12px; color:#343434;}
-.footer li{ float: left;}
-.footer-t{ padding:0 10px; }
-.footer-t li{line-height: 34px;}
-.footer-t li:last-of-type{ float: right;}
-.footer-b{height: 50px; line-height: 32px; padding:0 10px; border-top: 1px solid #2489a9;}
-.footer-b li:last-of-type{ float: right;}
 
 
