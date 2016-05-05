@@ -16,8 +16,8 @@
 		//初始化评分等级
 		pingfen ={
 			<c:forEach items="${cfPingfenLeveFormMapList}" var="item" varStatus="status">
-			'pingfen_${status.index+1}min': ${item.pingfen_min},
-			'pingfen_${status.index+1}max': ${item.pingfen_max},
+			'pingfen_${item.id}min': ${item.pingfen_min},
+			'pingfen_${item.id}max': ${item.pingfen_max},
 			</c:forEach>
 		};
 	</script>
