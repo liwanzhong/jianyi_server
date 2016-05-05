@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!doctype html>
 <html>
@@ -35,13 +36,26 @@
         <c:forEach items="${sickLeveCountMap}" var="entry">
             <c:choose>
                 <c:when test="${entry.key ==10 }">
+                    <c:set var="mid" value="${fn:length(entry.value)/2+1}"></c:set>
                     <div class="disease-red">
-                        <ul class="ul-Width clearfix">
-                            <c:forEach items="${entry.value}" var="item">
-                                <li>
-                                    <div class="disease-per disease-per-red">${item.total_rout}%</div>
-                                    <div class="disease-name disease-name-b">${item.name}</div>
-                                </li>
+                        <ul class="ul-Width ul-left clearfix">
+                            <c:forEach items="${entry.value}" var="item" varStatus="status">
+                                <c:if test="${status.index+1<=mid}">
+                                    <li>
+                                        <div class="disease-per disease-per-red"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-name disease-name-b">${item.name}</div>
+                                    </li>
+                                </c:if>
+                            </c:forEach>
+                        </ul>
+                        <ul class="ul-Width ul-right clearfix">
+                            <c:forEach items="${entry.value}" var="item" varStatus="status">
+                                <c:if test="${status.index+1>mid}">
+                                    <li>
+                                        <div class="disease-per disease-per-red"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-name disease-name-b">${item.name}</div>
+                                    </li>
+                                </c:if>
                             </c:forEach>
                         </ul>
                     </div>
@@ -52,32 +66,56 @@
         <c:forEach items="${sickLeveCountMap}" var="entry">
             <c:choose>
                 <c:when test="${entry.key ==9 }">
-
+                    <c:set var="mid" value="${fn:length(entry.value)/2+1}"></c:set>
                     <div class="disease-orange">
-                        <ul class="ul-Width clearfix">
-                            <c:forEach items="${entry.value}" var="item">
-                                <li>
-                                    <div class="disease-per disease-per-yellow">${item.total_rout}%</div>
-                                    <div class="disease-name disease-name-b">${item.name}</div>
-                                </li>
+                        <ul class="ul-Width ul-left clearfix">
+                            <c:forEach items="${entry.value}" var="item" varStatus="status">
+                                <c:if test="${status.index+1<=mid}">
+                                    <li>
+                                        <div class="disease-per disease-per-yellow"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-name disease-name-b">${item.name}</div>
+                                    </li>
+                                </c:if>
+                            </c:forEach>
+                        </ul>
+                        <ul class="ul-Width ul-right clearfix">
+                            <c:forEach items="${entry.value}" var="item" varStatus="status">
+                                <c:if test="${status.index+1>mid}">
+                                    <li>
+                                        <div class="disease-per disease-per-yellow"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-name disease-name-b">${item.name}</div>
+                                    </li>
+                                </c:if>
+
                             </c:forEach>
                         </ul>
                     </div>
                 </c:when>
             </c:choose>
         </c:forEach>
-
-
         <c:forEach items="${sickLeveCountMap}" var="entry">
             <c:choose>
                 <c:when test="${entry.key ==8 }">
+                    <c:set var="mid" value="${fn:length(entry.value)/2+1}"></c:set>
                     <div class="disease-yellow">
-                        <ul class="ul-Width clearfix">
-                            <c:forEach items="${entry.value}" var="item">
-                                <li>
-                                    <div class="disease-per disease-per-yellow">${item.total_rout}%</div>
-                                    <div class="disease-name disease-name-b">${item.name}</div>
-                                </li>
+                        <ul class="ul-Width ul-left clearfix">
+                            <c:forEach items="${entry.value}" var="item" varStatus="status">
+                                <c:if test="${status.index+1<=mid}">
+                                    <li>
+                                        <div class="disease-per disease-per-yellow"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-name disease-name-b">${item.name}</div>
+                                    </li>
+                                </c:if>
+                            </c:forEach>
+                        </ul>
+                        <ul class="ul-Width ul-right clearfix">
+                            <c:forEach items="${entry.value}" var="item" varStatus="status">
+                                <c:if test="${status.index+1>mid}">
+                                    <li>
+                                        <div class="disease-per disease-per-yellow"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-name disease-name-b">${item.name}</div>
+                                    </li>
+                                </c:if>
                             </c:forEach>
                         </ul>
                     </div>
@@ -88,13 +126,26 @@
         <c:forEach items="${sickLeveCountMap}" var="entry">
             <c:choose>
                 <c:when test="${entry.key ==7 }">
+                    <c:set var="mid" value="${fn:length(entry.value)/2+1}"></c:set>
                     <div class="disease-blue">
-                        <ul class="ul-Width clearfix">
-                            <c:forEach items="${entry.value}" var="item">
-                                <li>
-                                    <div class="disease-per disease-per-blue">${item.total_rout}%</div>
-                                    <div class="disease-name disease-name-b">${item.name}</div>
-                                </li>
+                        <ul class="ul-Width ul-left clearfix">
+                            <c:forEach items="${entry.value}" var="item" varStatus="status">
+                                <c:if test="${status.index+1<=mid}">
+                                    <li>
+                                        <div class="disease-per disease-per-blue"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-name disease-name-b">${item.name}</div>
+                                    </li>
+                                </c:if>
+                            </c:forEach>
+                        </ul>
+                        <ul class="ul-Width ul-right clearfix">
+                            <c:forEach items="${entry.value}" var="item" varStatus="status">
+                                <c:if test="${status.index+1>mid}">
+                                    <li>
+                                        <div class="disease-per disease-per-blue"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-name disease-name-b">${item.name}</div>
+                                    </li>
+                                </c:if>
                             </c:forEach>
                         </ul>
                     </div>
@@ -105,49 +156,32 @@
         <c:forEach items="${sickLeveCountMap}" var="entry">
             <c:choose>
                 <c:when test="${entry.key ==6 }">
+                    <c:set var="mid" value="${fn:length(entry.value)/2+1}"></c:set>
                     <div class="disease-green">
-                        <ul class="ul-Width clearfix">
-                            <c:forEach items="${entry.value}" var="item">
-                                <li>
-                                    <div class="disease-per disease-per-blue">${item.total_rout}%</div>
-                                    <div class="disease-name disease-name-b">${item.name}</div>
-                                </li>
+                        <ul class="ul-Width ul-left clearfix">
+                            <c:forEach items="${entry.value}" var="item" varStatus="status">
+                                <c:if test="${status.index+1<=mid}">
+                                    <li>
+                                        <div class="disease-per disease-per-blue"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-name disease-name-b">${item.name}</div>
+                                    </li>
+                                </c:if>
+                            </c:forEach>
+                        </ul>
+                        <ul class="ul-Width ul-right clearfix">
+                            <c:forEach items="${entry.value}" var="item" varStatus="status">
+                                <c:if test="${status.index+1>mid}">
+                                    <li>
+                                        <div class="disease-per disease-per-blue"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-name disease-name-b">${item.name}</div>
+                                    </li>
+                                </c:if>
                             </c:forEach>
                         </ul>
                     </div>
                 </c:when>
             </c:choose>
         </c:forEach>
-
-
-
-        <%--<div class="disease-yellow">
-            <ul class="ul-Width clearfix">
-                <li></li>
-            </ul>
-        </div>--%>
-        <%--<div class="disease-blue">
-            <ul class="ul-Width clearfix">
-                <li>
-                    <div class="disease-per disease-per-blue">55%</div>
-                    <div class="disease-name disease-name-b">免疫失衡</div>
-                </li>
-                <li>
-                    <div class="disease-per disease-per-blue">56%</div>
-                    <div class="disease-name disease-name-b">泌尿障碍</div>
-                </li>
-                <li>
-                    <div class="disease-per disease-per-blue">58%</div>
-                    <div class="disease-name disease-name-b">肝胆障碍</div>
-                </li>
-            </ul>
-        </div>--%>
-        <%--<div class="disease-green">
-            <ul class="ul-Width clearfix">
-                <li></li>
-            </ul>
-        </div>--%>
-
     </div>
 
     <!--底部-->

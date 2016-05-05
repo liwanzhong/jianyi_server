@@ -178,10 +178,10 @@ transform:translateY(-50%);}
 .bg-red{ background-color:#fa0000;}
 
 /* ----------- 风险评估 ----------- */
-.disease{ width: 100%; height: 513px; margin: 80px 0 120px; padding-top:66px; background:url(../img/disease-bg.png) no-repeat center center;}
+.disease{ width: 100%; height: 572px; margin: 80px 0 100px; padding-top:66px; background:url(../img/disease-bg.png) no-repeat center center;}
 .disease li{ float: left; min-width:51px; color:#fff; font-size:12px; text-align:center; margin-right:8px;}
 .disease .ul-Width{ margin:0 auto;}
-.disease>div{ position:relative; padding-top:20px; }
+.disease>div{ position:relative; padding-top:22px; }
 
 .disease-red:after,.disease-orange:after,.disease-yellow:after,.disease-blue:after,.disease-green:after{ position:absolute; right: 0; top: 0; font-size:16px; visibility: inherit;}
 
@@ -194,10 +194,10 @@ transform:translateY(-50%);}
 .disease-yellow{ height:103px; border-top: 1px solid #f1b61b; padding-top:12px;}
 .disease-yellow:after{ content:'低风险'; color:#f1b61b;}
 
-.disease-blue{ height:98px; border-top: 1px solid #469fee;}
+.disease-blue{ height:102px; border-top: 1px solid #469fee;}
 .disease-blue:after{ content:'基本无风险'; color:#469fee;}
 
-.disease-green{ height:90px; padding-top:8px; border-top: 1px solid #249214;}
+.disease-green{ height:100px; padding-top:8px; border-top: 1px solid #249214;}
 .disease-green:after{ content:'无风险'; color:#249214;}
 
 .disease-per{ width:100%; height: 51px; line-height: 49px; }
