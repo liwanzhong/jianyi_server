@@ -66,8 +66,8 @@
         </div>
         <!--details-->
         <div class="details">
-            <p class="detaile-t">健康特工007提醒您：您的身体总分<span> <fmt:formatNumber value="${physicalExaminationMainReportFormMap.check_total_score}" pattern="#0"/>分</span>，您的<span>健康状态处于${zongpingLeveDescConfigFormMap.leve_name}</span>！<img src=""${ctx}/front-static/report_version2/img/nanguo.png" alt=""></p>
-            <p>${zongpingLeveDescConfigFormMap.leve_des}您身体的短板是（<span>${zuicha}</span>），同时需要注意的还有（<span>${cicha}</span>）。</p>
+            <p class="detaile-t">健康特工007提醒您：您的身体总分<span> <fmt:formatNumber value="${physicalExaminationMainReportFormMap.check_total_score}" pattern="#0"/>分</span>，您的<span>健康状态处于${zongpingLeveDescConfigFormMap.leve_name}</span>！<img src=""${ctx}/front-static/report_version2/img/nanguo.png"></p>
+            <p>您身体的短板是（<span>${zuicha}</span>），同时需要注意的还有（<span>${cicha}</span>）。${zongpingLeveDescConfigFormMap.leve_des}</p>
         </div>
         <!--main-->
         <div class="body-bg">

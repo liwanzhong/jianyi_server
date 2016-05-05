@@ -60,7 +60,7 @@
 		<div class="cell-msg">
 			<ul class="clearfix">
 				<li class="cell-name">${physicalExaminationBigResultFormMap.name}</li>
-				<li class="cell-score"> <fmt:formatNumber value="${physicalExaminationBigResultFormMap.check_score}" pattern="#0.00"/>分</li>
+				<li class="cell-score" style="color: ${physicalExaminationBigResultFormMap.show_color}"> <fmt:formatNumber value="${physicalExaminationBigResultFormMap.check_score}" pattern="#0.00"/>分</li>
 				<li class="cell-color">
 					<c:forEach items="${leveCountGroupBy}" var="entry">
 						<c:choose>
