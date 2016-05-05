@@ -66,7 +66,8 @@ SELECT
   cpl.name,
   cpl.pingfen_min,
   cpl.pingfen_max,
-  cpl.show_color
+  cpl.show_color,
+  cpl.id as leve_id
 FROM physical_examination_main_report pemr
   LEFT JOIN cf_pingfen_leve cpl
     ON pemr.level = cpl.id

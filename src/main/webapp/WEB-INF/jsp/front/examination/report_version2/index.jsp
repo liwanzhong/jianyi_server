@@ -66,7 +66,25 @@
         </div>
         <!--details-->
         <div class="details">
-            <p class="detaile-t">健康特工007提醒您：您的身体总分<span> <fmt:formatNumber value="${physicalExaminationMainReportFormMap.check_total_score}" pattern="#0"/>分</span>，您的<span>健康状态处于${zongpingLeveDescConfigFormMap.leve_name}</span>！<img src=""${ctx}/front-static/report_version2/img/nanguo.png"></p>
+            <p class="detaile-t">健康特工007提醒您：您的身体总分<span> <fmt:formatNumber value="${physicalExaminationMainReportFormMap.check_total_score}" pattern="#0"/>分</span>，您的<span>健康状态处于${zongpingLeveDescConfigFormMap.leve_name}</span>！
+            <c:choose>
+                <c:when test="${physicalExaminationMainReportFormMap.leve_id==1}">
+                    <img src="${ctx}/front-static/report_version2/img/smile.png">
+                </c:when>
+                <c:when test="${physicalExaminationMainReportFormMap.leve_id==2}">
+                    <img src="${ctx}/front-static/report_version2/img/sad.png">
+                </c:when>
+                <c:when test="${physicalExaminationMainReportFormMap.leve_id==3}">
+                    <img src="${ctx}/front-static/report_version2/img/nanguo.png">
+                </c:when>
+                <c:when test="${physicalExaminationMainReportFormMap.leve_id==4}">
+                    <img src="${ctx}/front-static/report_version2/img/cry.png">
+                </c:when>
+                <c:when test="${physicalExaminationMainReportFormMap.leve_id==5}">
+                    <img src="${ctx}/front-static/report_version2/img/cry.png">
+                </c:when>
+            </c:choose>
+            </p>
             <p>您身体的短板是（<span>${zuicha}</span>），同时需要注意的还有（<span>${cicha}</span>）。${zongpingLeveDescConfigFormMap.leve_des}</p>
         </div>
         <!--main-->
