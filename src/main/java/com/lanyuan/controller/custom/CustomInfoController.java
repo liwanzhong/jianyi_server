@@ -108,6 +108,12 @@ public class CustomInfoController extends BaseController {
 		return Common.BACKGROUND_PATH + "/front/custom/add";
 	}
 
+	@RequestMapping("front_edit")
+	public String front_edit(Model model,@RequestParam(value = "id",required = true) String id) throws Exception {
+		model.addAttribute("customInfoFormMap", customInfoMapper.findbyFrist("id", id, CustomInfoFormMap.class));
+		return Common.BACKGROUND_PATH + "/front/custom/edit";
+	}
+
 
 
 

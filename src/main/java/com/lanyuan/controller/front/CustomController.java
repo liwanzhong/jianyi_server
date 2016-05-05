@@ -204,6 +204,15 @@ public class CustomController extends BaseController {
 		return Common.BACKGROUND_PATH + "/custom/info/edit";
 	}
 
+	@RequestMapping("front_edit")
+	public String front_edit(Model model) throws Exception {
+		String id = getPara("id");
+		if(Common.isNotEmpty(id)){
+			model.addAttribute("enterprise", customInfoMapper.findbyFrist("id", id, CustomInfoFormMap.class));
+		}
+		return Common.BACKGROUND_PATH + "/front/custom/edit";
+	}
+
 	@ResponseBody
 	@RequestMapping("editEntity")
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解

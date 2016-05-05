@@ -25,7 +25,7 @@ $(function() {
 			colkey : "bmi",
 			name : "BMI",
 			renderData : function(rowindex,data, rowdata, column) {
-				return (rowdata.body_height/rowdata.weight).toFixed(3);
+				return (rowdata.weight/((rowdata.body_height/100)*(rowdata.body_height/100))).toFixed(1);
 			}
 		}, {
 			colkey : "insert_time",
@@ -47,7 +47,8 @@ $(function() {
 		}, {
 			name : "操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				return "<a href='javascript:void(genTestData("+rowdata.id+","+rowdata.id+"))'>生成检测数据</a>&nbsp;&nbsp;&nbsp;<a href='#'>编辑</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem("+rowdata.belongToId+"));'>删除</a>";
+				//return "<a href='javascript:void(genTestData("+rowdata.id+","+rowdata.id+"))'>生成检测数据</a>&nbsp;&nbsp;&nbsp;<a href='"+rootPath+"/custom/info/front_edit.shtml?id="+rowdata.id+"'>编辑</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem("+rowdata.belongToId+"));'>删除</a>";
+				return "<a href='"+rootPath+"/custom/info/front_edit.shtml?id="+rowdata.id+"'>编辑</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem("+rowdata.belongToId+"));'>删除</a>";
 			}
 		} ],
 		jsonUrl : rootPath + '/custom/info/findByPage.shtml',
