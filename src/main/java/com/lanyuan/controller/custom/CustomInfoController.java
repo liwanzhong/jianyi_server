@@ -154,6 +154,7 @@ public class CustomInfoController extends BaseController {
 				throw  new Exception("用户未登陆!");
 			}
 
+
 			CustomInfoFormMap customInfoFormMap = getFormMap(CustomInfoFormMap.class);
 			customInfoFormMap.put("insert_time",dateFormat.format(new Date()));
 			customInfoFormMap.put("update_time",dateFormat.format(new Date()));
@@ -162,6 +163,12 @@ public class CustomInfoController extends BaseController {
 
 			boolean isNewCustom =false;
 			if(StringUtils.isBlank(customInfoFormMap.get("id")==null?null:customInfoFormMap.get("id").toString())){
+				//todo 检测用户身份证
+				CustomInfoFormMap customInfoFormMapCheck  = customInfoMapper.findbyFrist("idcard",customInfoFormMap.get("idcard").toString(),CustomInfoFormMap.class);
+				if(customInfoFormMapCheck != null){
+					throw new Exception("系统中已经存在相同身份证的用户!");
+				}
+
 				customInfoMapper.addEntity(customInfoFormMap);
 				isNewCustom = true;
 			}else{
