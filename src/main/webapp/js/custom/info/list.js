@@ -19,8 +19,29 @@ $(function() {
 				return data==1?'男':'女';
 			}
 		}, {
+			colkey : "idcard",
+			name : "身份证"
+		}, {
 			colkey : "mobile",
 			name : "会员手机"
+		}, {
+			colkey : "birthday",
+			name : "生日",
+			renderData : function(rowindex,data, rowdata, column) {
+				return data;
+			}
+		}, {
+			colkey : "body_height",
+			name : "身高",
+			renderData : function(rowindex,data, rowdata, column) {
+				return data+"cm";
+			}
+		}, {
+			colkey : "weight",
+			name : "体重",
+			renderData : function(rowindex,data, rowdata, column) {
+				return data+"kg";
+			}
 		}, {
 			colkey : "bmi",
 			name : "BMI",

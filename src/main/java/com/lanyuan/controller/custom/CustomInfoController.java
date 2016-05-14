@@ -183,13 +183,16 @@ public class CustomInfoController extends BaseController {
 			}
 			String [] cutItemsArray =  request.getParameterValues("cut_item");
 			List<CustomCutItemFormMap> customCutItemFormMapList = new ArrayList<CustomCutItemFormMap>();
-			for(String item:cutItemsArray){
-				CustomCutItemFormMap customCutItemFormMap = getFormMap(CustomCutItemFormMap.class);
-				customCutItemFormMap.put("cut_item_id",item);
-				customCutItemFormMap.put("custom_id",customInfoFormMap.get("id").toString());
+			if(cutItemsArray!=null && cutItemsArray.length>0){
+				for(String item:cutItemsArray){
+					CustomCutItemFormMap customCutItemFormMap = getFormMap(CustomCutItemFormMap.class);
+					customCutItemFormMap.put("cut_item_id",item);
+					customCutItemFormMap.put("custom_id",customInfoFormMap.get("id").toString());
 
-				customCutItemFormMapList.add(customCutItemFormMap);
+					customCutItemFormMapList.add(customCutItemFormMap);
+				}
 			}
+
 
 			if(CollectionUtils.isNotEmpty(customCutItemFormMapList)){
 				customCutItemMapper.batchSave(customCutItemFormMapList);
