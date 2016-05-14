@@ -16,4 +16,6 @@ public interface ResourcesMapper extends BaseMapper {
 
 
 	List<ResFormMap> findResByRole(String id)throws Exception;
+
+	List<ResFormMap> findResByUserID(ResFormMap resFormMap)throws Exception;
 }

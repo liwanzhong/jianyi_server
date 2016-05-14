@@ -102,4 +102,30 @@
 		insert into ly_res_roles (role_id,resc_id) value (#{roleId},#{resId})
 	</insert>
 
+
+	<select id="findResByUserID"   resultType="com.lanyuan.entity.ResFormMap">
+SELECT
+  lr.id,
+  lr.name,
+  lr.parentId,
+  lr.resKey,
+  lr.type,
+  lr.resUrl,
+  lr.level,
+  lr.icon,
+  lr.ishide,
+  lr.description
+FROM ly_role_resource lrr
+  LEFT JOIN ly_resources lr
+    ON lrr.resource_id = lr.id
+WHERE lrr.role_id IN (SELECT
+    lur.roleId
+  FROM ly_user_role lur
+  WHERE lur.userId = ${userid})
+   <if test="type!=null">
+	   and lr.type=${type}
+   </if>
+
+	</select>
+
 </mapper>

@@ -13,10 +13,11 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.lanyuan.entity.UserEntrelationFormMap;
-import com.lanyuan.mapper.UserEntrelationMapper;
+import com.lanyuan.entity.*;
+import com.lanyuan.mapper.*;
 import com.lanyuan.util.CommonConstants;
 import com.lanyuan.util.constant.GlobalConstant;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -35,11 +36,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.lanyuan.entity.ResFormMap;
-import com.lanyuan.entity.UserFormMap;
-import com.lanyuan.entity.UserLoginFormMap;
-import com.lanyuan.mapper.ResourcesMapper;
-import com.lanyuan.mapper.UserLoginMapper;
 import com.lanyuan.util.Common;
 import com.lanyuan.util.TreeObject;
 import com.lanyuan.util.TreeUtil;
@@ -64,8 +60,6 @@ public class BackgroundController extends BaseController {
 	private UserLoginMapper userLoginMapper;
 
 
-	@Inject
-	private UserEntrelationMapper userEntrelationMapper;
 	
 	/**
 	 * @return
@@ -113,16 +107,17 @@ public class BackgroundController extends BaseController {
 			userLogin.put("loginIP", session.getHost());
 			userLoginMapper.addEntity(userLogin);
 
-			// 查询用户所属企业和门店，记录到session中
 
-			/*UserEntrelationFormMap userEntrelationFormMap=userEntrelationMapper.findbyFrist("user_id",session.getAttribute("userSessionId").toString(),UserEntrelationFormMap.class);
-			if(userEntrelationFormMap!=null){
-				session.setAttribute(CommonConstants.ENERPRISE_RELATION_INSESSION,userEntrelationFormMap);
-			}*/
 			UserFormMap userFormMap = (UserFormMap)Common.findUserSession(request);
-			ResFormMap resFormMap = new ResFormMap();
-			resFormMap.put("userId", userFormMap.get("id"));
-			List<ResFormMap> mps = resourcesMapper.findRes(resFormMap);
+			if(userFormMap.getInt("user_type")==null || (userFormMap.getInt("user_type")!=null && userFormMap.getInt("user_type")==1)){
+				user.logout();
+				throw new Exception("非法登录！");
+			}
+
+			ResFormMap resFormMap = getFormMap(ResFormMap.class);
+			resFormMap.put("userid",userFormMap.getInt("id"));
+			resFormMap.put("type",1);
+			List<ResFormMap> mps = resourcesMapper.findResByUserID(resFormMap);
 			List<String> list = new ArrayList<String>();
 			for (ResFormMap map : mps) {
 				String resourUrl = map.get("resUrl").toString();

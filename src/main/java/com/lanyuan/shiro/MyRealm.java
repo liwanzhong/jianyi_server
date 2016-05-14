@@ -46,7 +46,16 @@ public class MyRealm extends AuthorizingRealm {
 		String loginName = SecurityUtils.getSubject().getPrincipal().toString();
 		if (loginName != null) {
 			String userId = SecurityUtils.getSubject().getSession().getAttribute("userSessionId").toString();
-			List<ResFormMap> rs = resourcesMapper.findUserResourcess(userId);
+			ResFormMap resFormMap = new ResFormMap();
+			resFormMap.put("userid",userId);
+			resFormMap.put("type",1);
+			List<ResFormMap> rs =null;
+			try{
+				rs = resourcesMapper.findResByUserID(resFormMap);
+			}catch (Exception ex){
+				ex.printStackTrace();
+			}
+
 			// 权限信息对象info,用来存放查出的用户的所有的角色（role）及权限（permission）
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 			// 用户的角色集合

@@ -3,9 +3,11 @@ package com.lanyuan.controller.system;
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.ResFormMap;
+import com.lanyuan.entity.UserFormMap;
 import com.lanyuan.mapper.ResourcesMapper;
 import com.lanyuan.util.Common;
 import com.lanyuan.vo.Tree;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
-import java.text.SimpleDateFormat;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +34,7 @@ public class ResourcesController extends BaseController {
 	@Inject
 	private ResourcesMapper resourcesMapper;
 
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 
 
 	@RequestMapping("list")
@@ -58,36 +60,44 @@ public class ResourcesController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("tree")
-	public List<Tree> treelists(Model model) {
+	public List<Tree> treelists(Model model, HttpServletRequest request) {
 		List<Tree> list = new ArrayList<Tree>();
 		try{
+			UserFormMap userFormMap = (UserFormMap)Common.findUserSession(request);
+
 			ResFormMap resFormMap = getFormMap(ResFormMap.class);
-			String order = " order by level asc";
-			resFormMap.put("$orderby", order);
-			List<ResFormMap> mps = resourcesMapper.findByNames(resFormMap);
+			resFormMap.put("userid",userFormMap.getInt("id"));
+			List<ResFormMap> mps = resourcesMapper.findResByUserID(resFormMap);
 
-			for (ResFormMap map : mps) {
-				if(!StringUtils.equalsIgnoreCase(map.get("type").toString(),"2")){
-					Tree tree = new Tree();
-					tree.setId(map.get("id").toString());
-					if (map.get("parentId") != null && !StringUtils.equalsIgnoreCase(map.get("parentId").toString(),"0")) {
-						tree.setPid(map.get("parentId").toString());
-					} else {
-						tree.setState("closed");
+			if(CollectionUtils.isNotEmpty(mps)){
+				for (ResFormMap map:mps) {
+					if(map!=null){
+						if(StringUtils.equalsIgnoreCase(map.getStr("type"),"0")||StringUtils.equalsIgnoreCase(map.getStr("type"),"1")){
+							Tree tree = new Tree();
+							tree.setId(map.get("id").toString());
+							if (map.get("parentId") != null && !StringUtils.equalsIgnoreCase(map.get("parentId").toString(),"0")) {
+								tree.setPid(map.get("parentId").toString());
+							} else {
+								tree.setState("closed");
+							}
+							tree.setText(map.get("name").toString());
+							if(null!=map.get("icon")){
+								tree.setIconCls(map.get("icon").toString());
+							}
+							if(StringUtils.equalsIgnoreCase(map.get("type").toString(),"1")){
+								Map<String, Object> attr = new HashMap<String, Object>();
+								attr.put("url", map.get("resUrl")!=null?map.get("resUrl").toString():null);
+								tree.setAttributes(attr);
+							}
+							list.add(tree);
+						}
+
 					}
-					tree.setText(map.get("name").toString());
-					if(null!=map.get("icon")){
-						tree.setIconCls(map.get("icon").toString());
-					}
-					if(StringUtils.equalsIgnoreCase(map.get("type").toString(),"1")){
-						Map<String, Object> attr = new HashMap<String, Object>();
-						attr.put("url", map.get("resUrl")!=null?map.get("resUrl").toString():null);
-						tree.setAttributes(attr);
-					}
-					list.add(tree);
+
 				}
-
 			}
+
+
 		}catch (Exception ex){
 			ex.printStackTrace();
 		}
