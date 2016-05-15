@@ -174,4 +174,47 @@ public class ResourcesController extends BaseController {
 	}
 
 
+	/**
+	 * 加载整个资源树
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("alltree")
+	public List<Tree> alltree() {
+		List<Tree> list = new ArrayList<Tree>();
+		try{
+			List<ResFormMap> mps = resourcesMapper.findByNames( getFormMap(ResFormMap.class));
+
+			if(CollectionUtils.isNotEmpty(mps)){
+				for (ResFormMap map:mps) {
+					if(map!=null){
+						Tree tree = new Tree();
+						tree.setId(map.get("id").toString());
+						if (map.get("parentId") != null && !StringUtils.equalsIgnoreCase(map.get("parentId").toString(),"0")) {
+							tree.setPid(map.get("parentId").toString());
+						} else {
+							tree.setState("closed");
+						}
+						tree.setText(map.get("name").toString());
+						if(null!=map.get("icon")){
+							tree.setIconCls(map.get("icon").toString());
+						}
+						if(StringUtils.equalsIgnoreCase(map.get("type").toString(),"1")){
+							Map<String, Object> attr = new HashMap<String, Object>();
+							attr.put("url", map.get("resUrl")!=null?map.get("resUrl").toString():null);
+							tree.setAttributes(attr);
+						}
+						list.add(tree);
+					}
+
+				}
+			}
+		}catch (Exception ex){
+			ex.printStackTrace();
+		}
+
+		return list;
+	}
+
+
 }

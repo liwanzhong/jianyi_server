@@ -4,8 +4,9 @@
 <script type="text/javascript">
 	var resourceTree;
 	$(function() {
+		//todo 拉取所有的树
 		resourceTree = $('#resourceTree').tree({
-			url : '${ctx}/resource/tree.shtml?flag=true',
+			url : '${ctx}/resource/alltree.shtml?flag=true',
 			parentField : 'pid',
 			lines : true,
 			checkbox : true,
@@ -13,6 +14,7 @@
 			},
 			onLoadSuccess : function(node, data) {
 				progressLoad();
+				//todo 加载当前选择的权限组的所有权限渲染
 				$.post( '${ctx}/role/get.shtml', {
 					id : '${roleFormMap.id}'
 				}, function(result) {

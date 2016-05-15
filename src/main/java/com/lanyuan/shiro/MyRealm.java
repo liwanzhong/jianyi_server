@@ -1,16 +1,11 @@
 package com.lanyuan.shiro;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
+import com.lanyuan.entity.ResFormMap;
+import com.lanyuan.entity.UserFormMap;
+import com.lanyuan.mapper.ResourcesMapper;
+import com.lanyuan.mapper.UserMapper;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.LockedAccountException;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -18,14 +13,12 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 
-import com.lanyuan.entity.ResFormMap;
-import com.lanyuan.entity.UserFormMap;
-import com.lanyuan.mapper.ResourcesMapper;
-import com.lanyuan.mapper.UserMapper;
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * 自定义Realm,进行数据源配置
- * 
+ *
  * @author lanyuan 2014-12-25
  * @Email: mmm333zzz520@163.com
  * @version 3.0v
@@ -46,9 +39,10 @@ public class MyRealm extends AuthorizingRealm {
 		String loginName = SecurityUtils.getSubject().getPrincipal().toString();
 		if (loginName != null) {
 			String userId = SecurityUtils.getSubject().getSession().getAttribute("userSessionId").toString();
+			//todo 获取当前登录用户的所有权限
 			ResFormMap resFormMap = new ResFormMap();
 			resFormMap.put("userid",userId);
-			resFormMap.put("type",1);
+//			resFormMap.put("type",1);
 			List<ResFormMap> rs =null;
 			try{
 				rs = resourcesMapper.findResByUserID(resFormMap);
@@ -112,14 +106,14 @@ public class MyRealm extends AuthorizingRealm {
 
 	}
 	/**
-     * 更新用户授权信息缓存.
-     */
+	 * 更新用户授权信息缓存.
+	 */
 	public void clearCachedAuthorizationInfo(PrincipalCollection principals) {
 		super.clearCachedAuthorizationInfo(principals);
 	}
 	/**
-     * 更新用户信息缓存.
-     */
+	 * 更新用户信息缓存.
+	 */
 	public void clearCachedAuthenticationInfo(PrincipalCollection principals) {
 		super.clearCachedAuthenticationInfo(principals);
 	}
@@ -137,7 +131,7 @@ public class MyRealm extends AuthorizingRealm {
 	public void clearAllCachedAuthenticationInfo() {
 		getAuthenticationCache().clear();
 	}
-	
+
 	/**
 	 * 清空所有缓存
 	 */

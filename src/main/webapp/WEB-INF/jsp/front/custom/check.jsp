@@ -96,7 +96,6 @@
                 $("#nextStepTips").empty().append('<label class=" control-label" id="msg">'+data.msg+'</label>');
                 switch (data.custom_status){
                     case -1:
-
                         break;
                     case 0:
                         $("#nextStepTips").append('<a class="btn btn-primary marR10" href="${ctx}/custom/info/addUI.shtml?customid=&idcard='+data.cardid+'">需要新建会员，新建</a>');
