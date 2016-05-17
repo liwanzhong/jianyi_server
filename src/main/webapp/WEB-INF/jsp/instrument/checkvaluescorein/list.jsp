@@ -7,12 +7,12 @@
 <head>
 	<jsp:include page="/inc.jsp"></jsp:include>
 	<meta http-equiv="X-UA-Compatible" content="edge" />
-	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/pingfen_rout/edit.shtml')}">
+	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/checkValueScoreIn/edit.shtml')}">
 		<script type="text/javascript">
 			$.canEdit = true;
 		</script>
 	</c:if>
-	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/pingfen_rout/delete.shtml')}">
+	<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/instrument/checkValueScoreIn/delete.shtml')}">
 		<script type="text/javascript">
 		</script>
 	</c:if>
@@ -22,7 +22,7 @@
 		var dataGrid;
 		$(function() {
 			dataGrid = $('#dataGrid').datagrid({
-				url : '${ctx}/instrument/pingfen_rout/dataGrid.shtml?cfPingfenRoutFormMap.small_id='+${checkSmallItemFormMap.id},
+				url : '${ctx}/instrument/checkValueScoreIn/dataGrid.shtml?checkValueScoreInFormMap.check_small_item='+${checkValueScoreInFormMap.check_small_item},
 				fit : true,
 				striped : true,
 				rownumbers : true,
@@ -95,7 +95,7 @@
 				title : '添加',
 				width : '50%',
 				height : '40%',
-				href : '${ctx}/instrument/pingfen_rout/addPage.shtml?smallItemId=${checkSmallItemFormMap.id}',
+				href : '${ctx}/instrument/checkValueScoreIn/addPage.shtml?smallItemId=${checkSmallItemFormMap.id}',
 				buttons : [ {
 					text : '添加',
 					handler : function() {
@@ -117,7 +117,7 @@
 			parent.$.messager.confirm('询问', '是否需要删除当前项？', function(b) {
 				if (b) {
 					progressLoad();
-					$.post('${ctx}/instrument/pingfen_rout/delete.shtml', {
+					$.post('${ctx}/instrument/checkValueScoreIn/delete.shtml', {
 						'cfPingfenRoutFormMap.id' : id
 					}, function(result) {
 						if (result.status == 1) {
@@ -134,7 +134,7 @@
 
 
 		function pingfenRoutConf(id){
-			window.location.href = '${ctx}/instrument/pingfen_rout/list.shtml?smallItemId='+id;
+			window.location.href = '${ctx}/instrument/checkValueScoreIn/list.shtml?smallItemId='+id;
 		}
 
 		function editFun(id) {
@@ -148,7 +148,7 @@
 				title : '编辑',
 				width : '50%',
 				height : '40%',
-				href : '${ctx}/instrument/pingfen_rout/editPage.shtml?id=' + id,
+				href : '${ctx}/instrument/checkValueScoreIn/editPage.shtml?id=' + id,
 				buttons : [ {
 					text : '编辑',
 					handler : function() {

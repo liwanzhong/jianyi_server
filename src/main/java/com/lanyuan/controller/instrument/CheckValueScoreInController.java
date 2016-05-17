@@ -45,7 +45,7 @@ public class CheckValueScoreInController extends BaseController {
 
 	@RequestMapping("list")
 	public String listUI(Model model,String smallItemId) throws Exception {
-		CheckValueScoreInFormMap checkValueScoreInFormMap =checkValueScoreInMapper.findbyFrist("id",smallItemId,CheckValueScoreInFormMap.class);
+		CheckValueScoreInFormMap checkValueScoreInFormMap =checkValueScoreInMapper.findbyFrist("check_small_item",smallItemId,CheckValueScoreInFormMap.class);
 		model.addAttribute("checkValueScoreInFormMap",checkValueScoreInFormMap);
 		return Common.BACKGROUND_PATH + "/instrument/checkvaluescorein/list";
 	}
@@ -59,8 +59,8 @@ public class CheckValueScoreInController extends BaseController {
 
 	@RequestMapping("editPage")
 	public String editPage(Model model,String id) throws Exception {
-		CheckValueScoreInFormMap cfPingfenRoutFormMap = checkValueScoreInMapper.findbyFrist("id",id,CheckValueScoreInFormMap.class);
-		model.addAttribute("cfPingfenRoutFormMap",cfPingfenRoutFormMap);
+		CheckValueScoreInFormMap checkValueScoreInFormMap = checkValueScoreInMapper.findbyFrist("id",id,CheckValueScoreInFormMap.class);
+		model.addAttribute("checkValueScoreInFormMap",checkValueScoreInFormMap);
 		return Common.BACKGROUND_PATH + "/instrument/checkvaluescorein/edit";
 	}
 
@@ -69,16 +69,16 @@ public class CheckValueScoreInController extends BaseController {
 	@RequestMapping("dataGrid")
 	@SystemLog(module="用户管理",methods="加载用户列表")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	public Grid dataGrid(PageFilter ph, String bigItemId)throws Exception {
+	public Grid dataGrid(PageFilter ph)throws Exception {
 		Grid grid = new Grid();
-		CheckValueScoreInFormMap cfPingfenRoutFormMap = getFormMap(CheckValueScoreInFormMap.class);
-		cfPingfenRoutFormMap.put("orderby",ph.getSort()+" "+ph.getOrder());
-		cfPingfenRoutFormMap=toFormMap(cfPingfenRoutFormMap,  String.valueOf(ph.getPage()), String.valueOf(ph.getRows()),cfPingfenRoutFormMap.getStr("orderby"));
-		List<CheckValueScoreInFormMap> userFormMapList =checkValueScoreInMapper.findEnterprisePage(cfPingfenRoutFormMap);
+		CheckValueScoreInFormMap checkValueScoreInFormMap = getFormMap(CheckValueScoreInFormMap.class);
+		checkValueScoreInFormMap.put("orderby",ph.getSort()+" "+ph.getOrder());
+		checkValueScoreInFormMap=toFormMap(checkValueScoreInFormMap,  String.valueOf(ph.getPage()), String.valueOf(ph.getRows()),checkValueScoreInFormMap.getStr("orderby"));
+		List<CheckValueScoreInFormMap> userFormMapList =checkValueScoreInMapper.findEnterprisePage(checkValueScoreInFormMap);
 		if(CollectionUtils.isNotEmpty(userFormMapList)){
 			grid.setRows(userFormMapList);
 		}
-		PageView pageView = (PageView) cfPingfenRoutFormMap.get("paging");
+		PageView pageView = (PageView) checkValueScoreInFormMap.get("paging");
 		grid.setTotal(pageView.getRowCount());
 		return grid;
 
@@ -95,9 +95,9 @@ public class CheckValueScoreInController extends BaseController {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
 		try {
-			CheckValueScoreInFormMap cfPingfenRoutFormMap = getFormMap(CheckValueScoreInFormMap.class);
-			cfPingfenRoutFormMap.put("update_time",dateFormat.format(new Date()));
-			checkValueScoreInMapper.addEntity(cfPingfenRoutFormMap);
+			CheckValueScoreInFormMap checkValueScoreInFormMap = getFormMap(CheckValueScoreInFormMap.class);
+			checkValueScoreInFormMap.put("update_time",dateFormat.format(new Date()));
+			checkValueScoreInMapper.addEntity(checkValueScoreInFormMap);
 			retMap.put("msg","添加成功");
 			retMap.put("status",1);
 		}catch (Exception ex){
@@ -116,8 +116,8 @@ public class CheckValueScoreInController extends BaseController {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
 		try {
-			CheckValueScoreInFormMap cfPingfenRoutFormMap = getFormMap(CheckValueScoreInFormMap.class);
-			checkValueScoreInMapper.deleteByNames(cfPingfenRoutFormMap);
+			CheckValueScoreInFormMap checkValueScoreInFormMap = getFormMap(CheckValueScoreInFormMap.class);
+			checkValueScoreInMapper.deleteByNames(checkValueScoreInFormMap);
 			retMap.put("msg","删除成功");
 			retMap.put("status",1);
 		}catch (Exception ex){
@@ -139,8 +139,8 @@ public class CheckValueScoreInController extends BaseController {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
 		try {
-			CheckValueScoreInFormMap cfPingfenRoutFormMap = getFormMap(CheckValueScoreInFormMap.class);
-			checkValueScoreInMapper.editEntity(cfPingfenRoutFormMap);
+			CheckValueScoreInFormMap checkValueScoreInFormMap = getFormMap(CheckValueScoreInFormMap.class);
+			checkValueScoreInMapper.editEntity(checkValueScoreInFormMap);
 			retMap.put("msg","修改成功");
 			retMap.put("status",1);
 		}catch (Exception ex){
