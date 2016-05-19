@@ -27,6 +27,25 @@
 	</select>
 
 
+	<select id="findFixedFirst" resultType="com.lanyuan.entity.CheckValueScoreInFormMap">
+		SELECT
+		cvsi.id,
+		cvsi.check_small_item,
+		cvsi.check_min_value,
+		cvsi.check_max_value,
+		cvsi.min_score,
+		cvsi.max_score
+		FROM check_value_score_in cvsi
+		WHERE 1=1
+		<if test="check_small_item != null">
+			AND cvsi.check_small_item = ${check_small_item}
+		</if>
+		<if test="tzScore != null">
+			AND cvsi.min_score &lt;= ${tzScore} AND cvsi.max_score  &gt;= ${tzScore}
+		</if>
+		ORDER BY id DESC LIMIT 1;
+	</select>
+
 
 
 

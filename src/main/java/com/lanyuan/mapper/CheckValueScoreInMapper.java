@@ -10,4 +10,5 @@ public interface CheckValueScoreInMapper extends BaseMapper{
 
 	public List<CheckValueScoreInFormMap> findEnterprisePage(CheckValueScoreInFormMap cfPingfenRoutFormMap);
 
+	CheckValueScoreInFormMap findFixedFirst(CheckValueScoreInFormMap checkValueScoreInFormMap);
 }

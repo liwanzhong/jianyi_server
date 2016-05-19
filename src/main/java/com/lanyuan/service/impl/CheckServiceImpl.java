@@ -204,6 +204,10 @@ public class CheckServiceImpl implements ICheckService {
     }
 
 
+    @Inject
+    private CheckValueScoreInMapper checkValueScoreInMapper;
+
+
     /**
      * 生成检测项检测结果
      * @param customInfoFormMap
@@ -243,12 +247,6 @@ public class CheckServiceImpl implements ICheckService {
 
                     BigDecimal B = new BigDecimal(100).subtract((A.subtract(n1).divide(M,3,BigDecimal.ROUND_HALF_UP))) ;
 
-                    //  B = 100-(A?-n1/M)
-
-
-                    //   100-(102.076-102.001)/0.129
-
-                    //A  = (100-B)*M+n1
 
 
                     checkSmallItemResult.put("item_score",B);
@@ -288,24 +286,30 @@ public class CheckServiceImpl implements ICheckService {
                                 }
                             }
 
-                            //随机生成
+                            //生成随机范围内的得分,作为调整后的得分
                             int tzmax = cfPingfenLeveFormMap.getDouble("pingfen_min").intValue()*1000;
                             int tzmin = cfPingfenLeveFormMap.getDouble("pingfen_max").intValue()*1000;
-                            int tzrandomNumber = (int) Math.round(Math.random()*(tzmax-tzmin)+tzmin);
+                            int tzScoreRandom = (int) Math.round(Math.random()*(tzmax-tzmin)+tzmin);
+                            BigDecimal tzB = new BigDecimal(tzScoreRandom/1000d);
 
-                            BigDecimal tzB = new BigDecimal(tzrandomNumber/1000d);
+                            //查询小项的检测值与得分范围配置表
+                            CheckValueScoreInFormMap checkValueScoreInFormMap = new CheckValueScoreInFormMap();
+                            checkSmallItemFormMap.put("check_small_item",checkSmallItemFormMap.getLong("id"));
+                            checkSmallItemFormMap.put("tzScore",tzB);
+                            CheckValueScoreInFormMap checkValueScoreInFormMap_fixed = checkValueScoreInMapper.findFixedFirst(checkValueScoreInFormMap);
 
-                            //A ? = (100-B)*M+n1
-                            BigDecimal tzA = new BigDecimal(100).subtract(tzB).multiply(M).add(n1);
+                            if(checkValueScoreInFormMap_fixed!=null){//有配置得分与检测值对应范围
+                                int minTZCheckvalue = checkValueScoreInFormMap_fixed.getBigDecimal("check_min_value").intValue()*1000;
+                                int maxTZCheckValue = checkValueScoreInFormMap_fixed.getBigDecimal("check_max_value").intValue()*1000;
+                                int tzCheckValueRandom = (int) Math.round(Math.random()*(maxTZCheckValue-minTZCheckvalue)+minTZCheckvalue);
 
-
-
-                            checkSmallItemResult.put("check_value",tzA);
-
-
+                                checkSmallItemResult.put("check_value",tzCheckValueRandom);
+                            }else{//没有配置检测值与得分对应范围，使用以前的公式倒推法，但是检测值不在检测值范围内，最好还是全部配置为好
+                                //A ? = (100-B)*M+n1
+                                BigDecimal tzA = new BigDecimal(100).subtract(tzB).multiply(M).add(n1);
+                                checkSmallItemResult.put("check_value",tzA);
+                            }
                             checkSmallItemResult.put("item_score",tzB);
-
-
                         }
                     }
 
