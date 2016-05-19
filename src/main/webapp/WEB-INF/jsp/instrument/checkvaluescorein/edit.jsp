@@ -4,24 +4,10 @@
 <script type="text/javascript">
 	$(function() {
 
-		$('#orginid').combotree({
-			url : '${ctx}${ctx}/instrument/pingfen_leve/tree.shtml',
-			parentField : 'pid',
-			lines : true,
-			panelHeight : 'auto',
-			value : '${cfPingfenRoutFormMap.orgin_pingfen_id}'
-		});
 
-		$('#tzid').combotree({
-			url : '${ctx}/instrument/pingfen_leve/tree.shtml',
-			parentField : 'pid',
-			lines : true,
-			panelHeight : 'auto',
-			value : '${cfPingfenRoutFormMap.tz_pingfen_id}'
-		});
 
 		$('#userEditForm').form({
-			url : '${ctx}/instrument/pingfen_rout/update.shtml',
+			url : '${ctx}/instrument/checkValueScoreIn/update.shtml',
 			onSubmit : function() {
 				progressLoad();
 				var isValid = $(this).form('validate');
@@ -47,42 +33,22 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;padding: 3px;">
 		<form id="userEditForm" method="post">
-			<input type="hidden" value="${cfPingfenRoutFormMap.id}" name="cfPingfenRoutFormMap.id">
-			<input type="hidden" value="${cfPingfenRoutFormMap.small_id}" name="cfPingfenRoutFormMap.small_id">
+			<input type="hidden" value="${checkValueScoreInFormMap.check_small_item}" name="checkValueScoreInFormMap.check_small_item">
+			<input type="hidden" value="${checkValueScoreInFormMap.id}" name="checkValueScoreInFormMap.id">
 			<table class="grid">
 				<tr>
-					<td>年龄范围</td>
+					<td>检测值范围</td>
 					<td colspan="3">
-						<input name="cfPingfenRoutFormMap.age_min" type="text" placeholder="年龄范围值" class="easyui-validatebox" data-options="required:true" value="${cfPingfenRoutFormMap.age_min}"> 至
-						<input name="cfPingfenRoutFormMap.age_max" type="text" placeholder="年龄范围值" class="easyui-validatebox" data-options="required:true" value="${cfPingfenRoutFormMap.age_max}">
+						<input name="checkValueScoreInFormMap.check_min_value" type="text" placeholder="检测值范围" class="easyui-validatebox" data-options="required:true" value="${checkValueScoreInFormMap.check_min_value}"> 至
+						<input name="checkValueScoreInFormMap.check_max_value" type="text" placeholder="检测值范围" class="easyui-validatebox" data-options="required:true" value="${checkValueScoreInFormMap.check_max_value}">
+						<span style="color: red;">检测值有效范围【${checkSmallItemFormMap.min_value} ---  ${checkSmallItemFormMap.max_value}】</span>
 					</td>
 				</tr>
 				<tr>
-					<td>原评分范围</td>
+					<td>得分范围</td>
 					<td colspan="3">
-						<select id="orginid" name="cfPingfenRoutFormMap.orgin_pingfen_id" style="width:200px;height: 29px;" data-options="required:true"></select>
-					</td>
-				</tr>
-				<tr>
-					<td>调整后评分范围</td>
-					<td colspan="3">
-						<select id="tzid" name="cfPingfenRoutFormMap.tz_pingfen_id" style="width:200px;height: 29px;" data-options="required:true"></select>
-					</td>
-				</tr>
-				<tr>
-					<td>评分调整概率</td>
-					<td colspan="3">
-						<input name="cfPingfenRoutFormMap.rout_min" type="text" placeholder="调整概率" class="easyui-validatebox" data-options="required:true" value="${cfPingfenRoutFormMap.rout_min}"> 至
-						<input name="cfPingfenRoutFormMap.rout_max" type="text" placeholder="调整概率" class="easyui-validatebox" data-options="required:true" value="${cfPingfenRoutFormMap.rout_max}">
-					</td>
-				</tr>
-				<tr>
-					<td>是否有效</td>
-					<td colspan="3">
-						<select name="cfPingfenRoutFormMap.valid"  style="width:200px;height: 29px;">
-							<option selected>1</option>
-							<option>0</option>
-						</select>
+						<input name="checkValueScoreInFormMap.min_score" type="text" placeholder="得分范围" class="easyui-validatebox" data-options="required:true" value="${checkValueScoreInFormMap.min_score}"> 至
+						<input name="checkValueScoreInFormMap.max_score" type="text" placeholder="得分范围" class="easyui-validatebox" data-options="required:true" value="${checkValueScoreInFormMap.max_score}">
 					</td>
 				</tr>
 			</table>

@@ -22,7 +22,7 @@
 		var dataGrid;
 		$(function() {
 			dataGrid = $('#dataGrid').datagrid({
-				url : '${ctx}/instrument/checkValueScoreIn/dataGrid.shtml?checkValueScoreInFormMap.check_small_item='+${checkValueScoreInFormMap.check_small_item},
+				url : '${ctx}/instrument/checkValueScoreIn/dataGrid.shtml?checkValueScoreInFormMap.check_small_item='+${checkSmallItemFormMap.id},
 				fit : true,
 				striped : true,
 				rownumbers : true,
@@ -34,42 +34,18 @@
 				pageSize : 50,
 				pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 				columns : [ [ {
-					width : '120',
-					title : '年龄范围',
-					field : 'age_min'
+					width : '200',
+					title : '检测值范围',
+					field : 'checkvalue',
+					formatter : function(value, row, index) {
+						return '检测值范围'+'('+row.check_min_value+'--'+row.check_max_value+')';
+					}
 				}, {
-					width : '150',
-					title : '年龄范围',
-					field : 'age_max'
-				},{
-					width : '150',
-					title : '原评分范围',
-					field : 'orgin_pingfen_leve_name',
+					width : '200',
+					title : '得分范围',
+					field : 'score',
 					formatter : function(value, row, index) {
-						return value+'('+row.orgin_pingfen_min+'--'+row.orgin_pingfen_max+')';
-					}
-				},{
-					width : '120',
-					title : '调整后评分范围',
-					field : 'tz_pingfen_leve_name',
-					formatter : function(value, row, index) {
-						return value+'('+row.tz_pingfen_min+'--'+row.tz_pingfen_max+')';
-					}
-				},{
-					width : '140',
-					title : '最后更新时间',
-					field : 'update_time',
-					sortable : true,
-					formatter : function(value, row, index) {
-						return (new Date(parseFloat(value))).format("yyyy-MM-dd hh:mm:ss");
-					}
-				},{
-					width : '140',
-					title : '是否有效',
-					field : 'valid',
-					sortable : true,
-					formatter : function(value, row, index) {
-						return value==1?'有效':'无效';
+						return '得分范围'+'('+row.min_score+'--'+row.max_score+')';
 					}
 				},{
 					field : 'action',
@@ -118,7 +94,7 @@
 				if (b) {
 					progressLoad();
 					$.post('${ctx}/instrument/checkValueScoreIn/delete.shtml', {
-						'cfPingfenRoutFormMap.id' : id
+						'checkValueScoreInFormMap.id' : id
 					}, function(result) {
 						if (result.status == 1) {
 							parent.$.messager.alert('提示', result.msg, 'info');
@@ -171,7 +147,7 @@
 </head>
 <body class="easyui-layout" data-options="fit:true,border:false">
 <div data-options="region:'north',border:false" style="height: 30px; overflow: hidden;background-color: #fff">
-	<form id="searchForm">
+	<%--<form id="searchForm">
 		<table>
 			<tr>
 				<th>检测小项名称:</th>
@@ -181,9 +157,9 @@
 				</td>
 			</tr>
 		</table>
-	</form>
+	</form>--%>
 </div>
-<div data-options="region:'center',border:true,title:'评分概率---[${checkSmallItemFormMap.name}]'" >
+<div data-options="region:'center',border:true,title:'检测值得分关联范围---[${checkSmallItemFormMap.name}]'" >
 	<table id="dataGrid" data-options="fit:true,border:false"></table>
 </div>
 <div id="toolbar" style="display: none;">

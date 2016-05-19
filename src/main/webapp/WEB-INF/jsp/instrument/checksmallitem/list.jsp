@@ -81,6 +81,8 @@
 						str += $.formatString('<a href="javascript:void(0)" onclick="pingfenRoutConf(\'{0}\');" >评分概率</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="sickRiskConfig(\'{0}\');" >疾病关联</a>', row.id);
+						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="checkValueScoreConfig(\'{0}\');" >检测值得分关联范围</a>', row.id);
 						return str;
 					}
 				}] ],
@@ -91,6 +93,11 @@
 
 		function sickRiskConfig(id){
 			window.location.href = '${ctx}/instrument/sickRisk/list.shtml?checkItemId='+id+'&checkItemType=2';
+		}
+
+
+		function checkValueScoreConfig(id){
+			window.location.href = '${ctx}/instrument/checkValueScoreIn/list.shtml?smallItemId='+id;
 		}
 
 

@@ -3,7 +3,9 @@ package com.lanyuan.controller.instrument;
 
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
+import com.lanyuan.entity.CheckSmallItemFormMap;
 import com.lanyuan.entity.CheckValueScoreInFormMap;
+import com.lanyuan.mapper.CheckSmallItemMapper;
 import com.lanyuan.mapper.CheckValueScoreInMapper;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
@@ -38,6 +40,9 @@ public class CheckValueScoreInController extends BaseController {
 	@Inject
 	private CheckValueScoreInMapper checkValueScoreInMapper;
 
+	@Inject
+	private CheckSmallItemMapper checkSmallItemMapper;
+
 
 
 
@@ -45,15 +50,15 @@ public class CheckValueScoreInController extends BaseController {
 
 	@RequestMapping("list")
 	public String listUI(Model model,String smallItemId) throws Exception {
-		CheckValueScoreInFormMap checkValueScoreInFormMap =checkValueScoreInMapper.findbyFrist("check_small_item",smallItemId,CheckValueScoreInFormMap.class);
-		model.addAttribute("checkValueScoreInFormMap",checkValueScoreInFormMap);
+		CheckSmallItemFormMap checkSmallItemFormMap =checkSmallItemMapper.findbyFrist("id",smallItemId,CheckSmallItemFormMap.class);
+		model.addAttribute("checkSmallItemFormMap",checkSmallItemFormMap);
 		return Common.BACKGROUND_PATH + "/instrument/checkvaluescorein/list";
 	}
 
 	@RequestMapping("addPage")
 	public String addPage(Model model,String smallItemId) throws Exception {
-		CheckValueScoreInFormMap checkValueScoreInFormMap =checkValueScoreInMapper.findbyFrist("id",smallItemId,CheckValueScoreInFormMap.class);
-		model.addAttribute("checkValueScoreInFormMap",checkValueScoreInFormMap);
+		CheckSmallItemFormMap checkSmallItemFormMap =checkSmallItemMapper.findbyFrist("id",smallItemId,CheckSmallItemFormMap.class);
+		model.addAttribute("checkSmallItemFormMap",checkSmallItemFormMap);
 		return Common.BACKGROUND_PATH + "/instrument/checkvaluescorein/add";
 	}
 
@@ -61,6 +66,8 @@ public class CheckValueScoreInController extends BaseController {
 	public String editPage(Model model,String id) throws Exception {
 		CheckValueScoreInFormMap checkValueScoreInFormMap = checkValueScoreInMapper.findbyFrist("id",id,CheckValueScoreInFormMap.class);
 		model.addAttribute("checkValueScoreInFormMap",checkValueScoreInFormMap);
+		CheckSmallItemFormMap checkSmallItemFormMap =checkSmallItemMapper.findbyFrist("id",checkValueScoreInFormMap.get("check_small_item").toString(),CheckSmallItemFormMap.class);
+		model.addAttribute("checkSmallItemFormMap",checkSmallItemFormMap);
 		return Common.BACKGROUND_PATH + "/instrument/checkvaluescorein/edit";
 	}
 
@@ -96,7 +103,6 @@ public class CheckValueScoreInController extends BaseController {
 		retMap.put("status",0);
 		try {
 			CheckValueScoreInFormMap checkValueScoreInFormMap = getFormMap(CheckValueScoreInFormMap.class);
-			checkValueScoreInFormMap.put("update_time",dateFormat.format(new Date()));
 			checkValueScoreInMapper.addEntity(checkValueScoreInFormMap);
 			retMap.put("msg","添加成功");
 			retMap.put("status",1);

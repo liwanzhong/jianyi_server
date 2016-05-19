@@ -7,32 +7,19 @@
 		/> -->
 	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
 	<!-- 以下与实体类的中字段一致 -->
-	<sql id="selectId">
-	   cpr.id,
-       cpr.age_max,
-       cpr.age_min,
-       cpr.rout_min,
-       cpr.rout_max,
-       cpr.update_time,
-       cpr.valid,
-       cpr.small_id,
-       cpl.name orgin_pingfen_leve_name,
-       cpl.pingfen_min orgin_pingfen_min,
-       cpl.pingfen_max orgin_pingfen_max,
-       cpl.show_color orgin_pingfen_color,
-       cpl1.name tz_pingfen_leve_name,
-       cpl1.pingfen_min tz_pingfen_min,
-       cpl1.pingfen_max tz_pingfen_max,
-       cpl1.show_color tz_pingfen_color
-	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.CheckValueScoreInFormMap">
-		select
-		<include refid="selectId" />
-		FROM cf_pingfen_rout cpr LEFT JOIN cf_pingfen_leve cpl ON cpr.orgin_pingfen_id=cpl.id LEFT JOIN cf_pingfen_leve cpl1 ON cpr.tz_pingfen_id=cpl1.id
-		where 1 = 1
-		<if test="small_id != null">
-			AND cpr.small_id = ${small_id}
+		SELECT
+		cvsi.id,
+		cvsi.check_small_item,
+		cvsi.check_min_value,
+		cvsi.check_max_value,
+		cvsi.min_score,
+		cvsi.max_score
+		FROM check_value_score_in cvsi
+		WHERE 1=1
+		<if test="check_small_item != null">
+			AND cvsi.check_small_item = ${check_small_item}
 		</if>
 		<if test="orderby != null">
 			ORDER BY ${orderby}
