@@ -293,12 +293,12 @@ public class CheckServiceImpl implements ICheckService {
                             BigDecimal tzB = new BigDecimal(tzScoreRandom/1000d);
 
                             //查询小项的检测值与得分范围配置表
-                            CheckValueScoreInFormMap checkValueScoreInFormMap = new CheckValueScoreInFormMap();
+                            /*CheckValueScoreInFormMap checkValueScoreInFormMap = new CheckValueScoreInFormMap();
                             checkSmallItemFormMap.put("check_small_item",checkSmallItemFormMap.getLong("id"));
                             checkSmallItemFormMap.put("tzScore",tzB);
-                            CheckValueScoreInFormMap checkValueScoreInFormMap_fixed = checkValueScoreInMapper.findFixedFirst(checkValueScoreInFormMap);
+                            CheckValueScoreInFormMap checkValueScoreInFormMap_fixed = checkValueScoreInMapper.findFixedFirst(checkValueScoreInFormMap);*/
 
-                            if(checkValueScoreInFormMap_fixed!=null){//有配置得分与检测值对应范围
+                            /*if(checkValueScoreInFormMap_fixed!=null){//有配置得分与检测值对应范围
                                 int minTZCheckvalue = checkValueScoreInFormMap_fixed.getBigDecimal("check_min_value").intValue()*1000;
                                 int maxTZCheckValue = checkValueScoreInFormMap_fixed.getBigDecimal("check_max_value").intValue()*1000;
                                 int tzCheckValueRandom = (int) Math.round(Math.random()*(maxTZCheckValue-minTZCheckvalue)+minTZCheckvalue);
@@ -308,7 +308,11 @@ public class CheckServiceImpl implements ICheckService {
                                 //A ? = (100-B)*M+n1
                                 BigDecimal tzA = new BigDecimal(100).subtract(tzB).multiply(M).add(n1);
                                 checkSmallItemResult.put("check_value",tzA);
-                            }
+                            }*/
+
+                            //A ? = (100-B)*M+n1
+                            BigDecimal tzA = new BigDecimal(100).subtract(tzB).multiply(M).add(n1);
+                            checkSmallItemResult.put("check_value",tzA);
                             checkSmallItemResult.put("item_score",tzB);
                         }
                     }
