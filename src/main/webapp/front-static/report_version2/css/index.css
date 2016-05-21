@@ -145,6 +145,65 @@ transform:translateX(-50%);}
 .flower li:nth-of-type(3) .flo-w{left: 240px; top:140px; }
 .flower li:nth-of-type(4) .flo-w{right:200px; top:140px;}
 
+/* ----------- column-2 ----------- */
+.column-2{ width: 100%; height: 260px; margin-top:10px;}
+.column-2 .ul-w{ margin:0 auto;}
+.column-2 li{ float: left; min-width:73px; position:relative;}
+.column-2 .max{ width: 73px; height: 260px;}
+.column-2 .max .max-top{ position:absolute; top:-24px; left:50%; font-size:14px; color:#249214;
+-webkit-transform:translateX(-50%);
+-moz-transform:translateX(-50%);
+transform:translateX(-50%);}
+.column-2 .max .max-main{ width: 48px; height: 100%; position:absolute; left: 50%; bottom:2px; border-radius:8px;
+-webkit-transform:translateX(-50%);
+-moz-transform:translateX(-50%);
+transform:translateX(-50%);}
+.column-2 .max .max-b{ width: 73px; height: 55px; position:absolute; left:50%; bottom:0;font-size:12px; color:#fff; text-align:center; padding:20px 3px 0;
+-webkit-transform:translateX(-50%);
+-moz-transform:translateX(-50%);
+transform:translateX(-50%);}
+
+.ooo-blue{ background:url(../img/ooo.blue.png) repeat-y;}
+.ooo-green{ background:url(../img/ooo.green.png) repeat-y;}
+.ooo-yellow{ background:url(../img/ooo.yellow.png) repeat-y;}
+.ooo-orange{ background:url(../img/ooo.orange.png) repeat-y;}
+.ooo-red{ background:url(../img/ooo.red.png) repeat-y;}
+
+.oo-blue{ background:url(../img/oo-blue.png) no-repeat center bottom;}
+.oo-green{ background:url(../img/oo-green.png) no-repeat center bottom;}
+.oo-yellow{ background:url(../img/oo-yellow.png) no-repeat center bottom;}
+.oo-orange{ background:url(../img/oo-orange.png) no-repeat center bottom;}
+.oo-red{ background:url(../img/oo-red.png) no-repeat center bottom;}
+
+/* ----------- column-3 ----------- */
+.column-3{ width: 100%; height: 270px; margin-top:30px; background:url(../img/bottom.png) repeat-x left 210px;}
+.column-3 .ul-w{ margin:0 auto; padding-left: 28px;}
+.column-3 li{ float: left; height: 270px; min-width:68px; position:relative;}
+.column-3 .up-l{ width: 68px; height: 32px;}
+.column-3 .up-score{ position:absolute; top:-42px; left:30px; color:#343434; font-size:14px;}
+.column-3 .up-sanjiao{position: absolute; left: 26px; top: -22px; width: 49px; height: 22px; }
+.column-3 .up-main{ width:68px; height: 210px; position:relative;}
+.column-3 .up-main .up-main-w{ position:absolute; right: 0; bottom: 0; width: 36px; height: 100%;}
+.column-3 .up-word{ font-size:12px; color:#343434;}
+
+.up-l-green{ background:url(../img/bc-green.png) no-repeat center center;}
+.up-l-blue{ background:url(../img/bc-blue.png) no-repeat center center;}
+.up-l-yellow{ background:url(../img/bc-yellow.png) no-repeat center center;}
+.up-l-orange{ background:url(../img/bc-orange.png) no-repeat center center;}
+.up-l-red{ background:url(../img/bc-red.png) no-repeat center center;}
+
+.up-main-w-green{ background:url(../img/up-bg-green.png) repeat-y;}
+.up-main-w-blue{ background:url(../img/up-bg-blue.png) repeat-y;}
+.up-main-w-yellow{ background:url(../img/up-bg-yellow.png) repeat-y;}
+.up-main-w-orange{ background:url(../img/up-bg-orange.png) repeat-y;}
+.up-main-w-red{ background:url(../img/up-bg-red.png) repeat-y;}
+
+.up-sanjiao-green{ background:url(../img/top-green.png) no-repeat right bottom;}
+.up-sanjiao-blue{ background:url(../img/top-blue.png) no-repeat right bottom;}
+.up-sanjiao-yellow{ background:url(../img/top-yellow.png) no-repeat right bottom;}
+.up-sanjiao-orange{ background:url(../img/top-orange.png) no-repeat right bottom;}
+.up-sanjiao-red{ background:url(../img/top-red.png) no-repeat right bottom;}
+
 /* ----------- table ----------- */
 .table{ margin-top:20px;}
 .table .thead{ width: 100%; height:32px; background-color: #47b1d6; margin-bottom:4px; }
@@ -222,10 +281,10 @@ transform:translateY(-50%);}
 .msg .sex{ margin:0 12px;}
 
 /* ----------- details ----------- */
-.details{ line-height:20px; color:#4b4a4a;margin-bottom:20px;}
+.details{ line-height:20px; color:#4b4a4a; background:url(../img/pic_1.png) no-repeat left center; margin-bottom:20px; padding-left:90px;}
 .details p{ font-size:13px;}
-.details .detaile-t{line-height: 27px; font-size:15px; background:url(../img/007.png) no-repeat left center; padding-left:30px;}
-.details span{ color:#f2b710;}
+.details .detaile-t{line-height: 27px; font-size:15px; background-color:#1b86a9; color:#fff;padding-left: 12px;}
+.details span{ color:#fff;}
 
 /* ----------- grade ----------- */
 .body-bg{ height:auto; background:url(../img/body-bg.png) no-repeat center bottom; background-size:contain;}

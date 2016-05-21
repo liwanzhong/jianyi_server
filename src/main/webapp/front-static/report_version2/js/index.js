@@ -7,7 +7,7 @@ $(function(e){
 		'pingfen_1max': 100,
 		'pingfen_2min': 73.01,
 		'pingfen_2max': 85.99,
-		'pingfen_3min': 60,
+		'pingfen_3min': 61,
 		'pingfen_3max': 73,
 		'pingfen_4min': 60,
 		'pingfen_4max': 60.99,
@@ -46,6 +46,87 @@ $(function(e){
 		}
 		
     });
+	//柱状图2
+	$('.column-2>ul').each(function(index, element) {
+		var liW = 100/$(element).children('li').length+'%';
+		$(element).children('li').css('width',liW);
+    });
+	$('.up-score span').each(function(index, element) {
+		var score = $(element).text();
+		var Height = score+'%';
+		//柱形高度变化
+		$('.up-main-w').eq(index).css('height',Height);
+		//颜色变化
+		if( score>=pingfen.pingfen_1min && score<=pingfen.pingfen_1max ){
+			$('.up-l').eq(index).addClass('up-l-green');
+			$('.up-main-w').eq(index).addClass('up-main-w-green');
+			$('.up-sanjiao').eq(index).addClass('up-sanjiao-green');
+		}else if( score>=pingfen.pingfen_2min && score<=pingfen.pingfen_2max ){
+			$('.up-l').eq(index).addClass('up-l-blue');
+			$('.up-main-w').eq(index).addClass('up-main-w-blue');
+			$('.up-sanjiao').eq(index).addClass('up-sanjiao-blue');
+		}else if( score>=pingfen.pingfen_3min && score<=pingfen.pingfen_3max ){
+			$('.up-l').eq(index).addClass('up-l-yellow');
+			$('.up-main-w').eq(index).addClass('up-main-w-yellow');
+			$('.up-sanjiao').eq(index).addClass('up-sanjiao-yellow');
+		}else if( score>=pingfen.pingfen_4min && score<=pingfen.pingfen_4max ){
+			$('.up-l').eq(index).addClass('up-l-orange');
+			$('.up-main-w').eq(index).addClass('up-main-w-orange');
+			$('.up-sanjiao').eq(index).addClass('up-sanjiao-orange');
+		}else if( score>=pingfen.pingfen_5min && score<=pingfen.pingfen_5max ){
+			$('.up-l').eq(index).addClass('up-l-red');
+			$('.up-main-w').eq(index).addClass('up-main-w-red');
+			$('.up-sanjiao').eq(index).addClass('up-sanjiao-red');
+		}
+		
+    });
+	//分数上下移动
+	$('.up-main-w').each(function(index, element) {
+		var H = $(element).parent('.up-main').height()-$(element).height()-22;
+		$('.up-sanjiao').eq(index).css('top',H);
+		$('.up-score').eq(index).css('top',H-20);
+	});
+	
+	//柱状图3
+	$('.column-3>ul').each(function(index, element) {
+		var liW = 100/$(element).children('li').length+'%';
+		$(element).children('li').css('width',liW);
+    });
+	$('.up-score span').each(function(index, element) {
+		var score = $(element).text();
+		var Height = score+'%';
+		//柱形高度变化
+		$('.max-main').eq(index).css('height',Height);
+		//颜色变化
+		if( score>=pingfen.pingfen_1min && score<=pingfen.pingfen_1max ){
+			$('.max-top').eq(index).addClass('color-green');
+			$('.max-b').eq(index).addClass('oo-green');
+			$('.max-main').eq(index).addClass('ooo-green');
+		}else if( score>=pingfen.pingfen_2min && score<=pingfen.pingfen_2max ){
+			$('.max-top').eq(index).addClass('color-blue');
+			$('.max-b').eq(index).addClass('oo-blue');
+			$('.max-main').eq(index).addClass('ooo-blue');
+		}else if( score>=pingfen.pingfen_3min && score<=pingfen.pingfen_3max ){
+			$('.max-top').eq(index).addClass('color-yellow');
+			$('.max-b').eq(index).addClass('oo-yellow');
+			$('.max-main').eq(index).addClass('ooo-yellow');
+		}else if( score>=pingfen.pingfen_4min && score<=pingfen.pingfen_4max ){
+			$('.max-top').eq(index).addClass('color-orange');
+			$('.max-b').eq(index).addClass('oo-orange');
+			$('.max-main').eq(index).addClass('ooo-orange');
+		}else if( score>=pingfen.pingfen_5min && score<=pingfen.pingfen_5max ){
+			$('.max-top').eq(index).addClass('color-red');
+			$('.max-b').eq(index).addClass('oo-red');
+			$('.max-main').eq(index).addClass('ooo-red');
+		}
+		
+    });
+	//分数上下移动
+	$('.max-main').each(function(index, element) {
+		var H = $(element).parent('.max').height()-$(element).height()-24;
+		$('.max-top').eq(index).css('top',H);
+	});
+
 	
 	//渐变图表
 	$('.shade-num span').each(function(index, element) {
