@@ -115,6 +115,80 @@
 					</td>
 				</tr>
 				<tr>
+					<td>图表类型</td>
+					<td colspan="3">
+						<%--<input type="text" name="checkBigItemFormMap.order_by" value="0">--%>
+						<select name="checkBigItemFormMap.charts_item">
+							<c:choose>
+								<c:when test="${checkBigItemFormMap.charts_item == 1}">
+									<option value="1" selected>柱状图</option>
+									<option value="2">书页图表</option>
+									<option value="3">折点图</option>
+									<option value="4">六边形图表</option>
+									<option value="5">凹型柱状图</option>
+									<option value="6">箭头柱状图</option>
+									<option value="7">折线图</option>
+								</c:when>
+								<c:when test="${checkBigItemFormMap.charts_item == 2}">
+									<option value="1" >柱状图</option>
+									<option value="2" selected>书页图表</option>
+									<option value="3">折点图</option>
+									<option value="4">六边形图表</option>
+									<option value="5">凹型柱状图</option>
+									<option value="6">箭头柱状图</option>
+									<option value="7">折线图</option>
+								</c:when>
+								<c:when test="${checkBigItemFormMap.charts_item == 3}">
+									<option value="1" >柱状图</option>
+									<option value="2">书页图表</option>
+									<option value="3" selected>折点图</option>
+									<option value="4">六边形图表</option>
+									<option value="5">凹型柱状图</option>
+									<option value="6">箭头柱状图</option>
+									<option value="7">折线图</option>
+								</c:when>
+								<c:when test="${checkBigItemFormMap.charts_item == 4}">
+									<option value="1" >柱状图</option>
+									<option value="2">书页图表</option>
+									<option value="3">折点图</option>
+									<option value="4" selected>六边形图表</option>
+									<option value="5">凹型柱状图</option>
+									<option value="6">箭头柱状图</option>
+									<option value="7">折线图</option>
+								</c:when>
+								<c:when test="${checkBigItemFormMap.charts_item == 5}">
+									<option value="1" >柱状图</option>
+									<option value="2">书页图表</option>
+									<option value="3">折点图</option>
+									<option value="4">六边形图表</option>
+									<option value="5" selected>凹型柱状图</option>
+									<option value="6">箭头柱状图</option>
+									<option value="7">折线图</option>
+								</c:when>
+								<c:when test="${checkBigItemFormMap.charts_item == 6}">
+									<option value="1" >柱状图</option>
+									<option value="2">书页图表</option>
+									<option value="3">折点图</option>
+									<option value="4">六边形图表</option>
+									<option value="5">凹型柱状图</option>
+									<option value="6" selected>箭头柱状图</option>
+									<option value="7">折线图</option>
+								</c:when>
+								<c:when test="${checkBigItemFormMap.charts_item == 7}">
+									<option value="1" >柱状图</option>
+									<option value="2">书页图表</option>
+									<option value="3">折点图</option>
+									<option value="4">六边形图表</option>
+									<option value="5">凹型柱状图</option>
+									<option value="6">箭头柱状图</option>
+									<option value="7" selected>折线图</option>
+								</c:when>
+							</c:choose>
+
+						</select>
+					</td>
+				</tr>
+				<tr>
 					<td>检测意义</td>
 					<td colspan="3">
 						<textarea cols="50" rows="5" name="checkBigItemFormMap.tips_content">${checkBigItemFormMap.tips_content}</textarea>

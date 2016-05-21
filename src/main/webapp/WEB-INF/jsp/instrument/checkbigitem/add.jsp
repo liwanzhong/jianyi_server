@@ -82,6 +82,21 @@
 					</td>
 				</tr>
 				<tr>
+					<td>图表类型</td>
+					<td colspan="3">
+						<%--<input type="text" name="checkBigItemFormMap.order_by" value="0">--%>
+						<select name="checkBigItemFormMap.charts_item">
+							<option value="1">柱状图</option>
+							<option value="2">书页图表</option>
+							<option value="3">折点图</option>
+							<option value="4">六边形图表</option>
+							<option value="5">凹型柱状图</option>
+							<option value="6">箭头柱状图</option>
+							<option value="7">折线图</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
 					<td>检测意义</td>
 					<td colspan="3">
 						<textarea cols="50" rows="5" name="checkBigItemFormMap.tips_content"></textarea>
