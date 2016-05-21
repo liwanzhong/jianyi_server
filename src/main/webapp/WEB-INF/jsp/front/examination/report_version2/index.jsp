@@ -85,7 +85,7 @@
                 </c:when>
             </c:choose>
             </p>
-            <p>您身体的短板是（<span>${zuicha}</span>），同时需要注意的还有（<span>${cicha}</span>）。${zongpingLeveDescConfigFormMap.leve_des}</p>
+            <p>您身体的短板是 <span>${zuicha}</span> ，同时需要注意的还有 <span>${cicha}</span> 。${zongpingLeveDescConfigFormMap.leve_des}</p>
         </div>
         <!--main-->
         <div class="body-bg">
