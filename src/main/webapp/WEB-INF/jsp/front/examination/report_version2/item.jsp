@@ -12,6 +12,12 @@
 	<link type="text/css" rel="stylesheet" href="${ctx}/front-static/report_version2/css/index.css">
 	<script src="${ctx}/front-static/report_version2/js/jquery-1.12.1.min.js"></script>
 	<script src="${ctx}/front-static/report_version2/js/index.js"></script>
+	<c:if test="${physicalExaminationBigResultFormMap.charts_item == 7}">
+		<script type="text/javascript" src="${ctx}/js/fushioncharts/fusioncharts.js"></script>
+		<script type="text/javascript" src="${ctx}/js/fushioncharts/fusioncharts.charts.js"></script>
+		<script type="text/javascript" src="${ctx}/js/fushioncharts/themes/fusioncharts.theme.fint.js"></script>
+	</c:if>
+
 	<script>
 		//初始化评分等级
 		pingfen ={
@@ -117,9 +123,9 @@
 					<c:when test="${fn:length(physicalExaminationResultFormMapList)==5}">
 						<div class="vvv">
 							<ul class="clearfix">
-									<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
-										<li><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分<p>${item.name}</p></li>
-									</c:forEach>
+								<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
+									<li><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分<p>${item.name}</p></li>
+								</c:forEach>
 							</ul>
 						</div>
 					</c:when>
@@ -156,49 +162,83 @@
 			</c:when>
 			<c:when test="${physicalExaminationBigResultFormMap.charts_item == 5}">
 				<!--圆形图表-->
-				<div class="run">
-					<div class="container2">
-						<div class="dot2">骨骼系统</div>
-						<div class="run-score"><span>88</span>分</div>
-						<div class="run-w">脊椎功能</div>
-						<div class="run-score"><span>73</span>分</div>
-						<div class="run-w">脊椎功能</div>
-						<div class="run-score"><span>67</span>分</div>
-						<div class="run-w">脊椎功能</div>
-						<div class="run-score"><span>93</span>分</div>
-						<div class="run-w">脊椎功能</div>
-						<div class="run-score"><span>87</span>分</div>
-						<div class="run-w">脊椎功能</div>
-						<div class="run-score"><span>82</span>分</div>
-						<div class="run-w">脊椎功能</div>
-						<div class="run-score"><span>47</span>分</div>
-						<div class="run-w">脊椎功能</div>
-					</div>
+				<div class="column-2">
+					<ul class="ul-w clearfix">
+						<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
+							<li>
+								<div class="max">
+									<div class="max-top"><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分</div>
+									<div class="max-main"></div>
+									<div class="max-b">${item.name}</div>
+								</div>
+							</li>
+						</c:forEach>
+					</ul>
 				</div>
 			</c:when>
 			<c:when test="${physicalExaminationBigResultFormMap.charts_item == 6}">
-				<!--圆形图表-->
-				<div class="flower">
-					<ul>
-						<li>
-							<div class="flo-score"><span>85.55</span>分</div>
-							<div class="flo-w">α细胞</div>
-						</li>
-						<li>
-							<div class="flo-score"><span>98</span>分</div>
-							<div class="flo-w">α细胞</div>
-						</li>
-						<li>
-							<div class="flo-score"><span>64</span>分</div>
-							<div class="flo-w">α细胞</div>
-						</li>
-						<li>
-							<div class="flo-score"><span>73.55</span>分</div>
-							<div class="flo-w">α细胞</div>
-						</li>
+				<div class="column-3">
+					<ul class="ul-w clearfix">
+						<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
+							<li>
+								<div class="up-score"><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分</div>
+								<div class="up-sanjiao"></div>
+								<div class="up-main">
+									<div class="up-main-w"></div>
+								</div>
+								<div class="up-l"></div>
+								<div class="up-word">${item.name}</div>
+							</li>
+						</c:forEach>
 					</ul>
-
 				</div>
+			</c:when>
+			<c:when test="${physicalExaminationBigResultFormMap.charts_item == 7}">
+				<!--折线图表-->
+				<div  id="chart-container_zhexian"></div>
+				<script>
+					FusionCharts.ready(function () {
+						var satisfactionChart = new FusionCharts({
+							type: 'line',
+							renderAt: 'chart-container_zhexian',
+							id: 'myChart',
+							width: '680',
+							height: '240',
+							dataFormat: 'json',
+							dataSource: {
+								"chart": {
+//                    "caption": "Customer Satisfaction Averages",
+//                    "subcaption": "Last week",
+//                    "xaxisname": "Day",
+									"yaxisname": "得分(0-100分)",
+									"numbersuffix": "分",
+									"showvalues": "0",
+									//Anchor Cosmatics
+									"anchorRadius": "20",
+									"anchorBorderThickness": "2",
+									"yAxisMaxValue": "100",
+									"showValues": "1",
+									"lineThickness":"10",
+									"numVDivLines": "6",
+									"vDivLineColor": "#99ccff",
+									"vDivLineThickness": "1",
+									"vDivLineAlpha": "70",
+									"vDivLineDashed": "1",
+									"vDivLineDashLen":"5",
+									"vDivLineDashGap":"3",
+//                    "canvasPadding": "0",
+									//Theme
+									"theme" : "fint"
+
+								},
+								"data": ${chartJSON}
+							}
+						});
+
+						satisfactionChart.render();
+
+					});
+				</script>
 			</c:when>
 			<c:otherwise>
 				<!--柱形图-->
