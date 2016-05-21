@@ -1,5 +1,6 @@
 package com.lanyuan.controller.examination;
 
+import com.alibaba.fastjson.JSON;
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.*;
@@ -9,6 +10,7 @@ import com.lanyuan.util.AgeCal;
 import com.lanyuan.util.Common;
 import com.lanyuan.util.PropertiesUtils;
 import com.lanyuan.vo.Grid;
+import com.lanyuan.vo.LineChartJSONVO;
 import com.lanyuan.vo.PageFilter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.SecurityUtils;
@@ -249,6 +251,27 @@ public class PhysicalExaminationRecordController extends BaseController {
         try{
             List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = physicalExaminationResultMapper.findItemCheckResultList(recordId,((PhysicalExaminationBigResultFormMap)pageView.getRecords().get(0)).getLong("big_item_id"));
             model.addAttribute("physicalExaminationResultFormMapList",physicalExaminationResultFormMapList);
+
+            //todo 判断图表类型是不是折线图，如果是折线图，多返回一个折线图的json list
+            if(((PhysicalExaminationBigResultFormMap) pageView.getRecords().get(0)).getInt("charts_item")==7){
+                List<LineChartJSONVO> lineChartJSONVOList = new ArrayList<LineChartJSONVO>();
+                for(PhysicalExaminationResultFormMap item:physicalExaminationResultFormMapList){//遍历检测结果项，设置json对象
+                    LineChartJSONVO lineChartJSONVO = new LineChartJSONVO();
+                    if(item.getLong("tzed_leve_id_id")!=null){
+                        lineChartJSONVO.setAnchorBgColor(item.getStr("tzed_show_color"));
+                    }else{
+                        lineChartJSONVO.setAnchorBgColor(item.getStr("org_show_color"));
+                    }
+                    lineChartJSONVO.setAnchorBorderColor("");
+                    lineChartJSONVO.setLabel(item.getStr("name"));
+                    lineChartJSONVO.setValue(item.getBigDecimal("item_score").setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue()+"");
+
+                    lineChartJSONVOList.add(lineChartJSONVO);
+                }
+                if(CollectionUtils.isNotEmpty(lineChartJSONVOList)){
+                    model.addAttribute("chartJSON", JSON.toJSONString(lineChartJSONVOList));
+                }
+            }
 
 
             List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList = cfPingfenLeveMapper.findByNames(getFormMap(CfPingfenLeveFormMap.class));
