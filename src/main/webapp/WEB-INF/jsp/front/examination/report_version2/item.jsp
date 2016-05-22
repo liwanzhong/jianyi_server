@@ -203,7 +203,7 @@
 							renderAt: 'chart-container_zhexian',
 							id: 'myChart',
 							width: '680',
-							height: '240',
+							height: '260',
 							dataFormat: 'json',
 							dataSource: {
 								"chart": {
@@ -214,8 +214,8 @@
 									"numbersuffix": "分",
 									"showvalues": "0",
 									//Anchor Cosmatics
-									"anchorRadius": "20",
-									"anchorBorderThickness": "2",
+									"anchorRadius": "15",
+									"anchorBorderThickness": "1",
 									"yAxisMaxValue": "100",
 									"showValues": "1",
 									"lineThickness":"10",
@@ -226,6 +226,8 @@
 									"vDivLineDashed": "1",
 									"vDivLineDashLen":"5",
 									"vDivLineDashGap":"3",
+
+									"baseFontSize" : "16",
 //                    "canvasPadding": "0",
 									//Theme
 									"theme" : "fint"
