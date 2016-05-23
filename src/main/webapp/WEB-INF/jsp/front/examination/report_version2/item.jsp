@@ -219,15 +219,15 @@
 									"yAxisMaxValue": "100",
 									"showValues": "1",
 									"lineThickness":"10",
-									"numVDivLines": "6",
-									"vDivLineColor": "#99ccff",
-									"vDivLineThickness": "1",
-									"vDivLineAlpha": "70",
-									"vDivLineDashed": "1",
-									"vDivLineDashLen":"5",
-									"vDivLineDashGap":"3",
+//									"numVDivLines": "6",
+//									"vDivLineColor": "#99ccff",
+//									"vDivLineThickness": "1",
+//									"vDivLineAlpha": "70",
+//									"vDivLineDashed": "1",
+//									"vDivLineDashLen":"5",
+//									"vDivLineDashGap":"3",
 
-									"baseFontSize" : "16",
+									"baseFontSize" : "14",
 //                    "canvasPadding": "0",
 									//Theme
 									"theme" : "fint"
