@@ -75,7 +75,7 @@
                     <img src="${ctx}/front-static/report_version2/img/sad.png">
                 </c:when>
                 <c:when test="${physicalExaminationMainReportFormMap.leve_id==3}">
-                    <img src="${ctx}/front-static/report_version2/img/nanguo.jpg">
+                    <img src="${ctx}/front-static/report_version2/img/nanguo.png">
                 </c:when>
                 <c:when test="${physicalExaminationMainReportFormMap.leve_id==4}">
                     <img src="${ctx}/front-static/report_version2/img/cry.png">
