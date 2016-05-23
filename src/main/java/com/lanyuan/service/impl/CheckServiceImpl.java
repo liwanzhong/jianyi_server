@@ -468,16 +468,21 @@ public class CheckServiceImpl implements ICheckService {
 
 
     public void genSickRiskResult(PhysicalExaminationRecordFormMap recordFormMap) throws Exception {
-        //todo 获取所有的疾病风险
-        List<SickRiskItemFormMap> sickRiskItemFormMapList =  sickRiskItemMapper.findEnterprisePage(new SickRiskItemFormMap());
-        if(CollectionUtils.isEmpty(sickRiskItemFormMapList)){
-            throw new Exception("没有配置疾病项");
-        }
+
         //todo 查询当前用户
         CustomInfoFormMap customInfoFormMap = customInfoMapper.findbyFrist("id",recordFormMap.getLong("custom_id").toString(),CustomInfoFormMap.class);
         if(null == customInfoFormMap){
             throw new Exception("无效用户!");
         }
+
+        //todo 获取所有的疾病风险(根据用户性别，查询当前性别的疾病风险项)
+        SickRiskItemFormMap sickRiskItemFormMapTp = new SickRiskItemFormMap();
+        sickRiskItemFormMapTp.put("with_sex",customInfoFormMap.getInt("sex"));
+        List<SickRiskItemFormMap> sickRiskItemFormMapList =  sickRiskItemMapper.findItemsWithSex(sickRiskItemFormMapTp);
+        if(CollectionUtils.isEmpty(sickRiskItemFormMapList)){
+            throw new Exception("没有配置疾病项");
+        }
+
 
 
         //todo 查询风险等级

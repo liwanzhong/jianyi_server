@@ -18,5 +18,20 @@ ORDER BY sri.id DESC
 
 
 
+	<select id="findItemsWithSex" resultType="com.lanyuan.entity.SickRiskItemFormMap">
+SELECT
+  sri.id,
+  sri.name,
+  sri.with_sex
+FROM sick_risk_item sri
+WHERE
+1=1
+<if test="with_sex != null">
+  AND 	with_sex = 0 OR with_sex = ${with_sex}
+</if>
+ORDER BY sri.id DESC
+	</select>
+
+
 
 </mapper>

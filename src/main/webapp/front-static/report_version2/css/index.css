@@ -23,7 +23,7 @@ transform:translate(-50%,-50%);}
 .main-bottom{ height: auto; position:relative;text-align:center;margin-bottom: 30px;}
 .main-bottom span{ position:absolute;font-size:13px; font-weight:700; color:#108fd5;}
 
-.container{ width:100%; height: 600px; position:relative; margin:5px auto 0;}
+.container{ width:100%; height: 600px; position:relative; margin:8px auto 0;}
 .dot{ width:100px; height:100px; position:absolute; left: 0; top: 0;}
 #indicatorContainer2{ position:relative;}
 #indicatorContainer2 canvas{ position:absolute;}
@@ -208,22 +208,20 @@ transform:translateX(-50%);}
 .table{ margin-top:20px;}
 .table .thead{ width: 100%; height:32px; background-color: #47b1d6; margin-bottom:4px; }
 .table .thead li{ float: left; width: 25%; line-height:32px; color:#fff; font-size:14px; text-align: center; }
-.table .thead li:nth-of-type(1){ width: 17%;}
-.table .thead li:nth-of-type(2){ width: 15%;}
-.table .thead li:nth-of-type(3){ width: 26%;}
-.table .thead li:nth-of-type(4){ width: 42%;}
+.table .thead li:nth-of-type(1),.table .tbody li:nth-of-type(1){ width: 20%;}
+.table .thead li:nth-of-type(2),.table .tbody li:nth-of-type(2){ width: 15%;}
+.table .thead li:nth-of-type(3),.table .tbody li:nth-of-type(3){ width: 26%;}
+.table .thead li:nth-of-type(4),.table .tbody li:nth-of-type(4){ width: 39%;}
 
 .table .tbody{ margin-bottom:70px;}
 .table .tbody ul{ border-bottom: 1px solid #d3eef8;}
 .table .tbody li{ float: left; width: 25%; line-height:48px; color:#343434; font-size:12px; text-align: center; }
-.table .tbody li:nth-of-type(1){ width: 17%; position:relative; padding-left:22px; text-align:left;}
+.table .tbody li:nth-of-type(1){ position:relative; padding-left:22px; text-align:left;}
 .table .tbody li:nth-of-type(1) em{ width:8px; height:8px; position:absolute; left:6px; top: 50%; border-radius:50%;
 -webkit-transform:translateY(-50%);
 -moz-transform:translateY(-50%);
 transform:translateY(-50%);}
-.table .tbody li:nth-of-type(2){ width: 15%;}
-.table .tbody li:nth-of-type(3){ width: 26%;}
-.table .tbody li:nth-of-type(4){ width: 42%; line-height:14px; padding:10px 0; text-align:left;}
+.table .tbody li:nth-of-type(4){ line-height:14px; padding:10px 0; text-align:left;}
 
 .color-green{ color:#249214 !important;}
 .color-blue{ color:#469fee !important;}

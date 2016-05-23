@@ -12,4 +12,5 @@ public interface SickRiskItemMapper extends BaseMapper{
 	 List<SickRiskItemFormMap> findEnterprisePage(SickRiskItemFormMap sickRiskItemFormMap);
 
 
+	List<SickRiskItemFormMap> findItemsWithSex(SickRiskItemFormMap sickRiskItemFormMap);
 }
