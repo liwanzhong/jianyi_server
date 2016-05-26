@@ -88,9 +88,15 @@
 			AND ci.mobile = '${mobile}'
 		</if>
 		AND cbe.organization_id = ${organization_id}
-		<if test="orderby != null">
-			ORDER BY ${orderby}
-		</if>
+
+		<choose>
+			<when test="orderby != null">
+				ORDER BY ${orderby}
+			</when>
+			<otherwise>
+				ORDER BY ci.id desc
+			</otherwise>
+		</choose>
 	</select>
 
 </mapper>
