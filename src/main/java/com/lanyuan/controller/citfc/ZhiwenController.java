@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -37,7 +38,7 @@ public class ZhiwenController extends BaseController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "record",  produces = "text/json; charset=utf-8")
+	@RequestMapping(value = "record",  produces = "text/json; charset=utf-8",method = RequestMethod.POST)
 	public Map<String,Object> record(@RequestParam(value = "customerId",required = true) Long customerId,
 									@RequestParam(value = "zhiwenCode",required = true) String zhiwenCode,
 									 @RequestParam(value = "pic",required = false)String zhiwenPIC,
