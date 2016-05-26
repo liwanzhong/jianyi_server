@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class ZhiwenServiceImpl implements IZhiwenService {
 
 
-    public void record(String zhiwenCode, String filePath) throws Exception {
+    public void record(Long customId,String zhiwenCode, String filePath) throws Exception {
         System.out.println("记录指纹信息");
     }
 

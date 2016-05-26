@@ -9,7 +9,7 @@ import com.lanyuan.entity.PhysicalExaminationRecordFormMap;
 public interface IZhiwenService {
 
 
-    void record(String zhiwenCode, String filePath)throws Exception;
+    void record(Long customId,String zhiwenCode, String filePath)throws Exception;
 
     CustomInfoFormMap queryCustom(String zhiwenCode)throws Exception;
 }

@@ -37,15 +37,18 @@ public class ZhiwenController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "record",  produces = "text/json; charset=utf-8")
-	public Map<String,Object> login(@RequestParam(value = "customerId",required = true) Long customerId,
-									@RequestParam(value = "zhiwenCode",required = true) String zhiwenCode) {
+	public Map<String,Object> record(@RequestParam(value = "customerId",required = true) Long customerId,
+									@RequestParam(value = "zhiwenCode",required = true) String zhiwenCode,
+									 @RequestParam(value = "pic",required = false)String zhiwenPIC) {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
 		try {
+			//todo 如果有图片，保存图片，获取图片保存的服务器目录
 			String filePath = "";
-			zhiwenService.record(zhiwenCode,filePath);
-			retMap.put("status",1);
 
+
+			zhiwenService.record(customerId,zhiwenCode,filePath);
+			retMap.put("status",1);
 		} catch (Exception e) {
 			e.printStackTrace();
 			retMap.put("error",e.getMessage());
