@@ -48,11 +48,11 @@
 				<td>排序</td>
 				<td><input name="organizationFormMap.seq"  class="easyui-numberspinner" style="width: 140px; height: 29px;" required="required" data-options="editable:false" value="0"></td>
 				<td>菜单图标</td>
-				<td><input  name="organizationFormMap.icon" value="icon-folder"/></td>
+				<td><input  name="organizationFormMap.icon" value="icon-folder" data-options="required:true"/></td>
 			</tr>
 			<tr>
 				<td>地址</td>
-				<td colspan="3"><input  name="organizationFormMap.address" style="width: 300px;"/></td>
+				<td colspan="3"><input  name="organizationFormMap.address" style="width: 300px;" data-options="required:true"/></td>
 			</tr>
 			<tr>
 				<td>上级组织</td>
@@ -60,7 +60,6 @@
 					<select id="pid" name="organizationFormMap.pid" style="width:200px;height: 29px;"></select>
 					<a class="easyui-linkbutton" href="javascript:void(0)" onclick="$('#pid').combotree('clear');" >清空</a>
 				</td>
-
 			</tr>
 		</table>
 	</form>
