@@ -90,82 +90,7 @@ public class PhysicalExaminationRecordController extends BaseController {
             if(CollectionUtils.isEmpty(physicalExaminationRecordFormMapList)){
                 throw new Exception("参数异常");
             }
-            // 计算年龄
-            physicalExaminationRecordFormMapList.get(0).put("age",AgeCal.getAge(physicalExaminationRecordFormMapList.get(0).getDate("birthday")));
-            model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMapList.get(0));
-
-            physicalExaminationRecordFormMap = physicalExaminationRecordFormMapList.get(0);
-
-            PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = getFormMap(PhysicalExaminationMainReportFormMap.class);
-            physicalExaminationMainReportFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
-            physicalExaminationMainReportFormMap = physicalExaminationMainReportMapper.findMainResultWithColor(physicalExaminationMainReportFormMap);
-            model.addAttribute("physicalExaminationMainReportFormMap",physicalExaminationMainReportFormMap);
-
-            PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
-            physicalExaminationBigResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
-            List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = physicalExaminationBigResultMapper.findAllByOrderby(physicalExaminationBigResultFormMap);
-
-
-            // 计算每个等级的有多少个
-            //获取所有等级
-            List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList = cfPingfenLeveMapper.findByNames(getFormMap(CfPingfenLeveFormMap.class));
-            Map<Long,Integer> leveCountGroupBy = new HashMap<Long, Integer>();
-            for(CfPingfenLeveFormMap cfPingfenLeveFormMap:cfPingfenLeveFormMapList){
-                Integer count = 0;
-                for(PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMapTem:physicalExaminationBigResultFormMapList){
-                    if(physicalExaminationBigResultFormMapTem.getLong("leve_id").longValue() == cfPingfenLeveFormMap.getLong("id")){
-                        count++;
-                    }
-                }
-                leveCountGroupBy.put(cfPingfenLeveFormMap.getLong("id"),count);
-            }
-            model.addAttribute("leveCountGroupBy",leveCountGroupBy);
-
-            model.addAttribute("physicalExaminationBigResultFormMapList",physicalExaminationBigResultFormMapList);
-
-            //todo 计算bmi
-            Double bmi = physicalExaminationRecordFormMap.getDouble("weight")/(((double)physicalExaminationRecordFormMap.getInt("body_height")/100)*((double)physicalExaminationRecordFormMap.getInt("body_height")/100));
-
-            //todo 通过bmi查询当前的肥胖标准状态
-            BmiLeveConfigFormMap bmiLeveConfigFormMap = getFormMap(BmiLeveConfigFormMap.class);
-            bmiLeveConfigFormMap.put("bmi",bmi);
-            List<BmiLeveConfigFormMap> bmiLeveConfigFormMapList =  bmiLeveConfigMapper.findFixConfig(bmiLeveConfigFormMap);
-            if(CollectionUtils.isNotEmpty(bmiLeveConfigFormMapList)){
-                bmiLeveConfigFormMap = bmiLeveConfigFormMapList.get(0);
-            }
-
-            model.addAttribute("bmiLeveConfigFormMap",bmiLeveConfigFormMap);
-            model.addAttribute("bmi",bmi);
-
-
-            //todo 计算当前用户的标准体重范围
-            BmiNormalConfigFormMap bmiNormalConfigFormMap = getFormMap(BmiNormalConfigFormMap.class);
-            bmiNormalConfigFormMap.put("sex",physicalExaminationRecordFormMap.getInt("sex"));
-            bmiNormalConfigFormMap = bmiNormalConfigMapper.findSexNormalConfig(bmiNormalConfigFormMap);
-
-            BigDecimal maxWeight = bmiNormalConfigFormMap.getBigDecimal("max_bmi").multiply(new BigDecimal((((double)physicalExaminationRecordFormMap.getInt("body_height")/100))).multiply(new BigDecimal((((double)physicalExaminationRecordFormMap.getInt("body_height")/100)))));
-            BigDecimal minWeight = bmiNormalConfigFormMap.getBigDecimal("min_bmi").multiply(new BigDecimal((((double)physicalExaminationRecordFormMap.getInt("body_height")/100))).multiply(new BigDecimal((((double)physicalExaminationRecordFormMap.getInt("body_height")/100)))));
-
-            model.addAttribute("maxWeight",maxWeight.setScale(1,BigDecimal.ROUND_HALF_UP));
-            model.addAttribute("minWeight",minWeight.setScale(1,BigDecimal.ROUND_HALF_UP));
-
-
-
-            //todo 加载总评
-            ZongpingLeveDescConfigFormMap zongpingLeveDescConfigFormMap = getFormMap(ZongpingLeveDescConfigFormMap.class);
-            zongpingLeveDescConfigFormMap.put("check_total_score",physicalExaminationMainReportFormMap.getBigDecimal("check_total_score"));
-            zongpingLeveDescConfigFormMap = zongpingLeveDescConfigMapper.findFixedItem(zongpingLeveDescConfigFormMap);
-            model.addAttribute("zongpingLeveDescConfigFormMap",zongpingLeveDescConfigFormMap);
-
-            PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMapTes = getFormMap(PhysicalExaminationBigResultFormMap.class);
-            physicalExaminationBigResultFormMapTes.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
-            List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapListTest = physicalExaminationBigResultMapper.findCheckResultOrderByCheckScoreAsc(physicalExaminationBigResultFormMapTes);
-
-            String zuicha = physicalExaminationBigResultFormMapListTest.get(0).getStr("name")+"、"+physicalExaminationBigResultFormMapListTest.get(1).getStr("name")+"、"+physicalExaminationBigResultFormMapListTest.get(2).getStr("name");
-            String cicha = physicalExaminationBigResultFormMapListTest.get(3).getStr("name")+"、"+physicalExaminationBigResultFormMapListTest.get(4).getStr("name");
-
-            model.addAttribute("zuicha",zuicha);
-            model.addAttribute("cicha",cicha);
+            showReportIndex(model,physicalExaminationRecordFormMapList);
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -223,18 +148,99 @@ public class PhysicalExaminationRecordController extends BaseController {
         if(CollectionUtils.isEmpty(physicalExaminationRecordFormMapList)){
             throw new Exception("参数异常");
         }
+        showReportIndex(model, physicalExaminationRecordFormMapList);
+
+
+        return Common.BACKGROUND_PATH + "/front/examination/report_version2/report_pdf_gen";
+    }
+
+
+    /**
+     * 报告首页
+     * @param model
+     * @param physicalExaminationRecordFormMapList
+     */
+    private void showReportIndex(Model model, List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList) {
+        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap;// 计算年龄
+        physicalExaminationRecordFormMapList.get(0).put("age", AgeCal.getAge(physicalExaminationRecordFormMapList.get(0).getDate("birthday")));
         model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMapList.get(0));
 
-        PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = physicalExaminationMainReportMapper.findbyFrist("examination_record_id",physicalExaminationRecordFormMap.getStr("id"),PhysicalExaminationMainReportFormMap.class);
+        physicalExaminationRecordFormMap = physicalExaminationRecordFormMapList.get(0);
+
+        PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = getFormMap(PhysicalExaminationMainReportFormMap.class);
+        physicalExaminationMainReportFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
+        physicalExaminationMainReportFormMap = physicalExaminationMainReportMapper.findMainResultWithColor(physicalExaminationMainReportFormMap);
         model.addAttribute("physicalExaminationMainReportFormMap",physicalExaminationMainReportFormMap);
 
         PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
-        physicalExaminationBigResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getStr("id"));
-        List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = physicalExaminationBigResultMapper.findByNames(physicalExaminationBigResultFormMap);
+        physicalExaminationBigResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
+        List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = physicalExaminationBigResultMapper.findAllByOrderby(physicalExaminationBigResultFormMap);
+
+
+        // 计算每个等级的有多少个
+        //获取所有等级
+        List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList = cfPingfenLeveMapper.findByNames(getFormMap(CfPingfenLeveFormMap.class));
+        Map<Long,Integer> leveCountGroupBy = new HashMap<Long, Integer>();
+        for(CfPingfenLeveFormMap cfPingfenLeveFormMap:cfPingfenLeveFormMapList){
+            Integer count = 0;
+            for(PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMapTem:physicalExaminationBigResultFormMapList){
+                if(physicalExaminationBigResultFormMapTem.getLong("leve_id").longValue() == cfPingfenLeveFormMap.getLong("id")){
+                    count++;
+                }
+            }
+            leveCountGroupBy.put(cfPingfenLeveFormMap.getLong("id"),count);
+        }
+        model.addAttribute("leveCountGroupBy",leveCountGroupBy);
 
         model.addAttribute("physicalExaminationBigResultFormMapList",physicalExaminationBigResultFormMapList);
-        return Common.BACKGROUND_PATH + "/front/examination/report_pdf_gen";
+
+        //todo 计算bmi
+        Double bmi = physicalExaminationRecordFormMap.getDouble("weight")/(((double)physicalExaminationRecordFormMap.getInt("body_height")/100)*((double)physicalExaminationRecordFormMap.getInt("body_height")/100));
+
+        //todo 通过bmi查询当前的肥胖标准状态
+        BmiLeveConfigFormMap bmiLeveConfigFormMap = getFormMap(BmiLeveConfigFormMap.class);
+        bmiLeveConfigFormMap.put("bmi",bmi);
+        List<BmiLeveConfigFormMap> bmiLeveConfigFormMapList =  bmiLeveConfigMapper.findFixConfig(bmiLeveConfigFormMap);
+        if(CollectionUtils.isNotEmpty(bmiLeveConfigFormMapList)){
+            bmiLeveConfigFormMap = bmiLeveConfigFormMapList.get(0);
+        }
+
+        model.addAttribute("bmiLeveConfigFormMap",bmiLeveConfigFormMap);
+        model.addAttribute("bmi",bmi);
+
+
+        //todo 计算当前用户的标准体重范围
+        BmiNormalConfigFormMap bmiNormalConfigFormMap = getFormMap(BmiNormalConfigFormMap.class);
+        bmiNormalConfigFormMap.put("sex",physicalExaminationRecordFormMap.getInt("sex"));
+        bmiNormalConfigFormMap = bmiNormalConfigMapper.findSexNormalConfig(bmiNormalConfigFormMap);
+
+        BigDecimal maxWeight = bmiNormalConfigFormMap.getBigDecimal("max_bmi").multiply(new BigDecimal((((double)physicalExaminationRecordFormMap.getInt("body_height")/100))).multiply(new BigDecimal((((double)physicalExaminationRecordFormMap.getInt("body_height")/100)))));
+        BigDecimal minWeight = bmiNormalConfigFormMap.getBigDecimal("min_bmi").multiply(new BigDecimal((((double)physicalExaminationRecordFormMap.getInt("body_height")/100))).multiply(new BigDecimal((((double)physicalExaminationRecordFormMap.getInt("body_height")/100)))));
+
+        model.addAttribute("maxWeight",maxWeight.setScale(1,BigDecimal.ROUND_HALF_UP));
+        model.addAttribute("minWeight",minWeight.setScale(1,BigDecimal.ROUND_HALF_UP));
+
+
+        //todo 加载总评
+        ZongpingLeveDescConfigFormMap zongpingLeveDescConfigFormMap = getFormMap(ZongpingLeveDescConfigFormMap.class);
+        zongpingLeveDescConfigFormMap.put("check_total_score",physicalExaminationMainReportFormMap.getBigDecimal("check_total_score"));
+        zongpingLeveDescConfigFormMap = zongpingLeveDescConfigMapper.findFixedItem(zongpingLeveDescConfigFormMap);
+        model.addAttribute("zongpingLeveDescConfigFormMap",zongpingLeveDescConfigFormMap);
+
+        PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMapTes = getFormMap(PhysicalExaminationBigResultFormMap.class);
+        physicalExaminationBigResultFormMapTes.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
+        List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapListTest = physicalExaminationBigResultMapper.findCheckResultOrderByCheckScoreAsc(physicalExaminationBigResultFormMapTes);
+
+        String zuicha = physicalExaminationBigResultFormMapListTest.get(0).getStr("name")+"、"+physicalExaminationBigResultFormMapListTest.get(1).getStr("name")+"、"+physicalExaminationBigResultFormMapListTest.get(2).getStr("name");
+        String cicha = physicalExaminationBigResultFormMapListTest.get(3).getStr("name")+"、"+physicalExaminationBigResultFormMapListTest.get(4).getStr("name");
+
+        model.addAttribute("zuicha",zuicha);
+        model.addAttribute("cicha",cicha);
     }
+
+
+
+
 
 
     @RequestMapping("report_big_item")
@@ -315,12 +321,48 @@ public class PhysicalExaminationRecordController extends BaseController {
         try{
             List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = physicalExaminationResultMapper.findItemCheckResultList(recordId,physicalExaminationBigResultFormMapList.get(0).getLong("big_item_id"));
             model.addAttribute("physicalExaminationResultFormMapList",physicalExaminationResultFormMapList);
+
+            //todo 判断图表类型是不是折线图，如果是折线图，多返回一个折线图的json list
+            if(physicalExaminationBigResultFormMapList.get(0).getInt("charts_item")==7){
+                List<LineChartJSONVO> lineChartJSONVOList = new ArrayList<LineChartJSONVO>();
+                for(PhysicalExaminationResultFormMap item:physicalExaminationResultFormMapList){//遍历检测结果项，设置json对象
+                    LineChartJSONVO lineChartJSONVO = new LineChartJSONVO();
+                    if(item.getLong("tzed_leve_id_id")!=null){
+                        lineChartJSONVO.setAnchorBgColor(item.getStr("tzed_show_color"));
+                    }else{
+                        lineChartJSONVO.setAnchorBgColor(item.getStr("org_show_color"));
+                    }
+                    lineChartJSONVO.setAnchorBorderColor("");
+                    lineChartJSONVO.setLabel(item.getStr("name"));
+                    lineChartJSONVO.setValue(item.getBigDecimal("item_score").setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue()+"");
+
+                    lineChartJSONVOList.add(lineChartJSONVO);
+                }
+                if(CollectionUtils.isNotEmpty(lineChartJSONVOList)){
+                    model.addAttribute("chartJSON", JSON.toJSONString(lineChartJSONVOList));
+                }
+            }
+
+
+            List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList = cfPingfenLeveMapper.findByNames(getFormMap(CfPingfenLeveFormMap.class));
+            Map<Long,Integer> leveCountGroupBy = new HashMap<Long, Integer>();
+            for(CfPingfenLeveFormMap cfPingfenLeveFormMap:cfPingfenLeveFormMapList){
+                Integer count = 0;
+                for(PhysicalExaminationResultFormMap physicalExaminationResultFormMap:physicalExaminationResultFormMapList){
+                    if((physicalExaminationResultFormMap.getLong("tzed_leve_id_id")!=null?physicalExaminationResultFormMap.getLong("tzed_leve_id_id").longValue():physicalExaminationResultFormMap.getLong("orgin_leve_id_id").longValue()) == cfPingfenLeveFormMap.getLong("id")){
+                        count++;
+                    }
+                }
+                leveCountGroupBy.put(cfPingfenLeveFormMap.getLong("id"),count);
+            }
+            model.addAttribute("leveCountGroupBy",leveCountGroupBy);
+
         }catch (Exception ex){
             ex.printStackTrace();
         }
 
 
-        return Common.BACKGROUND_PATH + "/front/examination/report_big_item_pdf_gen";
+        return Common.BACKGROUND_PATH + "/front/examination/report_version2/report_big_item_pdf_gen";
     }
 
 

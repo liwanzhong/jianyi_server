@@ -134,6 +134,8 @@ public class ReportPDFGenController {
 
 		Pdf pdf = new Pdf();
 		pdf.addParam(new Param("--enable-javascript"));
+		pdf.addParam(new Param("--no-stop-slow-scripts"));
+		pdf.addParam(new Param("--javascript-delay 4000"));
 		pdf.addPage(httpUrl, PageType.url);
 		File outFile = pdf.saveAs(pdfFilePath.toString());
 		return outFile.getAbsolutePath();

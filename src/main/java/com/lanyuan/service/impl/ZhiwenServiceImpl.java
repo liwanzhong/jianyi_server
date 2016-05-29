@@ -1,5 +1,6 @@
 package com.lanyuan.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.lanyuan.entity.CustomZhiwenFormMap;
 import com.lanyuan.entity.EquipmentFormMap;
 import com.lanyuan.mapper.CustomZhiwenMapper;
@@ -12,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by liwanzhong on 2016/5/9.
@@ -46,19 +45,33 @@ public class ZhiwenServiceImpl implements IZhiwenService {
      */
     public void record(Long customId,String zhiwenCode, String filePath,Integer position,String instrument) throws Exception {
         logger.info("=========================================记录指纹信息================================");
-        CustomZhiwenFormMap customZhiwenFormMap = new CustomZhiwenFormMap();
-        customZhiwenFormMap.put("custom_id",customId);
-        customZhiwenFormMap.put("zhiwen_code",zhiwenCode);
-        customZhiwenFormMap.put("zhiwen_path",filePath);
-        customZhiwenFormMap.put("insert_time",simpleDateFormat.format(new Date()));
-        customZhiwenFormMap.put("finger_position",position);
-
+        //TODO 解析指纹数据为map
+        Map zhiwenMap = JSON.parseObject(zhiwenCode,Map.class);
+        if(zhiwenMap == null){
+            throw new Exception("没有指纹模板数据!");
+        }
         // 获取仪器id
         EquipmentFormMap equipmentFormMap = equipmentMapper.findbyFrist("istmt_code",instrument, EquipmentFormMap.class);
-        if(equipmentFormMap!=null){
-            customZhiwenFormMap.put("Instrument_id",equipmentFormMap.getLong("id"));
+        if(equipmentFormMap == null){
+            throw new Exception("无效检测");
         }
-        customZhiwenMapper.addEntity(customZhiwenFormMap);
+        Set keySet = zhiwenMap.keySet();
+        Iterator iterator = keySet.iterator();
+
+        while (iterator.hasNext()){
+            CustomZhiwenFormMap customZhiwenFormMap = new CustomZhiwenFormMap();
+            customZhiwenFormMap.put("custom_id",customId);
+            Object key = iterator.next();
+            customZhiwenFormMap.put("zhiwen_code",zhiwenMap.get(key));
+            customZhiwenFormMap.put("zhiwen_path",filePath);
+            customZhiwenFormMap.put("insert_time",simpleDateFormat.format(new Date()));
+            customZhiwenFormMap.put("finger_position",key);
+            customZhiwenFormMap.put("Instrument_id",equipmentFormMap.getLong("id"));
+
+            customZhiwenMapper.addEntity(customZhiwenFormMap);
+        }
+
+
 
     }
 

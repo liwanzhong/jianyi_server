@@ -68,8 +68,8 @@ $(function() {
 		}, {
 			name : "操作",
 			renderData : function( rowindex ,data, rowdata, colkeyn) {
-				//return "<a href='javascript:void(genTestData("+rowdata.id+","+rowdata.id+"))'>生成检测数据</a>&nbsp;&nbsp;&nbsp;<a href='"+rootPath+"/custom/info/front_edit.shtml?id="+rowdata.id+"'>编辑</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem("+rowdata.belongToId+"));'>删除</a>";
-				return "<a href='"+rootPath+"/custom/info/front_edit.shtml?id="+rowdata.id+"'>编辑</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem("+rowdata.belongToId+"));'>删除</a>";
+				return "<a href='javascript:void(genTestData("+rowdata.id+","+rowdata.id+"))'>生成检测数据</a>&nbsp;&nbsp;&nbsp;<a href='"+rootPath+"/custom/info/front_edit.shtml?id="+rowdata.id+"'>编辑</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem("+rowdata.belongToId+"));'>删除</a>";
+				//return "<a href='"+rootPath+"/custom/info/front_edit.shtml?id="+rowdata.id+"'>编辑</a>&nbsp;&nbsp;&nbsp;<a href='javascript:void(deleteCurrentitem("+rowdata.belongToId+"));'>删除</a>";
 			}
 		} ],
 		jsonUrl : rootPath + '/custom/info/findByPage.shtml',
