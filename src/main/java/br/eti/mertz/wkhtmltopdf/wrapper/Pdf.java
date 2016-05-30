@@ -109,6 +109,7 @@ public class Pdf implements PdfService {
     private String[] getCommandAsArray() {
         List<String> commandLine = new ArrayList<String>();
         commandLine.add(wrapperConfig.getWkhtmltopdfCommand());
+//        commandLine.add(wrapperConfig.getWkhtmltoimageCommand());
 
         if (hasToc)
             commandLine.add("toc");
@@ -180,13 +181,18 @@ public class Pdf implements PdfService {
     public  static void main(String[] args)throws Exception{
         StringBuffer pdfFilePath = new StringBuffer("D:\\idea-workspack\\works");
         pdfFilePath.append(File.separator);
-        pdfFilePath.append("test.pdf");
+        pdfFilePath.append("test13.pdf");
 
         Pdf pdf = new Pdf();
         pdf.addParam(new Param("--enable-javascript"));
-        /*pdf.addParam(new Param("--no-stop-slow-scripts"));
-        pdf.addParam(new Param("--javascript-delay '4000'"));*/
-        pdf.addPage("http://localhost:8080/examination/physicalExamination/report_big_item_pdf_gen.shtml?recordId=146&bigItemId=22", PageType.url);
+        pdf.addParam(new Param("--no-stop-slow-scripts"));
+        /*pdf.addParam(new Param("--window-status"));
+        pdf.addParam(new Param("loadend"));*/
+
+        pdf.addParam(new Param("--javascript-delay"));
+        pdf.addParam(new Param("4000"));
+//        pdf.addPage("http://localhost:8080/examination/physicalExamination/report_big_item_pdf_gen.shtml?recordId=146&bigItemId=22", PageType.url);
+        pdf.addPage("http://localhost:63342/lanyuan-notebook-3.1v/src/main/webapp/charts.html", PageType.file);
         pdf.saveAs(pdfFilePath.toString());
     }
 }
