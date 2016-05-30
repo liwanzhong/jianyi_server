@@ -184,8 +184,8 @@ public class Pdf implements PdfService {
 
         Pdf pdf = new Pdf();
         pdf.addParam(new Param("--enable-javascript"));
-        pdf.addParam(new Param("--no-stop-slow-scripts"));
-        pdf.addParam(new Param("--javascript-delay '4000'"));
+        /*pdf.addParam(new Param("--no-stop-slow-scripts"));
+        pdf.addParam(new Param("--javascript-delay '4000'"));*/
         pdf.addPage("http://localhost:8080/examination/physicalExamination/report_big_item_pdf_gen.shtml?recordId=146&bigItemId=22", PageType.url);
         pdf.saveAs(pdfFilePath.toString());
     }
