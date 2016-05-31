@@ -108,8 +108,8 @@ public class Pdf implements PdfService {
 
     private String[] getCommandAsArray() {
         List<String> commandLine = new ArrayList<String>();
-        commandLine.add(wrapperConfig.getWkhtmltopdfCommand());
-//        commandLine.add(wrapperConfig.getWkhtmltoimageCommand());
+//        commandLine.add(wrapperConfig.getWkhtmltopdfCommand());
+        commandLine.add(wrapperConfig.getWkhtmltoimageCommand());
 
         if (hasToc)
             commandLine.add("toc");
