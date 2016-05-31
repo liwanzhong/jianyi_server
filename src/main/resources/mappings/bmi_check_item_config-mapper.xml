@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.BmiCheckItemConfigMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache"
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+
+
+	<select id="findPage" resultType="com.lanyuan.entity.BmiCheckItemConfigFormMap">
+SELECT
+		bcic.id,
+		bcic.bmi_min,
+		bcic.bmi_max,
+		bcic.age_min,
+		bcic.age_max,
+		(SELECT
+		cpl.name
+		FROM cf_pingfen_leve cpl
+		WHERE cpl.id = bcic.org_leve_id) AS org_leve_id,
+		(SELECT
+		cpl.name
+		FROM cf_pingfen_leve cpl
+		WHERE cpl.id = bcic.tz_leve_id) AS tz_leve_id,
+		bcic.rout,
+		bcic.check_item_id,
+		bcic.check_type
+		FROM bmi_check_item_config bcic
+WHERE 1=1
+ <if test="check_item_id != null">
+	AND bcic.check_item_id = ${check_item_id}
+ </if>
+<if test="check_type != null">
+	AND bcic.check_type = ${check_type}
+</if>
+<if test="orderby != null">
+	ORDER BY ${orderby}
+</if>
+	</select>
+
+	
+</mapper>
