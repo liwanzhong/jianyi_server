@@ -242,6 +242,59 @@
 					});
 				</script>
 			</c:when>
+			<c:when test="${physicalExaminationBigResultFormMap.charts_item == 8}">
+				<div class="column-4">
+					<ul class="ul-w clearfix">
+						<c:forEach items="${physicalExaminationResultFormMapList}" var="item">
+							<li>
+								<div class="column-4-main">
+									<%--<div class="column-4-word">体<br/>液<br/>酸<br/>碱<br/>度</div>--%>
+									<div class="column-4-word">${item.name}</div>
+									<div class="column-4-score"><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分</div>
+								</div>
+							</li>
+						</c:forEach>
+
+						<%--<li>
+							<div class="column-4-main">
+								<div class="column-4-word">肾<br/>脏<br/>排<br/>毒<br/>功<br/>能</div>
+								<div class="column-4-score"><span>70.16</span>分</div>
+							</div>
+						</li>
+						<li>
+							<div class="column-4-main">
+								<div class="column-4-word">膀<br/>胱<br/>功<br/>能</div>
+								<div class="column-4-score"><span>42.16</span>分</div>
+							</div>
+						</li>
+						<li>
+							<div class="column-4-main">
+								<div class="column-4-word">激<br/>素<br/>分<br/>泌</div>
+								<div class="column-4-score"><span>82.16</span>分</div>
+							</div>
+						</li>
+						<li>
+							<div class="column-4-main">
+								<div class="column-4-word">肾<br/>脏<br/>代<br/>谢</div>
+								<div class="column-4-score"><span>80</span>分</div>
+							</div>
+						</li>
+						<li>
+							<div class="column-4-main">
+								<div class="column-4-word">肾<br/>脏<br/>代<br/>谢</div>
+								<div class="column-4-score"><span>80</span>分</div>
+							</div>
+						</li>
+						<li>
+							<div class="column-4-main">
+								<div class="column-4-word">肾<br/>脏<br/>代<br/>谢</div>
+								<div class="column-4-score"><span>80</span>分</div>
+							</div>
+						</li>--%>
+
+					</ul>
+				</div>
+			</c:when>
 			<c:otherwise>
 				<!--柱形图-->
 				<div class="column">

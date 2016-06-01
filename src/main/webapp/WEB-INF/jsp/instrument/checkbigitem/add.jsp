@@ -93,6 +93,7 @@
 							<option value="5">凹型柱状图</option>
 							<option value="6">箭头柱状图</option>
 							<option value="7">折线图</option>
+							<option value="8">圆点柱状图</option>
 						</select>
 					</td>
 				</tr>
