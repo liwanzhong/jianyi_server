@@ -58,23 +58,18 @@ $(function(e){
 		$('.max-main').eq(index).css('height',Height);
 		//颜色变化
 		if( score>=pingfen.pingfen_1min && score<=pingfen.pingfen_1max ){
-			$('.max-top').eq(index).addClass('color-green');
 			$('.max-b').eq(index).addClass('oo-green');
 			$('.max-main').eq(index).addClass('ooo-green');
 		}else if( score>=pingfen.pingfen_2min && score<=pingfen.pingfen_2max ){
-			$('.max-top').eq(index).addClass('color-blue');
 			$('.max-b').eq(index).addClass('oo-blue');
 			$('.max-main').eq(index).addClass('ooo-blue');
 		}else if( score>=pingfen.pingfen_3min && score<=pingfen.pingfen_3max ){
-			$('.max-top').eq(index).addClass('color-yellow');
 			$('.max-b').eq(index).addClass('oo-yellow');
 			$('.max-main').eq(index).addClass('ooo-yellow');
 		}else if( score>=pingfen.pingfen_4min && score<=pingfen.pingfen_4max ){
-			$('.max-top').eq(index).addClass('color-orange');
 			$('.max-b').eq(index).addClass('oo-orange');
 			$('.max-main').eq(index).addClass('ooo-orange');
 		}else if( score>=pingfen.pingfen_5min && score<=pingfen.pingfen_5max ){
-			$('.max-top').eq(index).addClass('color-red');
 			$('.max-b').eq(index).addClass('oo-red');
 			$('.max-main').eq(index).addClass('ooo-red');
 		}
@@ -126,7 +121,33 @@ $(function(e){
 		$('.up-sanjiao').eq(index).css('top',H);
 		$('.up-score').eq(index).css('top',H-20);
 	});
-	
+
+	//柱状图4
+	$('.column-4>ul').each(function(index, element) {
+		var liW = 100/$(element).children('li').length+'%';
+		$(element).children('li').css('width',liW);
+    });
+	$('.column-4-score span').each(function(index, element) {
+		var score = $(element).text();
+		var Height = score+'%';
+		//柱形高度变化
+		$('.column-4-main').eq(index).css('height',Height);
+		//颜色变化
+		if( score>=pingfen.pingfen_1min && score<=pingfen.pingfen_1max ){
+			$('.column-4-score').eq(index).addClass('bg-green');
+		}else if( score>=pingfen.pingfen_2min && score<=pingfen.pingfen_2max ){
+			$('.column-4-score').eq(index).addClass('bg-blue');
+		}else if( score>=pingfen.pingfen_3min && score<=pingfen.pingfen_3max ){
+			$('.column-4-score').eq(index).addClass('bg-yellow');
+		}else if( score>=pingfen.pingfen_4min && score<=pingfen.pingfen_4max ){
+			$('.column-4-score').eq(index).addClass('bg-orange');
+		}else if( score>=pingfen.pingfen_5min && score<=pingfen.pingfen_5max ){
+			$('.column-4-score').eq(index).addClass('bg-red');
+		}
+		
+    });
+
+
 	//渐变图表
 	$('.shade-num span').each(function(index, element) {
 		var score = $(element).text();
