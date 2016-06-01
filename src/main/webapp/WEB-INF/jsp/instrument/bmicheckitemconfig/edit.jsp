@@ -8,7 +8,7 @@
 			parentField : 'pid',
 			lines : true,
 			panelHeight : 'auto',
-			value : '${bmiCheckItemConfigFormMap.orgin_pingfen_id}'
+			value : '${bmiCheckItemConfigFormMap.org_leve_id}'
 		});
 
 		$('#tz_leve_id').combotree({
@@ -16,7 +16,7 @@
 			parentField : 'pid',
 			lines : true,
 			panelHeight : 'auto',
-			value : '${bmiCheckItemConfigFormMap.tz_pingfen_id}'
+			value : '${bmiCheckItemConfigFormMap.tz_leve_id}'
 		});
 
 		$('#userEditForm').form({
@@ -48,6 +48,7 @@
 		<form id="userEditForm" method="post">
 			<input type="hidden" value="${bmiCheckItemConfigFormMap.check_item_id}" name="bmiCheckItemConfigFormMap.check_item_id">
 			<input type="hidden" value="${bmiCheckItemConfigFormMap.check_type}" name="bmiCheckItemConfigFormMap.check_type">
+			<input type="hidden" value="${bmiCheckItemConfigFormMap.id}" name="bmiCheckItemConfigFormMap.id">
 			<table class="grid">
 				<tr>
 					<td>BMI范围</td>
@@ -80,7 +81,8 @@
 				<tr>
 					<td>调整几率</td>
 					<td colspan="3">
-						<input name="bmiCheckItemConfigFormMap.rout" placeholder="调整记录(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="${bmiCheckItemConfigFormMap.rout}">					</td>
+						<input name="bmiCheckItemConfigFormMap.rout" placeholder="调整记录(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="${bmiCheckItemConfigFormMap.rout}">%
+					</td>
 				</tr>
 			</table>
 		</form>

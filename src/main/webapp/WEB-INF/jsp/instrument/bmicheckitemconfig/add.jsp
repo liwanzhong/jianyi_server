@@ -81,7 +81,7 @@
 				<tr>
 					<td>调整几率</td>
 					<td colspan="3">
-						<input name="bmiCheckItemConfigFormMap.rout" placeholder="调整记录(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="">
+						<input name="bmiCheckItemConfigFormMap.rout" placeholder="调整记录(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="">%
 					</td>
 				</tr>
 			</table>

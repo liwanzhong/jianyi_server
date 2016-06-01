@@ -11,4 +11,5 @@ public interface BmiCheckItemConfigMapper extends BaseMapper{
 
 	 List<BmiCheckItemConfigFormMap> findPage(BmiCheckItemConfigFormMap bmiCheckItemConfigFormMap);
 
+	List<BmiCheckItemConfigFormMap> findFixedOneItem(BmiCheckItemConfigFormMap bmiCheckItemConfigFormMap);
 }

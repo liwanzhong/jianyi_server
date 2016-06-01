@@ -142,8 +142,8 @@
 			}
 			parent.$.modalDialog({
 				title : '编辑',
-				width : '50%',
-				height : '40%',
+				width : '60%',
+				height : '60%',
 				href : '${ctx}/instrument/BmiCheckItemConfig/editPage.shtml?id=' + id,
 				buttons : [ {
 					text : '编辑',

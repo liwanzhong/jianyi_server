@@ -208,6 +208,10 @@ public class CheckServiceImpl implements ICheckService {
     private CheckValueScoreInMapper checkValueScoreInMapper;
 
 
+    @Inject
+    private BmiCheckItemConfigMapper bmiCheckItemConfigMapper;
+
+
     /**
      * 生成检测项检测结果
      * @param customInfoFormMap
@@ -259,62 +263,79 @@ public class CheckServiceImpl implements ICheckService {
                         }
                     }
 
-
-                    // 查找小项等级评分调整概率
-                    CfPingfenRoutFormMap cfPingfenRoutFormMap = new CfPingfenRoutFormMap();
-                    // 计算用户年龄
                     Date birthday = customInfoFormMap.getDate("birthday");
-                    cfPingfenRoutFormMap.put("age", AgeCal.getAge(birthday));
-                    cfPingfenRoutFormMap.put("small_id",checkSmallItemFormMap.getLong("id"));
-                    cfPingfenRoutFormMap.put("orgin_pingfen_id",checkSmallItemResult.getLong("orgin_leve_id"));
-                    List<CfPingfenRoutFormMap> cfPingfenRoutFormMapList = cfPingfenRoutMapper.findSmallItemRout(cfPingfenRoutFormMap);
-                    if(CollectionUtils.isNotEmpty(cfPingfenRoutFormMapList)){
-                        cfPingfenRoutFormMap = cfPingfenRoutFormMapList.get(0);
 
-                        int maxTz = 0;
-                        int minTz = 1000;
-                        int randomNumberTz = (int) Math.round(Math.random()*(maxTz-minTz)+minTz);
+                    //todo 获取bmi评分调整配置（如果bmi评分调整配置的有，则忽略年龄评分配置）
+                    BmiCheckItemConfigFormMap bmiCheckItemConfigFormMap = new BmiCheckItemConfigFormMap();
+                    Double weight =customInfoFormMap.getDouble("weight");
+                    Double height =Double.parseDouble(customInfoFormMap.get("body_height").toString());
+                    Double bmi = weight/((height/100)*(height/100));
 
-                        if(randomNumberTz >=cfPingfenRoutFormMap.getDouble("rout_min")*1000 && randomNumberTz<=cfPingfenRoutFormMap.getDouble("rout_max")*1000){
-                            checkSmallItemResult.put("tzed_leve_id",cfPingfenRoutFormMap.getLong("tz_pingfen_id"));
-                            //todo 随机生成得分等级范围内的得分值  B
-                            CfPingfenLeveFormMap cfPingfenLeveFormMap = null;
-                            for(CfPingfenLeveFormMap temp:cfPingfenLeveFormMapList){
-                                if(temp.getLong("id").longValue() == cfPingfenRoutFormMap.getLong("tz_pingfen_id")){
+                    bmiCheckItemConfigFormMap.put("age",AgeCal.getAge(birthday));//年龄
+                    bmiCheckItemConfigFormMap.put("bmi",new BigDecimal(bmi).setScale(3,BigDecimal.ROUND_HALF_UP));//BMI
+                    bmiCheckItemConfigFormMap.put("check_item_id",checkSmallItemFormMap.getLong("id"));//检测小项
+                    bmiCheckItemConfigFormMap.put("check_type",2);
+                    List<BmiCheckItemConfigFormMap> bmiCheckItemConfigFormMapList = bmiCheckItemConfigMapper.findFixedOneItem(bmiCheckItemConfigFormMap);
+
+
+                    List<CfPingfenRoutFormMap> cfPingfenRoutFormMapList = null;
+                    if(CollectionUtils.isEmpty(bmiCheckItemConfigFormMapList)){
+                        // 查找小项等级评分调整概率
+                        CfPingfenRoutFormMap cfPingfenRoutFormMap = new CfPingfenRoutFormMap();
+                        // 计算用户年龄
+                        cfPingfenRoutFormMap.put("age", AgeCal.getAge(birthday));
+                        cfPingfenRoutFormMap.put("small_id",checkSmallItemFormMap.getLong("id"));
+                        cfPingfenRoutFormMap.put("orgin_pingfen_id",checkSmallItemResult.getLong("orgin_leve_id"));
+                        cfPingfenRoutFormMapList = cfPingfenRoutMapper.findSmallItemRout(cfPingfenRoutFormMap);
+                    }
+
+
+                    int maxTz = 0;
+                    int minTz = 1000;
+                    int randomNumberTz = (int) Math.round(Math.random()*(maxTz-minTz)+minTz);
+
+                    CfPingfenLeveFormMap cfPingfenLeveFormMap = null;
+                    if(CollectionUtils.isNotEmpty(bmiCheckItemConfigFormMapList) && bmiCheckItemConfigFormMapList.size()==1){
+                        BmiCheckItemConfigFormMap bmiCheckItemConfigFormMapTemp = bmiCheckItemConfigFormMapList.get(0);
+                        if(randomNumberTz <=bmiCheckItemConfigFormMapTemp.getBigDecimal("rout").doubleValue()*1000) {
+                            checkSmallItemResult.put("tzed_leve_id", bmiCheckItemConfigFormMapTemp.getLong("tz_leve_id"));
+                            // 随机生成得分等级范围内的得分值  B
+                            for (CfPingfenLeveFormMap temp : cfPingfenLeveFormMapList) {
+                                if (temp.getLong("id").longValue() ==  bmiCheckItemConfigFormMapTemp.getLong("tz_leve_id")) {
                                     cfPingfenLeveFormMap = temp;
                                     break;
                                 }
                             }
-
-                            //生成随机范围内的得分,作为调整后的得分
-                            int tzmax = cfPingfenLeveFormMap.getDouble("pingfen_min").intValue()*1000;
-                            int tzmin = cfPingfenLeveFormMap.getDouble("pingfen_max").intValue()*1000;
-                            int tzScoreRandom = (int) Math.round(Math.random()*(tzmax-tzmin)+tzmin);
-                            BigDecimal tzB = new BigDecimal(tzScoreRandom/1000d);
-
-                            //查询小项的检测值与得分范围配置表
-                            /*CheckValueScoreInFormMap checkValueScoreInFormMap = new CheckValueScoreInFormMap();
-                            checkSmallItemFormMap.put("check_small_item",checkSmallItemFormMap.getLong("id"));
-                            checkSmallItemFormMap.put("tzScore",tzB);
-                            CheckValueScoreInFormMap checkValueScoreInFormMap_fixed = checkValueScoreInMapper.findFixedFirst(checkValueScoreInFormMap);*/
-
-                            /*if(checkValueScoreInFormMap_fixed!=null){//有配置得分与检测值对应范围
-                                int minTZCheckvalue = checkValueScoreInFormMap_fixed.getBigDecimal("check_min_value").intValue()*1000;
-                                int maxTZCheckValue = checkValueScoreInFormMap_fixed.getBigDecimal("check_max_value").intValue()*1000;
-                                int tzCheckValueRandom = (int) Math.round(Math.random()*(maxTZCheckValue-minTZCheckvalue)+minTZCheckvalue);
-
-                                checkSmallItemResult.put("check_value",tzCheckValueRandom);
-                            }else{//没有配置检测值与得分对应范围，使用以前的公式倒推法，但是检测值不在检测值范围内，最好还是全部配置为好
-                                //A ? = (100-B)*M+n1
-                                BigDecimal tzA = new BigDecimal(100).subtract(tzB).multiply(M).add(n1);
-                                checkSmallItemResult.put("check_value",tzA);
-                            }*/
-
-                            //A ? = (100-B)*M+n1
-                            BigDecimal tzA = new BigDecimal(100).subtract(tzB).multiply(M).add(n1);
-                            checkSmallItemResult.put("check_value",tzA);
-                            checkSmallItemResult.put("item_score",tzB);
                         }
+
+                    }else if(CollectionUtils.isNotEmpty(cfPingfenRoutFormMapList) && cfPingfenRoutFormMapList.size() ==1){
+                        CfPingfenRoutFormMap cfPingfenRoutFormMap = cfPingfenRoutFormMapList.get(0);
+                        if(randomNumberTz >=cfPingfenRoutFormMap.getDouble("rout_min")*1000 && randomNumberTz<=cfPingfenRoutFormMap.getDouble("rout_max")*1000) {
+                            checkSmallItemResult.put("tzed_leve_id", cfPingfenRoutFormMap.getLong("tz_pingfen_id"));
+                            // 随机生成得分等级范围内的得分值  B
+                            for (CfPingfenLeveFormMap temp : cfPingfenLeveFormMapList) {
+                                if (temp.getLong("id").longValue() == cfPingfenRoutFormMap.getLong("tz_pingfen_id")) {
+                                    cfPingfenLeveFormMap = temp;
+                                    break;
+                                }
+                            }
+                        }
+                    }else{
+                        System.out.println("无等级调整");
+                    }
+
+
+                    if(cfPingfenLeveFormMap !=null){
+                        //生成随机范围内的得分,作为调整后的得分
+                        int tzmax = cfPingfenLeveFormMap.getDouble("pingfen_min").intValue()*1000;
+                        int tzmin = cfPingfenLeveFormMap.getDouble("pingfen_max").intValue()*1000;
+                        int tzScoreRandom = (int) Math.round(Math.random()*(tzmax-tzmin)+tzmin);
+                        BigDecimal tzB = new BigDecimal(tzScoreRandom/1000d);
+
+                        //A ? = (100-B)*M+n1
+                        BigDecimal tzA = new BigDecimal(100).subtract(tzB).multiply(M).add(n1);
+                        checkSmallItemResult.put("check_value",tzA);
+                        checkSmallItemResult.put("item_score",tzB);
                     }
 
                     //根据调整概率，生成新的功能等级

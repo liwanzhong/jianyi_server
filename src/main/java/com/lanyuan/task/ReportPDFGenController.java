@@ -143,6 +143,10 @@ public class ReportPDFGenController {
 		Pdf pdf = new Pdf();
 		pdf.addParam(new Param("--enable-javascript"));
 		pdf.addParam(new Param("--no-stop-slow-scripts"));
+		pdf.addParam(new Param("--quality"));
+		pdf.addParam(new Param("100"));
+		pdf.addParam(new Param("--width"));
+		pdf.addParam(new Param(PageSize.A4.getWidth()+""));
 //		pdf.addParam(new Param("--javascript-delay 4000"));
 		pdf.addParam(new Param("--javascript-delay"));
 		pdf.addParam(new Param("4000"));
@@ -167,7 +171,7 @@ public class ReportPDFGenController {
 	 * @throws DocumentException
 	 */
 	public void convertPNG2PDF(String PDF,String IMAGE) throws IOException, DocumentException {
-		Document document = new Document(PageSize.A4.rotate());
+		Document document = new Document(PageSize.A4);
 		PdfWriter.getInstance(document, new FileOutputStream(PDF));
 		document.open();
 //        document.add(new Paragraph("Berlin!"));
@@ -176,7 +180,7 @@ public class ReportPDFGenController {
         image.scaleAbsolute(PageSize.A4.rotate());
         image.setAbsolutePosition(0, 0);*/
 		Image image = Image.getInstance(IMAGE);
-		image.scaleAbsolute(PageSize.A4.rotate());//设置图片的绝对位置（即PDF的A4的大小，就是正好覆盖A4的整个页面）
+		image.scaleAbsolute(PageSize.A4);//设置图片的绝对位置（即PDF的A4的大小，就是正好覆盖A4的整个页面）
 //		image.scaleAbsolute(PageSize.A4.rotate().getWidth(),PageSize.A4.rotate().getHeight());
 		image.setAbsolutePosition(0, 0);//设置图片放在PDF的起始位置
 		document.add(image);
