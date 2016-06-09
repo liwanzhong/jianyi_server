@@ -21,7 +21,10 @@
        cbi.order_by,
        cbi.insert_time,
        cbi.update_time,
-       cbi.quanzhong
+       cbi.quanzhong,
+       cbi.tips_content,
+       cbi.withbmi,
+       cbi.icon
 	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.CheckBigItemFormMap">

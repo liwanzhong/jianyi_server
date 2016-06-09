@@ -265,18 +265,27 @@ public class CheckServiceImpl implements ICheckService {
 
                     Date birthday = customInfoFormMap.getDate("birthday");
 
-                    //todo 获取bmi评分调整配置（如果bmi评分调整配置的有，则忽略年龄评分配置）
-                    BmiCheckItemConfigFormMap bmiCheckItemConfigFormMap = new BmiCheckItemConfigFormMap();
-                    Double weight =customInfoFormMap.getDouble("weight");
-                    Double height =Double.parseDouble(customInfoFormMap.get("body_height").toString());
-                    Double bmi = weight/((height/100)*(height/100));
 
-                    bmiCheckItemConfigFormMap.put("age",AgeCal.getAge(birthday));//年龄
-                    bmiCheckItemConfigFormMap.put("bmi",new BigDecimal(bmi).setScale(3,BigDecimal.ROUND_HALF_UP));//BMI
-                    bmiCheckItemConfigFormMap.put("check_item_id",checkSmallItemFormMap.getLong("id"));//检测小项
-                    bmiCheckItemConfigFormMap.put("check_type",2);
-                    List<BmiCheckItemConfigFormMap> bmiCheckItemConfigFormMapList = bmiCheckItemConfigMapper.findFixedOneItem(bmiCheckItemConfigFormMap);
+                    //看看当前大项是否需要关联BMi，如果需要关联BMI，则查询出BMI关联配置，否则就直接去原等级调整
+                    CheckBigItemFormMap checkBigItemFormMap = checkBigItemMapper.findbyFrist("id",checkSmallItemFormMap.get("big_item_id").toString(),CheckBigItemFormMap.class);
+                    if(checkBigItemFormMap == null ){
+                        throw new Exception("配置异常!");
+                    }
+                    List<BmiCheckItemConfigFormMap> bmiCheckItemConfigFormMapList = new ArrayList<BmiCheckItemConfigFormMap>();
+                    if(checkBigItemFormMap.getInt("withbmi") == 1){
+                        //todo 获取bmi评分调整配置（如果bmi评分调整配置的有，则忽略年龄评分配置）
+                        BmiCheckItemConfigFormMap bmiCheckItemConfigFormMap = new BmiCheckItemConfigFormMap();
+                        Double weight =customInfoFormMap.getDouble("weight");
+                        Double height =Double.parseDouble(customInfoFormMap.get("body_height").toString());
+                        Double bmi = weight/((height/100)*(height/100));
 
+                        bmiCheckItemConfigFormMap.put("age",AgeCal.getAge(birthday));//年龄
+                        bmiCheckItemConfigFormMap.put("bmi",new BigDecimal(bmi).setScale(3,BigDecimal.ROUND_HALF_UP));//BMI
+                        bmiCheckItemConfigFormMap.put("check_item_id",checkSmallItemFormMap.getLong("id"));//检测小项
+                        bmiCheckItemConfigFormMap.put("check_type",2);
+                        bmiCheckItemConfigFormMapList = bmiCheckItemConfigMapper.findFixedOneItem(bmiCheckItemConfigFormMap);
+
+                    }
 
                     List<CfPingfenRoutFormMap> cfPingfenRoutFormMapList = null;
                     if(CollectionUtils.isEmpty(bmiCheckItemConfigFormMapList)){
@@ -290,11 +299,14 @@ public class CheckServiceImpl implements ICheckService {
                     }
 
 
+
                     int maxTz = 0;
                     int minTz = 1000;
                     int randomNumberTz = (int) Math.round(Math.random()*(maxTz-minTz)+minTz);
 
                     CfPingfenLeveFormMap cfPingfenLeveFormMap = null;
+
+
                     if(CollectionUtils.isNotEmpty(bmiCheckItemConfigFormMapList) && bmiCheckItemConfigFormMapList.size()==1){
                         BmiCheckItemConfigFormMap bmiCheckItemConfigFormMapTemp = bmiCheckItemConfigFormMapList.get(0);
                         if(randomNumberTz <=bmiCheckItemConfigFormMapTemp.getBigDecimal("rout").doubleValue()*1000) {

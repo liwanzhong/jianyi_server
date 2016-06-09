@@ -10,6 +10,7 @@
 
 	<select id="findList" resultType="com.lanyuan.entity.CustomZhiwenFormMap">
 SELECT
+  cz.id,
   cz.custom_id,
   cz.zhiwen_code,
   cz.zhiwen_path,
