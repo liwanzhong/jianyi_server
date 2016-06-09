@@ -65,6 +65,22 @@
 					</td>
 				</tr>
 				<tr>
+					<td>是否关联BMI${checkBigItemFormMap.withbmi}</td>
+					<td colspan="3">
+						<c:choose>
+							<c:when test="${checkBigItemFormMap.withbmi == 0}">
+								<input name="checkBigItemFormMap.withbmi" type="radio" class="easyui-validatebox" data-options="required:true" checked value="0">不关联BMI
+								<input name="checkBigItemFormMap.withbmi" type="radio" class="easyui-validatebox" data-options="required:true" value="1">关联BMI
+							</c:when>
+							<c:when test="${checkBigItemFormMap.withbmi == 1}">
+								<input name="checkBigItemFormMap.withbmi" type="radio" class="easyui-validatebox" data-options="required:true"  value="0">不关联BMI
+								<input name="checkBigItemFormMap.withbmi" type="radio" class="easyui-validatebox" data-options="required:true" value="1" checked>关联BMI
+							</c:when>
+						</c:choose>
+
+					</td>
+				</tr>
+				<tr>
 					<td>易发年龄</td>
 					<td colspan="3">
 						<input name="checkBigItemFormMap.normal_age" type="text" placeholder="请输入易发年龄" value="${checkBigItemFormMap.normal_age}" >

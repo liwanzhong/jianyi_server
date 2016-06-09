@@ -41,24 +41,87 @@
 					width : '120',
 					title : '是否显示',
 					field : 'show_exc_tips',
-					sortable : true,
 					formatter : function(value, row, index) {
 						return value==0?'不显示':'显示';
 					}
+				}, {
+					width : '120',
+					title : '权重系数',
+					field : 'quanzhong'
+				}, {
+					width : '120',
+					title : '性别区分',
+					field : 'withsex',
+					formatter : function(value, row, index) {
+						if(value == 0){
+							return "无";
+						}else if (value == 1){
+							return "男"
+						}else if (value = 2){
+							return "女";
+						}
+					}
+				}, {
+					width : '120',
+					title : '关联BMI',
+					field : 'withbmi',
+					formatter : function(value, row, index) {
+						return value==0?'不关联BMI':'关联BMI';
+					}
+				}, {
+					width : '120',
+					title : '图表类型',
+					field : 'charts_item',
+					formatter : function(value, row, index) {
+						var chartType = null;
+						switch (value){
+							case 1:
+								chartType = "柱状图";
+								break;
+							case 2:
+								chartType = "书页图表";
+								break;
+							case 3:
+								chartType = "折点图";
+								break;
+							case 4:
+								chartType = "六边形图表";
+								break;
+							case 5:
+								chartType = "凹型柱状图";
+								break;
+							case 6:
+								chartType = "箭头柱状图";
+								break;
+							case 7:
+								chartType = "折线图";
+								break;
+							case 8:
+								chartType = "圆点柱状图";
+								break;
+							default:
+								chartType = "柱状图";
+								break;
+						}
+						return chartType;
+					}
+				}, {
+					width : '120',
+					title : '检测意义',
+					field : 'tips_content'
 				},{
 					width : '80',
 					title : '排序',
 					field : 'order_by',
 					sortable : true
-				},{
+				}/*,{
 					width : '150',
-					title : '最近一次更新',
-					field : 'update_time',
+					title : '图标',
+					field : 'icon',
 					formatter : function(value, row, index) {
-						return (new Date(parseFloat(value))).format("yyyy-MM-dd hh:mm:ss");
-					},
-					sortable : true
-				},{
+						return '<img src="${ctx}'+value+'" style="max-width: 30px;max-height: 30px;">';
+					}
+				}*/,{
 					field : 'action',
 					title : '操作',
 					width : 300,
