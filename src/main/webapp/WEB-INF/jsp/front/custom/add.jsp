@@ -126,7 +126,7 @@
 																	<label class="control-label">BMI</label>
 																</div>
 																<div class="col-sm-9">
-																	<input type="text" class="form-control"  placeholder="无需输入BMI,由系统计算所得" value="${customInfoFormMap.body_height/customInfoFormMap.weight}" name="customInfoFormMap.bmi" id="bmi" readonly>
+																	<input type="text" class="form-control"  placeholder="无需输入BMI,由系统计算所得"  name="customInfoFormMap.bmi" id="bmi" readonly>
 																</div>
 															</div>
 															<div class="line line-dashed line-lg pull-in"></div>
