@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <header class="bg-dark dk header navbar navbar-fixed-top-xs" id="header-bgc">
-    <div class="navbar-header aside-md" >
+    <div class="navbar-header aside-md">
         <a class="btn btn-link visible-xs"  data-toggle="class:nav-off-screen,open" data-target="#nav,html">
             <i class="fa fa-bars"></i>
         </a>
         <a href="#" class="navbar-brand" data-toggle="fullscreen" id="logo-font">
-            人体机能检测管理系统
+            <%--中瑞力佳人体机能检测管理系统--%>
+            <img src="${ctx}/front-static/report_version2/img/logo.png" style="width: 220px;height: 50px">
         </a>
         <a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".nav-user">
             <i class="fa fa-cog"></i>
