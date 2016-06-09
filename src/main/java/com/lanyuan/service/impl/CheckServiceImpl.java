@@ -629,6 +629,10 @@ public class CheckServiceImpl implements ICheckService {
                 }
             }
 
+            if(physicalExaminationSickRiskMainResultFormMap.getLong("risk_leve") == null ){//如果风险等级计算出来是空的，这设置为无风险等级
+                physicalExaminationSickRiskMainResultFormMap.put("risk_leve",6l);
+            }
+
             physicalExaminationSickRiskMainResultMapper.addEntity(physicalExaminationSickRiskMainResultFormMap);
 
 
