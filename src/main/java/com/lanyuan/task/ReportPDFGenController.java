@@ -44,12 +44,13 @@ public class ReportPDFGenController {
 	private static final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
-	@Scheduled(cron = "1 * * * * ? ")
+	@Scheduled(cron = "0 0/5 * * * ? ")
 	public void task() throws Exception {
 		logger.info("======================================定时任务生成pdf报告================start==============================================================");
 		// 获取没有生成的列表
 		PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = new PhysicalExaminationRecordFormMap();
 		physicalExaminationRecordFormMap.put("status",2);
+		physicalExaminationRecordFormMap.put("before_minute",-10);
 		//查询条件
 		List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList =physicalExaminationRecordMapper.findListWill2GenPdfReport(physicalExaminationRecordFormMap);
 
@@ -96,7 +97,13 @@ public class ReportPDFGenController {
 
 			StringBuffer pdfFilePath = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_PDF_SAVED_PAHT));
 			pdfFilePath.append(File.separator);
-			pdfFilePath.append(dateFormat.format(physicalExaminationRecordFormMap.getDate("check_time")));
+			if(physicalExaminationRecordFormMap.get("check_time") instanceof  java.util.Date){
+				pdfFilePath.append(dateFormat.format(physicalExaminationRecordFormMap.getDate("check_time")));
+			}else{
+				pdfFilePath.append(dateFormat.format(dateFormat.parse(physicalExaminationRecordFormMap.get("check_time").toString())));
+			}
+
+
 			pdfFilePath.append(File.separator);
 			pdfFilePath.append(physicalExaminationRecordFormMap.getLong("id"));
 			File savePathFile = new File(pdfFilePath.toString());
@@ -106,15 +113,15 @@ public class ReportPDFGenController {
 
 
 			//调用wkhtmltopdf将html转为pdf
-//			pdfs.add(new FileInputStream(url2PdfConverter(httpUrl.toString(),pdfFilePath.toString(),"0.pdf")));
-			pdfs.add(new FileInputStream(url2PdfConverter(httpUrl.toString(),pdfFilePath.toString(),"0.png")));
+			pdfs.add(new FileInputStream(url2PdfConverter(httpUrl.toString(),pdfFilePath.toString(),"0.pdf")));
+//			pdfs.add(new FileInputStream(url2PdfConverter(httpUrl.toString(),pdfFilePath.toString(),"0.png")));
 
 			for(int i=0;i< physicalExaminationBigResultFormMapList.size();i++){
 				httpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_ITEM));
 				httpUrl.append("?");
 				httpUrl.append("bigItemId=").append(physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")).append("&").append("recordId=").append(physicalExaminationRecordFormMap.getLong("id"));
-//				pdfs.add(new FileInputStream(url2PdfConverter(httpUrl.toString(),pdfFilePath.toString(),physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")+".pdf")));
-				pdfs.add(new FileInputStream(url2PdfConverter(httpUrl.toString(),pdfFilePath.toString(),physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")+".png")));
+				pdfs.add(new FileInputStream(url2PdfConverter(httpUrl.toString(),pdfFilePath.toString(),physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")+".pdf")));
+//				pdfs.add(new FileInputStream(url2PdfConverter(httpUrl.toString(),pdfFilePath.toString(),physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")+".png")));
 			}
 
 			// 合并pdf文件到一个文件中
@@ -143,22 +150,22 @@ public class ReportPDFGenController {
 		Pdf pdf = new Pdf();
 		pdf.addParam(new Param("--enable-javascript"));
 		pdf.addParam(new Param("--no-stop-slow-scripts"));
-		pdf.addParam(new Param("--quality"));
-		pdf.addParam(new Param("100"));
-		pdf.addParam(new Param("--width"));
-		pdf.addParam(new Param(PageSize.A4.getWidth()+""));
-//		pdf.addParam(new Param("--javascript-delay 4000"));
+		/*pdf.addParam(new Param("--quality"));
+		pdf.addParam(new Param("100"));*/
+		/*pdf.addParam(new Param("--width"));
+		pdf.addParam(new Param(PageSize.A4.getWidth()+""));*/
 		pdf.addParam(new Param("--javascript-delay"));
 		pdf.addParam(new Param("4000"));
 		pdf.addPage(httpUrl, PageType.url);
-		File pngFile = pdf.saveAs(pngFilePath.toString());
+		File pdfFile = pdf.saveAs(pngFilePath.toString());
+		/*File pngFile = pdf.saveAs(pngFilePath.toString());
 		StringBuffer pdfFilePath  = new StringBuffer(saveAsPdfPath);
 		pdfFilePath.append(File.separator);
-		pdfFilePath.append(fileName+".pdf");
+		pdfFilePath.append(fileName+".pdf");*/
 
 		//调用itext将图片转为pdf文件(仅支持一张图片放在一张pdf上)
-		convertPNG2PDF(pdfFilePath.toString(),pngFile.getAbsolutePath());
-		return pdfFilePath.toString();
+//		convertPNG2PDF(pdfFilePath.toString(),pngFile.getAbsolutePath());
+		return pdfFile.getAbsolutePath();
 	}
 
 

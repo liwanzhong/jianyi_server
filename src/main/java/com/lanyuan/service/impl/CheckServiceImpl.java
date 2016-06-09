@@ -3,9 +3,11 @@ package com.lanyuan.service.impl;
 import com.lanyuan.entity.*;
 import com.lanyuan.mapper.*;
 import com.lanyuan.service.ICheckService;
+import com.lanyuan.task.ReportPDFGenController;
 import com.lanyuan.util.AgeCal;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,8 +60,16 @@ public class CheckServiceImpl implements ICheckService {
     private EquipmentMapper equipmentMapper;
 
 
+
+
+
+
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    private static Logger logger = Logger.getLogger(CheckServiceImpl.class);
+
+    @Autowired
+    private ReportPDFGenController reportPDFGenController;
 
 
 
@@ -116,6 +126,45 @@ public class CheckServiceImpl implements ICheckService {
         }
 
         physicalExaminationResultMapper.batchSave(physicalExaminationResultFormMapList);
+
+        final ICheckService checkService = this;
+        final PhysicalExaminationRecordFormMap item = physicalExaminationRecordFormMap;
+        new Thread(new Runnable() {
+            public void run() {
+                try{
+                    Thread.sleep(2000);
+                    //todo 生成检测数据
+                    checkService.deleteGenedData(item);
+                    checkService.genCheckResult(item);
+                    checkService.genSickRiskResult(item);
+                    item.put("status",2);
+                    item.put("update_time",dateFormat.format(new Date()));
+                    physicalExaminationRecordMapper.editEntity(item);
+
+
+                    Thread.sleep(2000);
+                    item.put("status",3);
+                    item.put("update_time",dateFormat.format(new Date()));
+                    physicalExaminationRecordMapper.editEntity(item);
+                    String pdfPath = null;
+                    try{
+                        pdfPath = reportPDFGenController.reportGen(item);
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                    }
+                    item.put("status",4);
+                    item.put("report_gentime",dateFormat.format(new Date()));
+                    item.put("update_time",dateFormat.format(new Date()));
+                    item.put("report_path",pdfPath);
+                    physicalExaminationRecordMapper.editEntity(item);
+                }catch (Exception ex){
+                    logger.error(ex.getMessage());
+                    ex.printStackTrace();
+                }
+
+
+            }
+        }).start();
     }
 
 

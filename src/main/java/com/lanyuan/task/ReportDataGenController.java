@@ -42,14 +42,15 @@ public class ReportDataGenController {
 	private static final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
-	@Scheduled(cron = "1 * * * * ? ")
+	@Scheduled(cron = "0 0/5 * * * ? ")
 	public void task() throws Exception {
 		logger.info("======================================生成报告数据================start==============================================================");
 		// 获取没有生成的列表
 		PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = new PhysicalExaminationRecordFormMap();
 		physicalExaminationRecordFormMap.put("status",1);
+		physicalExaminationRecordFormMap.put("before_minute",-10);
 		//查询条件
-		List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList =physicalExaminationRecordMapper.findByNames(physicalExaminationRecordFormMap);
+		List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList =physicalExaminationRecordMapper.findNeed2GenData(physicalExaminationRecordFormMap);
 
 		if(CollectionUtils.isNotEmpty(physicalExaminationRecordFormMapList)){
 			logger.info("======================================有【"+physicalExaminationRecordFormMapList.size()+"】条检测记录需要生成报告数据==============================================================");

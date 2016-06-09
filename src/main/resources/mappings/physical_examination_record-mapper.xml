@@ -111,8 +111,25 @@ SELECT
   per.check_time,
   per.update_time
 FROM physical_examination_record per
-WHERE per.status = 2 AND per.report_path IS NULL OR per.report_path = '' ORDER BY per.id ASC
+WHERE per.status = ${status} AND per.check_time &lt;= DATE_ADD(NOW(),  ${before_minute}) AND per.report_path IS NULL OR per.report_path = '' ORDER BY per.id ASC
 	</select>
 
+
+
+	<select id="findNeed2GenData" resultType="com.lanyuan.entity.PhysicalExaminationRecordFormMap">
+		SELECT
+		per.id,
+		per.custom_id,
+		per.organization_id,
+		per.Instrument_id,
+		per.status,
+		per.report_gentime,
+		per.report_path,
+		per.check_time,
+		per.update_time
+		FROM physical_examination_record per
+		WHERE per.check_time  &lt;= DATE_ADD(NOW(), ${before_minute}) AND per.status = ${status}
+		ORDER BY per.id ASC
+	</select>
 
 </mapper>
