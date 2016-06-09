@@ -16,7 +16,7 @@
 <div class="login-box">
 	<div class="login-t clearfix">
 		<h1 class="logo"></h1>
-		<p>人体生理机能评估系统</p>
+		<p>双螺旋机能检测系统</p>
 	</div>
 	<form method="post" id="loginForm">
 		<div class="login-b">
