@@ -44,6 +44,11 @@
 				pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 				columns : [ [ {
 					width : '120',
+					title : 'id',
+					field : 'id',
+					align:'center'
+				},{
+					width : '120',
 					title : '姓名',
 					field : 'name',
 					align:'center'
@@ -72,9 +77,8 @@
 					field : 'birthday',
 					align : 'center',
 					formatter : function(value, row, index) {
-						return (new Date(parseFloat(value))).format("yyyy-MM-dd hh:mm:ss");
-					},
-					sortable : true
+						return (new Date(parseFloat(value))).format("yyyy-MM-dd");
+					}
 				},{
 					width : '70',
 					title : '身高',
@@ -91,8 +95,7 @@
 					align : 'center',
 					formatter : function(value, row, index) {
 						return value+'KG';
-					},
-					sortable : true
+					}
 				},{
 					width : '100',
 					title : 'BMI',
@@ -100,14 +103,12 @@
 					align : 'center',
 					formatter : function(value, row, index) {
 						return (row.weight / ((row.body_height/100)*row.body_height/100)).toFixed(2);
-					},
-					sortable : true
+					}
 				},{
 					width : '250',
 					title : '检测点名称',
 					field : 'organization_name',
-					align : 'center',
-					sortable : true
+					align : 'center'
 				},{
 					width : '180',
 					title : '注册时间',
@@ -138,8 +139,8 @@
 					width : 300,
 					formatter : function(value, row, index) {
 						var str = '';
-//						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
-//						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="genTestData(\'{0}\');" >生成测试数据</a>', row.id);
+						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >删除</a>', row.id);
 						return str;
 					}
@@ -148,6 +149,26 @@
 		});
 
 
+		/**
+		 * /citfc/client_call/check/upload.shtml?customerId=&instrumentCode=708c0006bfbcd930bf872f521aceeb00
+		 * 生成测试数据功能
+		 * @param customId
+         */
+		function genTestData(customId){
+			progressLoad();
+			$.post('${ctx}/citfc/client_call/check/upload.shtml', {
+				customerId : customId,
+//				instrumentCode:'ac605175f17ca2941d6783798c2767c7'
+				instrumentCode:'708c0006bfbcd930bf872f521aceeb00'
+			}, function(result) {
+				if (result.status == 1) {
+					parent.$.messager.alert('提示', "生成测算数据成功", 'info');
+				}else if (result.status == 0){
+					parent.$.messager.alert('提示', result.error, 'info');
+				}
+				progressClose();
+			}, 'JSON');
+		}
 
 
 		function addFun() {

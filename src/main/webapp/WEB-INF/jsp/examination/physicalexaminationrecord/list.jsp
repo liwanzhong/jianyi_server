@@ -72,14 +72,7 @@
 					title : '操作',
 					width : 300,
 					formatter : function(value, row, index) {
-						var str = '';
-						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >检测值</a>', row.id);
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" target="_blank" onclick="showCheckResult(\'{0}\');">查看</a>', row.id);
-						/*str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >重算</a>', row.id);*/
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >下载</a>', row.id);
+						var str = $.formatString('<a href="javascript:void(0)" target="_blank" onclick="showCheckResult(\'{0}\');">会员检测值</a>', row.id);
 						return str;
 					}
 				}] ]
