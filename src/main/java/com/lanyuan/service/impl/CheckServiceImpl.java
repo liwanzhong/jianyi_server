@@ -638,7 +638,7 @@ public class CheckServiceImpl implements ICheckService {
 
 
     /**
-     * 删除已经生成的数据
+     * 删除已经生成的数据x
      * @throws Exception
      */
     public void deleteGenedData(PhysicalExaminationRecordFormMap recordFormMap) throws Exception {

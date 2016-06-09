@@ -90,6 +90,7 @@
         <if test="big_item_id != null">
             AND  per.bit_item_id = #{big_item_id}
         </if>
+        order by csi.id ASC
     </select>
 
 
