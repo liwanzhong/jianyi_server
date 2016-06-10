@@ -2,7 +2,7 @@
 
 $(function(e){
 	//赋值
-	var pingfen ={ 
+	/*var pingfen ={
 		'pingfen_1min': 86,
 		'pingfen_1max': 100,
 		'pingfen_2min': 73.01,
@@ -13,7 +13,7 @@ $(function(e){
 		'pingfen_4max': 60.99,
 		'pingfen_5min': 40,
 		'pingfen_5max': 59.99
-	}
+	}*/
 	
 	//柱状图
 	$('.column>ul').each(function(index, element) {

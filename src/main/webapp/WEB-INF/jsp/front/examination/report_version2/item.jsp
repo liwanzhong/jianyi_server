@@ -59,7 +59,12 @@
 			</li>
 		</ul>
 	</div>
-
+	<div class="msg">
+		<span class="name">张三</span>
+		<span class="sex">女</span>
+		<span class="birth">2016-12-12</span>
+		<span class="time"> 2016-12-02检测</span>
+	</div>
 	<!--细胞功能-->
 	<div class="cell clearfix">
 		<div class="pic"><img src="${ctx}${physicalExaminationBigResultFormMap.icon}" alt=""/></div>
