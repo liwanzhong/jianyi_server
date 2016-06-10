@@ -27,6 +27,7 @@
 #left_menu_ul_itemsid>li.active li.active span{font-weight:700; padding-left:10px;}
 #left_menu_ul_itemsid>li.active li.active li.active a span{font-weight:normal; padding-left:20px;}
 
-
+/*导航logo*/
+.navbar-brand img{ width: auto !important; max-height: 44px; margin-top: 3px;}
 
 
