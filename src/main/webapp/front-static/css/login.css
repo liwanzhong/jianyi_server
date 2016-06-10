@@ -14,6 +14,7 @@ transform:translate(-50%,-50%);*/
 }
 .login-t{border-bottom: 2px solid #2c9684;}
 .login-t>h1{float: left;}
+.login-t>h1 img{ width: auto !important; max-height: 44px; margin-top: 20px; }
 .login-t>p{float: right; line-height:80px; font-size:30px; color:#333; font-weight:700; padding-right:20px;}
 
 .login-b{ padding:30px 30px 0;}
