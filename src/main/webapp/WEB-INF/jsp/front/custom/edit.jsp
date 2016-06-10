@@ -167,10 +167,39 @@
 														},
 														url : rootPath + '/instrument/cut_item/loadCutItems.shtml',
 														dataType : 'json',
-														success : function(json) {
+														success : function(jsonW) {
 															$("#cut_items_list").empty();
-															$.each(json.data,function(index,item){
-																$("#cut_items_list").append('<input type="checkbox"   name="cut_item" value="'+item.id+'">   '+item.name+'&nbsp;&nbsp;&nbsp;');
+															$.ajax({
+																type : "POST",
+																async:false,
+																data : {
+																	"customid":${customInfoFormMap.id}
+																},
+																url : rootPath + '/instrument/cut_item/CustomCutItems.shtml',
+																dataType : 'json',
+																success : function(json) {
+																	if(json.data!=null && json.data.length!=0){
+																		$.each(jsonW.data,function(index,itemW){
+
+																			var checkedItem = false;
+																			$.each(json.data,function(index,item) {
+																				if (itemW.id == item.cut_item_id) {
+																					checkedItem = true;
+																				}
+																			});
+																			if(checkedItem){
+																				$("#cut_items_list").append('<input type="checkbox"  checked  name="cut_item" value="'+itemW.id+'">   '+itemW.name+'&nbsp;&nbsp;&nbsp;');
+																			}else{
+																				$("#cut_items_list").append('<input type="checkbox"   name="cut_item" value="'+itemW.id+'">   '+itemW.name+'&nbsp;&nbsp;&nbsp;');
+																			}
+																		});
+																	}else{
+																		$.each(jsonW.data,function(index,item){
+																			$("#cut_items_list").append('<input type="checkbox"   name="cut_item" value="'+item.id+'">   '+item.name+'&nbsp;&nbsp;&nbsp;');
+																		});
+																	}
+
+																}
 															});
 														}
 													});

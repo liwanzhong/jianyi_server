@@ -402,6 +402,14 @@ public class CheckServiceImpl implements ICheckService {
                     //根据调整概率，生成新的功能等级
 
                     BigDecimal Sco = checkSmallItemResult.getBigDecimal("item_score").multiply(checkSmallItemFormMap.getBigDecimal("quanzhong"));
+                    //todo 根据等级配置中的小项调整的百分比，对当前得分再乘以一个百分比
+                    Long smallItemLeveId = checkSmallItemResult.getLong("tzed_leve_id")!=null?checkSmallItemResult.getLong("tzed_leve_id"):checkSmallItemResult.getLong("orgin_leve_id");
+                    for(CfPingfenLeveFormMap cfPingfenLeveProcent:cfPingfenLeveFormMapList){
+                        if(cfPingfenLeveProcent.getLong("id").longValue() == smallItemLeveId.longValue()){
+                            Sco = Sco.multiply(cfPingfenLeveProcent.getBigDecimal("small_tz_procent"));
+                            break;
+                        }
+                    }
                     checkSmallItemResult.put("quanzhong_score",Sco);
 
                     physicalExaminationResultMapper.editEntity(checkSmallItemResult);

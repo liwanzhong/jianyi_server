@@ -14,7 +14,8 @@
        cpl.pingfen_max,
        cpl.show_tag_path,
        cpl.show_color,
-       cpl.update_time
+       cpl.update_time,
+       cpl.small_tz_procent
 	</sql>
 
 	<select id="findEnterprisePage" resultType="com.lanyuan.entity.CfPingfenLeveFormMap">

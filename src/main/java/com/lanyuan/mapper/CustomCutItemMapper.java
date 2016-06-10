@@ -1,6 +1,7 @@
 package com.lanyuan.mapper;
 
 import com.lanyuan.entity.CustomCutItemFormMap;
+import com.lanyuan.entity.CutItemFormMap;
 import com.lanyuan.mapper.base.BaseMapper;
 
 import java.util.List;
@@ -9,5 +10,7 @@ import java.util.List;
 public interface CustomCutItemMapper extends BaseMapper{
 
 	public List<CustomCutItemFormMap> findEnterprisePage(CustomCutItemFormMap customCutItemFormMap);
+
+	List<CustomCutItemFormMap> findCustomCutItems(CustomCutItemFormMap customCutItemFormMap);
 
 }

@@ -24,4 +24,14 @@
 		ORDER BY cut_items.order_by ASC
 	</select>
 
+
+	<select id="findCustomCutItems" resultType="com.lanyuan.entity.CustomCutItemFormMap">
+		SELECT
+		cci.id,
+		cci.cut_item_id,
+		cci.custom_id
+		FROM custom_cut_items cci
+		WHERE cci.custom_id = ${customid} ORDER BY cci.id DESC
+	</select>
+
 </mapper>

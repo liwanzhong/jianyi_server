@@ -249,12 +249,32 @@ public class CustomInfoController extends BaseController {
 	@RequestMapping("update")
 	@SystemLog(module="权限组管理",methods="修改权限组")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	public Map<String,Object>  update(Model model) {
+	public Map<String,Object>  update(HttpServletRequest request) {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
 		try {
 			CustomInfoFormMap customInfoFormMap = getFormMap(CustomInfoFormMap.class);
 			customInfoMapper.editEntity(customInfoFormMap);
+
+
+			customCutItemMapper.deleteByAttribute("custom_id",customInfoFormMap.get("id").toString(), CustomCutItemFormMap.class);
+			String [] cutItemsArray =  request.getParameterValues("cut_item");
+			List<CustomCutItemFormMap> customCutItemFormMapList = new ArrayList<CustomCutItemFormMap>();
+			if(cutItemsArray!=null && cutItemsArray.length>0){
+				for(String item:cutItemsArray){
+					CustomCutItemFormMap customCutItemFormMap = getFormMap(CustomCutItemFormMap.class);
+					customCutItemFormMap.put("cut_item_id",item);
+					customCutItemFormMap.put("custom_id",customInfoFormMap.get("id").toString());
+
+					customCutItemFormMapList.add(customCutItemFormMap);
+				}
+			}
+
+
+			if(CollectionUtils.isNotEmpty(customCutItemFormMapList)){
+				customCutItemMapper.batchSave(customCutItemFormMapList);
+			}
+
 			retMap.put("msg","修改成功");
 			retMap.put("status",1);
 		}catch (Exception ex){

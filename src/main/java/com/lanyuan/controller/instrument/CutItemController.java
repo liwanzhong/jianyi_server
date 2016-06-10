@@ -3,19 +3,14 @@ package com.lanyuan.controller.instrument;
 
 import com.lanyuan.annotation.SystemLog;
 import com.lanyuan.controller.index.BaseController;
-import com.lanyuan.entity.CheckBigItemFormMap;
-import com.lanyuan.entity.CheckSmallItemFormMap;
-import com.lanyuan.entity.CutItemFormMap;
-import com.lanyuan.entity.CutItemRefsmallitemConfigFormMap;
-import com.lanyuan.mapper.CheckBigItemMapper;
-import com.lanyuan.mapper.CheckSmallItemMapper;
-import com.lanyuan.mapper.CutItemMapper;
-import com.lanyuan.mapper.CutItemRefsmallitemConfigMapper;
+import com.lanyuan.entity.*;
+import com.lanyuan.mapper.*;
 import com.lanyuan.plugin.PageView;
 import com.lanyuan.util.Common;
 import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.PageFilter;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -219,7 +214,6 @@ public class CutItemController extends BaseController {
 	@ResponseBody
 	@RequestMapping("loadCutItems")
 	@SystemLog(module="权限组管理",methods="修改权限组")//凡需要处理业务逻辑的.都需要记录操作日志
-	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	public Map<String,Object>  loadCutItems(Model model) {
 		Map<String,Object> retMap = new HashMap<String, Object>();
 		retMap.put("status",0);
@@ -227,6 +221,29 @@ public class CutItemController extends BaseController {
 			CutItemFormMap cutItemFormMap = getFormMap(CutItemFormMap.class);
 			List<CutItemFormMap> cutItemFormMapList = cutItemMapper.findByNames(cutItemFormMap);
 			retMap.put("data",cutItemFormMapList);
+			retMap.put("status",1);
+		}catch (Exception ex){
+			retMap.put("msg",ex.getMessage());
+			ex.printStackTrace();
+		}
+		return retMap;
+	}
+
+
+	@Autowired
+	private CustomCutItemMapper customCutItemMapper;
+
+	@ResponseBody
+	@RequestMapping("CustomCutItems")
+	@SystemLog(module="权限组管理",methods="修改权限组")
+	public Map<String,Object>  loadCutItems(Model model,Long customid) {
+		Map<String,Object> retMap = new HashMap<String, Object>();
+		retMap.put("status",0);
+		try {
+			CustomCutItemFormMap customCutItemFormMap = getFormMap(CustomCutItemFormMap.class);
+			customCutItemFormMap.put("customid",customid);
+			List<CustomCutItemFormMap> customCutItemFormMapList = customCutItemMapper.findCustomCutItems(customCutItemFormMap);
+			retMap.put("data",customCutItemFormMapList);
 			retMap.put("status",1);
 		}catch (Exception ex){
 			retMap.put("msg",ex.getMessage());
