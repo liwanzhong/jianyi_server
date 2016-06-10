@@ -55,7 +55,7 @@ WHERE 1=1
 		bcic.check_item_id,
 		bcic.check_type
 		FROM bmi_check_item_config bcic
-		WHERE bcic.age_min &lt;= ${age} AND bcic.age_max &gt;= ${age} AND bcic.bmi_min &lt;= ${bmi} AND bcic.bmi_max &gt;= ${bmi} AND bcic.check_type = ${check_type} AND bcic.check_item_id = ${check_item_id}
+		WHERE bcic.age_min &lt;= ${age} AND bcic.age_max &gt;= ${age} AND bcic.bmi_min &lt;= ${bmi} AND bcic.bmi_max &gt;= ${bmi} AND bcic.check_type = ${check_type} AND bcic.check_item_id = ${check_item_id} AND bcic.org_leve_id=${org_leve_id}
 		ORDER BY bcic.id DESC LIMIT 1
 	</select>
 

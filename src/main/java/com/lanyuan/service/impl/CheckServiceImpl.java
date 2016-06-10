@@ -321,6 +321,7 @@ public class CheckServiceImpl implements ICheckService {
                         throw new Exception("配置异常!");
                     }
                     List<BmiCheckItemConfigFormMap> bmiCheckItemConfigFormMapList = new ArrayList<BmiCheckItemConfigFormMap>();
+                    List<CfPingfenRoutFormMap> cfPingfenRoutFormMapList = new ArrayList<CfPingfenRoutFormMap>();
                     if(checkBigItemFormMap.getInt("withbmi") == 1){
                         //todo 获取bmi评分调整配置（如果bmi评分调整配置的有，则忽略年龄评分配置）
                         BmiCheckItemConfigFormMap bmiCheckItemConfigFormMap = new BmiCheckItemConfigFormMap();
@@ -332,12 +333,10 @@ public class CheckServiceImpl implements ICheckService {
                         bmiCheckItemConfigFormMap.put("bmi",new BigDecimal(bmi).setScale(3,BigDecimal.ROUND_HALF_UP));//BMI
                         bmiCheckItemConfigFormMap.put("check_item_id",checkSmallItemFormMap.getLong("id"));//检测小项
                         bmiCheckItemConfigFormMap.put("check_type",2);
+                        bmiCheckItemConfigFormMap.put("org_leve_id",checkSmallItemResult.getLong("orgin_leve_id"));
                         bmiCheckItemConfigFormMapList = bmiCheckItemConfigMapper.findFixedOneItem(bmiCheckItemConfigFormMap);
 
-                    }
-
-                    List<CfPingfenRoutFormMap> cfPingfenRoutFormMapList = null;
-                    if(CollectionUtils.isEmpty(bmiCheckItemConfigFormMapList)){
+                    }else{
                         // 查找小项等级评分调整概率
                         CfPingfenRoutFormMap cfPingfenRoutFormMap = new CfPingfenRoutFormMap();
                         // 计算用户年龄
