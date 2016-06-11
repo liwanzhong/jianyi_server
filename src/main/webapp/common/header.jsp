@@ -6,7 +6,7 @@
         </a>
         <a href="#" class="navbar-brand" data-toggle="fullscreen" id="logo-font">
             <%--中瑞力佳人体机能检测管理系统--%>
-            <img src="${ctx}/front-static/report_version2/img/logo.png" style="width: 220px;height: 50px">
+            <img src="${ctx}/front-static/report_version2/img/logo_fix.png" style="width: 220px;height: 50px">
         </a>
         <a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".nav-user">
             <i class="fa fa-cog"></i>

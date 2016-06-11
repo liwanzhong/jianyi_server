@@ -16,7 +16,7 @@
 <div class="login-box">
 	<div class="login-t clearfix">
 		<h1 class="logo">
-			<img src="${ctx}/front-static/report_version2/img/logo.png" style="width: 220px;height: 50px">
+			<img src="${ctx}/front-static/report_version2/img/logo_fix.png" style="width: 220px;height: 50px">
 		</h1>
 		<p>双螺旋机能检测系统</p>
 	</div>
