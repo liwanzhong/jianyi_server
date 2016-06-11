@@ -5,10 +5,14 @@
     <%@include file="/common/common.jspf"%>
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/custom/info/list.js"></script>
     <script>
-        <c:if test="${sessionScope.userSessionId == 3}">
-            isAdmin = true;
-        </c:if>
-
+        <c:choose>
+        <c:when test="${sessionScope.userSessionId == 3}">
+        isAdmin = true;
+        </c:when>
+        <c:otherwise>
+        isAdmin = false;
+        </c:otherwise>
+        </c:choose>
     </script>
 </head>
 <body>
