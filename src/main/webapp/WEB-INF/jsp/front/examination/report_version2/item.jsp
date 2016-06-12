@@ -10,6 +10,7 @@
 	<title>双螺旋机能检测报告</title>
 	<link type="text/css" rel="stylesheet" href="${ctx}/front-static/report_version2/css/base.css">
 	<link type="text/css" rel="stylesheet" href="${ctx}/front-static/report_version2/css/index.css">
+	<%--<link type="text/css" rel="stylesheet" href="${ctx}/front-static/report_version2/css/index-2.css">--%>
 	<script src="${ctx}/front-static/report_version2/js/jquery-1.12.1.min.js"></script>
 	<script src="${ctx}/front-static/report_version2/js/index.js"></script>
 	<c:if test="${physicalExaminationBigResultFormMap.charts_item == 7}">
@@ -50,7 +51,6 @@
 				</c:choose>
 				<c:choose>
 					<c:when test="${pageView.pageNow==pageView.pageCount}">
-
 					</c:when>
 					<c:otherwise>
 						<a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=${pageView.pageNow+1}&recordId=${physicalExaminationBigResultFormMap.examination_record_id}">下一页</a>
@@ -60,10 +60,10 @@
 		</ul>
 	</div>
 	<div class="msg">
-		<span class="name">张三</span>
-		<span class="sex">女</span>
-		<span class="birth">2016-12-12</span>
-		<span class="time"> 2016-12-02检测</span>
+		<span class="name">${physicalExaminationRecordFormMap.name}</span>
+		<span class="sex">${physicalExaminationRecordFormMap.sex==1?"男":"女"}</span>
+		<span class="birth">${physicalExaminationRecordFormMap.birthday}</span>
+		<span class="time">   <fmt:formatDate value="${physicalExaminationRecordFormMap.check_time}" pattern="yyyy-MM-dd"/>检测</span>
 	</div>
 	<!--细胞功能-->
 	<div class="cell clearfix">

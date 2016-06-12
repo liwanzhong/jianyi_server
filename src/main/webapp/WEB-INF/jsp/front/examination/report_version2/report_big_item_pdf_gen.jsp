@@ -40,24 +40,14 @@
             </li>
             <li><h1>双螺旋机能检测报告</h1></li>
             <li style="float:right;">
-                <%--<c:choose>
-                    <c:when test="${pageView.pageNow-1==0}">
-                        <a class="s-btn" href="${ctx}/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id=${physicalExaminationBigResultFormMap.examination_record_id}">上一页</a>
-                    </c:when>
-                    <c:otherwise>
-                        <a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=${pageView.pageNow-1}&recordId=${physicalExaminationBigResultFormMap.examination_record_id}">上一页</a>
-                    </c:otherwise>
-                </c:choose>
-                <c:choose>
-                    <c:when test="${pageView.pageNow==pageView.pageCount}">
-
-                    </c:when>
-                    <c:otherwise>
-                        <a class="s-btn" href="${ctx}/examination/physicalExamination/report_big_item.shtml?pageNow=${pageView.pageNow+1}&recordId=${physicalExaminationBigResultFormMap.examination_record_id}">下一页</a>
-                    </c:otherwise>
-                </c:choose>--%>
             </li>
         </ul>
+    </div>
+    <div class="msg">
+        <span class="name">${physicalExaminationRecordFormMap.name}</span>
+        <span class="sex">${physicalExaminationRecordFormMap.sex==1?"男":"女"}</span>
+        <span class="birth">${physicalExaminationRecordFormMap.birthday}</span>
+        <span class="time">   <fmt:formatDate value="${physicalExaminationRecordFormMap.check_time}" pattern="yyyy-MM-dd"/>检测</span>
     </div>
 
     <!--细胞功能-->

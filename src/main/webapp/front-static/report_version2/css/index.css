@@ -38,7 +38,7 @@ transform:translate(-50%,-50%);}
 .footer-b li:last-of-type{ float: right;}
 
 /* ----------- cell ----------- */
-.cell{padding:30px 16px 20px;}
+.cell{padding:0px 16px 20px;}
 .cell>div{ float: left; }
 .cell .pic{ width: 11%; border:2px solid #f5c743; border-radius:50%; margin-top:2%;}
 .cell .pic img{ border-radius:50%;}

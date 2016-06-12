@@ -239,12 +239,25 @@ public class PhysicalExaminationRecordController extends BaseController {
     }
 
 
-
-
-
-
+    /**
+     * 检测大项报告页面
+     * @param model
+     * @param pageNow
+     * @param pageSize
+     * @param recordId
+     * @param bigItemId
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("report_big_item")
     public String report_big_item(Model model, @RequestParam(value = "pageNow",defaultValue = "1")String pageNow, @RequestParam(value = "pageSize",defaultValue = "1") String pageSize,  @RequestParam(value = "recordId",required = true)Long recordId, Long bigItemId) throws Exception {
+
+        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
+        physicalExaminationRecordFormMap.put("id",recordId);
+        List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList = physicalExaminationRecordMapper.findExaminationRecordCustomInfo(physicalExaminationRecordFormMap);
+        physicalExaminationRecordFormMapList.get(0).put("age", AgeCal.getAge(physicalExaminationRecordFormMapList.get(0).getDate("birthday")));
+        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMapList.get(0));
+
 
         PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
         physicalExaminationBigResultFormMap=toFormMap(physicalExaminationBigResultFormMap, pageNow, pageSize,physicalExaminationBigResultFormMap.getStr("orderby"));
@@ -307,6 +320,12 @@ public class PhysicalExaminationRecordController extends BaseController {
 
     @RequestMapping("report_big_item_pdf_gen")
     public String report_big_item_pdf_gen(Model model,@RequestParam(value = "recordId",required = true)Long recordId, @RequestParam(value = "bigItemId",required = true) Long bigItemId) throws Exception {
+
+        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
+        physicalExaminationRecordFormMap.put("id",recordId);
+        List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList = physicalExaminationRecordMapper.findExaminationRecordCustomInfo(physicalExaminationRecordFormMap);
+        physicalExaminationRecordFormMapList.get(0).put("age", AgeCal.getAge(physicalExaminationRecordFormMapList.get(0).getDate("birthday")));
+        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMapList.get(0));
 
         PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
         physicalExaminationBigResultFormMap.put("examination_record_id",recordId);
