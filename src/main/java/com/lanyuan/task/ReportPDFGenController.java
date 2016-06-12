@@ -15,6 +15,7 @@ import com.lanyuan.mapper.PhysicalExaminationRecordMapper;
 import com.lanyuan.util.MergePDF;
 import com.lanyuan.util.PropertiesUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -83,6 +84,7 @@ public class ReportPDFGenController {
 
 
 	public String reportGen(PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap)throws Exception{
+		String margePdfPath = null;
 		//获取当前检测记录的所有检测大项(排序方式)
 		PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = new PhysicalExaminationBigResultFormMap();
 		physicalExaminationBigResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
@@ -100,7 +102,8 @@ public class ReportPDFGenController {
 			if(physicalExaminationRecordFormMap.get("check_time") instanceof  java.util.Date){
 				pdfFilePath.append(dateFormat.format(physicalExaminationRecordFormMap.getDate("check_time")));
 			}else{
-				pdfFilePath.append(dateFormat.format(dateFormat.parse(physicalExaminationRecordFormMap.get("check_time").toString())));
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				pdfFilePath.append(dateFormat.format(simpleDateFormat.parse(physicalExaminationRecordFormMap.get("check_time").toString())));
 			}
 
 
@@ -133,9 +136,14 @@ public class ReportPDFGenController {
 
 			OutputStream output = new FileOutputStream(mgrgePdfFilePath);
 			MergePDF.concatPDFs(pdfs, output, true);
+			margePdfPath = file.getAbsolutePath();
 
 		}
-		return physicalExaminationRecordFormMap.getLong("id")+"_marge.pdf";
+		if(StringUtils.isNotBlank(margePdfPath)){
+			margePdfPath = margePdfPath.replace('\\','/');
+		}
+		return margePdfPath;
+//		return physicalExaminationRecordFormMap.getLong("id")+"_marge.pdf";
 	}
 
 
@@ -148,14 +156,13 @@ public class ReportPDFGenController {
 		pngFilePath.append(fileName);
 
 		Pdf pdf = new Pdf();
-		pdf.addParam(new Param("--enable-javascript"));
-		pdf.addParam(new Param("--no-stop-slow-scripts"));
-		/*pdf.addParam(new Param("--quality"));
-		pdf.addParam(new Param("100"));*/
-		/*pdf.addParam(new Param("--width"));
-		pdf.addParam(new Param(PageSize.A4.getWidth()+""));*/
-		pdf.addParam(new Param("--javascript-delay"));
+		pdf.addParam(new Param("--enable-javascript"));//允许执行js
+		pdf.addParam(new Param("--no-stop-slow-scripts"));//不要停止比较慢的js
+		pdf.addParam(new Param("--javascript-delay"));//等待js加载
 		pdf.addParam(new Param("4000"));
+		pdf.addParam(new Param("--no-pdf-compression"));//不压缩pdf，质量更高
+		pdf.addParam(new Param("--image-quality"));//pdf中图片的质量
+		pdf.addParam(new Param("100"));
 		pdf.addPage(httpUrl, PageType.url);
 		File pdfFile = pdf.saveAs(pngFilePath.toString());
 		/*File pngFile = pdf.saveAs(pngFilePath.toString());

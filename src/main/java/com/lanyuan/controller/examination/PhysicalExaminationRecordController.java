@@ -380,7 +380,9 @@ public class PhysicalExaminationRecordController extends BaseController {
             ex.printStackTrace();
         }
 
-
+        //todo 加载评分等级
+        List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList = cfPingfenLeveMapper.findByNames(getFormMap(CfPingfenLeveFormMap.class));
+        model.addAttribute("cfPingfenLeveFormMapList",cfPingfenLeveFormMapList);
         return Common.BACKGROUND_PATH + "/front/examination/report_version2/report_big_item_pdf_gen";
     }
 
@@ -491,12 +493,13 @@ public class PhysicalExaminationRecordController extends BaseController {
             InputStream inputStream =null;
             OutputStream os = null;
             try {
-                StringBuffer pdfFilePath = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_PDF_SAVED_PAHT));
+                /*StringBuffer pdfFilePath = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_PDF_SAVED_PAHT));
                 pdfFilePath.append(File.separator);
                 pdfFilePath.append(fileDateFormat.format(recordFormMap.getDate("check_time")));
                 pdfFilePath.append(File.separator);
                 pdfFilePath.append(recordFormMap.getLong("id"));
-                File pdfFile = new File(pdfFilePath.toString() + File.separator + report_path);
+                File pdfFile = new File(pdfFilePath.toString() + File.separator + report_path);*/
+                File pdfFile = new File(report_path);
                 if(!pdfFile.exists()||!pdfFile.isFile()){
                     throw new Exception("下载异常，文件不存在！");
                 }

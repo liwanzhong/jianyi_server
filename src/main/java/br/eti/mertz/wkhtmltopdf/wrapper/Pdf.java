@@ -6,6 +6,7 @@ import br.eti.mertz.wkhtmltopdf.wrapper.page.Page;
 import br.eti.mertz.wkhtmltopdf.wrapper.page.PageType;
 import br.eti.mertz.wkhtmltopdf.wrapper.params.Param;
 
+import com.itextpdf.text.PageSize;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -181,18 +182,21 @@ public class Pdf implements PdfService {
     public  static void main(String[] args)throws Exception{
         StringBuffer pdfFilePath = new StringBuffer("D:\\idea-workspack\\works");
         pdfFilePath.append(File.separator);
-        pdfFilePath.append("test13.png");
+        pdfFilePath.append("test13.pdf");
 
         Pdf pdf = new Pdf();
-        pdf.addParam(new Param("--enable-javascript"));
-        pdf.addParam(new Param("--no-stop-slow-scripts"));
-        /*pdf.addParam(new Param("--window-status"));
-        pdf.addParam(new Param("loadend"));*/
-
-        pdf.addParam(new Param("--javascript-delay"));
+        pdf.addParam(new Param("--enable-javascript"));//允许执行js
+        pdf.addParam(new Param("--no-stop-slow-scripts"));//不要停止比较慢的js
+        pdf.addParam(new Param("--javascript-delay"));//等待js加载
         pdf.addParam(new Param("4000"));
+        pdf.addParam(new Param("--no-pdf-compression"));//不压缩pdf，质量更高
+        pdf.addParam(new Param("--image-quality"));//pdf中图片的质量
+        pdf.addParam(new Param("100"));
+
+
+
 //        pdf.addPage("http://localhost:8080/examination/physicalExamination/report_big_item_pdf_gen.shtml?recordId=146&bigItemId=22", PageType.url);
-        pdf.addPage("http://localhost:63342/lanyuan-notebook-3.1v/src/main/webapp/chartsdemo.html", PageType.file);
+        pdf.addPage("http://localhost:8080/examination/physicalExamination/report_big_item_pdf_gen.shtml?recordId=1624&bigItemId=4", PageType.url);
         pdf.saveAs(pdfFilePath.toString());
     }
 }

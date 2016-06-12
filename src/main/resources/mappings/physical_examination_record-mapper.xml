@@ -128,7 +128,7 @@ WHERE per.status = ${status} AND per.check_time &lt;= DATE_ADD(NOW(),  ${before_
 		per.check_time,
 		per.update_time
 		FROM physical_examination_record per
-		WHERE per.check_time  &lt;= DATE_ADD(NOW(), ${before_minute}) AND per.status = ${status}
+		WHERE per.check_time  &lt;= DATE_ADD(NOW(), INTERVAL ${before_minute} MINUTE) AND per.status = ${status}
 		ORDER BY per.id ASC
 	</select>
 
