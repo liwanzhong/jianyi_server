@@ -642,8 +642,8 @@ public class CheckServiceImpl implements ICheckService {
                         physicalExaminationSickRiskResultFormMap.put("check_item_id",item.getLong("big_item_id"));
                         physicalExaminationSickRiskResultFormMap.put("check_item_type",1);
                         physicalExaminationSickRiskResultFormMap.put("sick_risk_item_id",sickRiskItemFormMap.getLong("id"));
-                        physicalExaminationSickRiskResultFormMap.put("risk_rout",(BigDecimal)sickReskMap.get("sickRiskValue"));
-                        physicalExaminationSickRiskResultFormMap.put("score",(BigDecimal)sickReskMap.get("rout"));
+                        physicalExaminationSickRiskResultFormMap.put("risk_rout",(BigDecimal) sickReskMap.get("rout"));
+                        physicalExaminationSickRiskResultFormMap.put("score",(BigDecimal)sickReskMap.get("sickRiskValue"));
                         physicalExaminationSickRiskResultMapper.addEntity(physicalExaminationSickRiskResultFormMap);
                         physicalExaminationSickRiskResultFormMapList.add(physicalExaminationSickRiskResultFormMap);
                     }
