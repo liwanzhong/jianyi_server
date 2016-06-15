@@ -562,15 +562,17 @@ public class PhysicalExaminationRecordController extends BaseController {
             PhysicalExaminationSickRiskResultFormMap physicalExaminationSickRiskResultFormMap = getFormMap(PhysicalExaminationSickRiskResultFormMap.class);
             physicalExaminationSickRiskResultFormMap.put("examination_record_id",recordFormMap.getLong("id"));
 
-            /*List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMapsBig = physicalExaminationSickRiskResultMapper.findRecordSickResultSmall(physicalExaminationSickRiskResultFormMap);
-
-
-            List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMaps = physicalExaminationSickRiskResultMapper.findRecordSickResultBig(physicalExaminationSickRiskResultFormMap);
-*/
+            List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMapsBigList = physicalExaminationSickRiskResultMapper.findRecordSickResultSmall(physicalExaminationSickRiskResultFormMap);
+            List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMapsSmallList = physicalExaminationSickRiskResultMapper.findRecordSickResultBig(physicalExaminationSickRiskResultFormMap);
             List<Map<Map<String,Object>,List<PhysicalExaminationSickRiskResultFormMap>>> mapList = new ArrayList<Map<Map<String,Object>, List<PhysicalExaminationSickRiskResultFormMap>>>();
             for(CheckBigItemFormMap checkBigItemFormMap:checkBigItemFormMapList){
                 //检查是否有疾病配置
-
+                if(checkBigItemFormMap!=null && CollectionUtils.isNotEmpty(sickRiskResultFormMapsBigList)){
+                    Map<String,Object> checkItemMap = new HashMap<String, Object>();
+                    checkItemMap.put("id",checkBigItemFormMap.getLong("id"));
+                    checkItemMap.put("name",checkBigItemFormMap.getStr("name"));
+                    this.queryBigItemsSick(checkItemMap,sickRiskResultFormMapsBigList,mapList);
+                }
 
                 //获取检测小项
                 CheckSmallItemFormMap checkSmallItemFormMapQuery = getFormMap(CheckSmallItemFormMap.class);
@@ -590,10 +592,9 @@ public class PhysicalExaminationRecordController extends BaseController {
         return Common.BACKGROUND_PATH + "/examination/physicalexaminationrecord/sick_result";
     }
 
+    private void queryBigItemsSick(Map<String,Object> checkMap, List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMapsBigList, List<Map<Map<String, Object>, List<PhysicalExaminationSickRiskResultFormMap>>> mapList) {
 
-
-
-
+    }
 
 
 }
