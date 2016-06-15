@@ -533,9 +533,62 @@ public class PhysicalExaminationRecordController extends BaseController {
 
 
 
+    @Autowired
+    private SickRiskItemMapper sickRiskItemMapper;
+
+    @Autowired
+    private CheckBigItemMapper checkBigItemMapper;
+
+    @Autowired
+    private CheckSmallItemMapper checkSmallItemMapper;
+
+    @Autowired
+    private PhysicalExaminationSickRiskResultMapper physicalExaminationSickRiskResultMapper;
+
+    @RequestMapping("sick_result")
+    @SystemLog(module="检测管理",methods="加载疾病风险检测值")
+    public String sick_result(Model model,String recordid)throws Exception {
+        try{
+            //获取检测记录
+            PhysicalExaminationRecordFormMap recordFormMap = physicalExaminationRecordMapper.findbyFrist("id",recordid,PhysicalExaminationRecordFormMap.class);
+            model.addAttribute("record",recordFormMap);
+
+            //获取疾病风险所有项（拼接表头）
+            List<SickRiskItemFormMap> sickRiskItemFormMapList = sickRiskItemMapper.findByNames(getFormMap(SickRiskItemFormMap.class));
+            model.addAttribute("sickRiskItemFormMapList",sickRiskItemFormMapList);
+            // 获取所有检测项目
+            List<CheckBigItemFormMap> checkBigItemFormMapList = checkBigItemMapper.findByNames(getFormMap(CheckBigItemFormMap.class));
+
+            PhysicalExaminationSickRiskResultFormMap physicalExaminationSickRiskResultFormMap = getFormMap(PhysicalExaminationSickRiskResultFormMap.class);
+            physicalExaminationSickRiskResultFormMap.put("examination_record_id",recordFormMap.getLong("id"));
+
+            /*List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMapsBig = physicalExaminationSickRiskResultMapper.findRecordSickResultSmall(physicalExaminationSickRiskResultFormMap);
 
 
+            List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMaps = physicalExaminationSickRiskResultMapper.findRecordSickResultBig(physicalExaminationSickRiskResultFormMap);
+*/
+            List<Map<Map<String,Object>,List<PhysicalExaminationSickRiskResultFormMap>>> mapList = new ArrayList<Map<Map<String,Object>, List<PhysicalExaminationSickRiskResultFormMap>>>();
+            for(CheckBigItemFormMap checkBigItemFormMap:checkBigItemFormMapList){
+                //检查是否有疾病配置
 
+
+                //获取检测小项
+                CheckSmallItemFormMap checkSmallItemFormMapQuery = getFormMap(CheckSmallItemFormMap.class);
+                checkSmallItemFormMapQuery.put("big_item_id",checkBigItemFormMap.getLong("id"));
+                List<CheckSmallItemFormMap> checkSmallItemFormMapList = checkSmallItemMapper.findByNames(checkSmallItemFormMapQuery);
+                for(CheckSmallItemFormMap checkSmallItemFormMap:checkSmallItemFormMapList){
+
+                    //检查是否有疾病配置
+
+                }
+            }
+
+            //
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return Common.BACKGROUND_PATH + "/examination/physicalexaminationrecord/sick_result";
+    }
 
 
 

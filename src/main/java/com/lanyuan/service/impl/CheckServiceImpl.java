@@ -773,6 +773,7 @@ public class CheckServiceImpl implements ICheckService {
             sumSickRiskValue = sumSickRiskValue.add(sickRiskValue);
         }
         BigDecimal score = new BigDecimal(0.6).add(new BigDecimal(80).subtract(sumSickRiskValue).multiply(new BigDecimal(2.5)).multiply(new BigDecimal(1)));
+//        BigDecimal score = new BigDecimal(60).add(new BigDecimal(80).subtract(sumSickRiskValue).multiply(new BigDecimal(2.5)).multiply(new BigDecimal(1)));
         PhysicalExaminationSickRiskMainResultFormMap physicalExaminationSickRiskMainResultFormMap = new PhysicalExaminationSickRiskMainResultFormMap();
         physicalExaminationSickRiskMainResultFormMap.put("risk_value",sumSickRiskValue);
         physicalExaminationSickRiskMainResultFormMap.put("check_item_rout",score);
