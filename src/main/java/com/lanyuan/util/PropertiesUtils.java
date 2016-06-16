@@ -1,15 +1,13 @@
- package com.lanyuan.util;
+package com.lanyuan.util;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
+import org.apache.ibatis.io.Resources;
+
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Iterator;
-import java.util.Properties;
 import java.util.Map.Entry;
-
-import org.apache.ibatis.io.Resources;
+import java.util.Properties;
 /**
  * 对属性文件操作的工具类
  * 获取，新增，修改
@@ -27,6 +25,8 @@ public class PropertiesUtils {
 	public static final String REPORT_URL_PDF_GEN_ITEM = "REPORT_URL_PDF_GEN_ITEM";
 	public static final String REPORT_PDF_SAVED_PAHT = "REPORT_PDF_SAVED_PAHT";
 
+	public static final String REMOTE_WEB_DRIVER_REQ_HTTP = "REMOTE_WEB_DRIVER_REQ_HTTP";
+
 
 
 	/**
@@ -36,14 +36,14 @@ public class PropertiesUtils {
 	 * @return
 	 */
 	public static String findPropertiesKey(String key) {
-		
+
 		try {
 			Properties prop = getProperties();
 			return prop.getProperty(key);
 		} catch (Exception e) {
 			return "";
 		}
-		
+
 	}
 
 	public static void main(String[] args) {
@@ -59,14 +59,14 @@ public class PropertiesUtils {
 						.toString()));
 			}
 		} catch (Exception e) {
-			
+
 		}
 	}
 
 	/**
 	 * 返回　Properties
 	 * @param fileName 文件名　(注意：加载的是src下的文件,如果在某个包下．请把包名加上)
-	 * @param 
+	 * @param
 	 * @return
 	 */
 	public static Properties getProperties(){
@@ -92,7 +92,7 @@ public class PropertiesUtils {
 	}
 	/**
 	 * 写入properties信息
-	 * 
+	 *
 	 * @param key
 	 *            名称
 	 * @param value

@@ -141,22 +141,30 @@ public class CheckServiceImpl implements ICheckService {
                     item.put("update_time",dateFormat.format(new Date()));
                     physicalExaminationRecordMapper.editEntity(item);
 
-
-                    Thread.sleep(2000);
-                    item.put("status",3);
-                    item.put("update_time",dateFormat.format(new Date()));
-                    physicalExaminationRecordMapper.editEntity(item);
-                    String pdfPath = null;
-                    try{
-                        pdfPath = reportPDFGenController.reportGen(item);
-                    }catch (Exception ex){
-                        ex.printStackTrace();
-                    }
-                    item.put("status",4);
-                    item.put("report_gentime",dateFormat.format(new Date()));
-                    item.put("update_time",dateFormat.format(new Date()));
-                    item.put("report_path",pdfPath);
-                    physicalExaminationRecordMapper.editEntity(item);
+                    new Thread(new Runnable() {
+                        public void run() {
+                            try{
+                                Thread.sleep(2000);
+                                item.put("status",3);
+                                item.put("update_time",dateFormat.format(new Date()));
+                                physicalExaminationRecordMapper.editEntity(item);
+                                String pdfPath = null;
+                                try{
+                                    pdfPath = reportPDFGenController.reportGen(item);
+                                }catch (Exception ex){
+                                    ex.printStackTrace();
+                                }
+                                item.put("status",4);
+                                item.put("report_gentime",dateFormat.format(new Date()));
+                                item.put("update_time",dateFormat.format(new Date()));
+                                item.put("report_path",pdfPath);
+                                physicalExaminationRecordMapper.editEntity(item);
+                            }catch (Exception ex){
+                                logger.error(ex.getMessage());
+                                ex.printStackTrace();
+                            }
+                        }
+                    }).start();
                 }catch (Exception ex){
                     logger.error(ex.getMessage());
                     ex.printStackTrace();
