@@ -278,7 +278,7 @@ $(function(e){
     });
 	
 	//灯泡
-	$('.disease-per').each(function(index, element) {
+	/*$('.disease-per').each(function(index, element) {
 		var score = $(element).text();
 		//颜色变化
 		if( score>='75%' ){
@@ -292,13 +292,27 @@ $(function(e){
 		}else if( score>='0%' && score<='54.99%'){
 			$(element).addClass('circle-green');
 		}
-    });
+    });*/
 
-//	$('.ul-Width').each(function(index, element) {
-//		var liNum = $(element).children('li').length;
-//		var ulWidth = liNum*70;
-//		$(element).css('width',ulWidth);
-//    });
+
+
+	$('.disease-per').each(function(index, element) {
+		var score = $(element).text().replace("%","");
+		//颜色变化
+		if( score>=paramsSickLeve.pingfen_10min && score <=paramsSickLeve.pingfen_10max ){
+			$(element).addClass('circle-red');
+		}else if( score>=paramsSickLeve.pingfen_9min && score<=paramsSickLeve.pingfen_9max){
+			$(element).addClass('circle-orange');
+		}else if( score>=paramsSickLeve.pingfen_8min && score<=paramsSickLeve.pingfen_8max){
+			$(element).addClass('circle-yellow');
+		}else if( score>=paramsSickLeve.pingfen_7min && score<=paramsSickLeve.pingfen_7max){
+			$(element).addClass('circle-blue');
+		}else if( score>=paramsSickLeve.pingfen_6min && score<=paramsSickLeve.pingfen_6max){
+			$(element).addClass('circle-green');
+		}
+	});
+
+
 
 });
 

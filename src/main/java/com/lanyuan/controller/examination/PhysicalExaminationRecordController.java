@@ -137,6 +137,10 @@ public class PhysicalExaminationRecordController extends BaseController {
         }
         model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMap);
 
+        //todo 获取疾病等级
+        List<SickRiskLeveFormMap> sickRiskLeveFormMapList = sickRiskLeveMapper.findByNames(getFormMap(SickRiskLeveFormMap.class));
+        model.addAttribute("sickRiskLeveFormMapList",sickRiskLeveFormMapList);
+
         return Common.BACKGROUND_PATH + "/front/examination/report_version2/syn";
     }
 

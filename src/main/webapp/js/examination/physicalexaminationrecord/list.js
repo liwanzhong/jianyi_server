@@ -54,7 +54,7 @@ $(function() {
 
 	function  retActionChosen(rowindex ,data, rowdata, colkeyn){
 		var actionStr = '';
-		if(rowdata.status == 2){
+		if(rowdata.status == 2 || rowdata.status == 3){
 			//actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/result.shtml?recordid='+rowdata.id+'">检测值</a>&nbsp;&nbsp;&nbsp;';
 			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看报告</a>&nbsp;&nbsp;&nbsp;';
 			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/sick_risk.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看疾病风险评估</a>&nbsp;&nbsp;&nbsp;';

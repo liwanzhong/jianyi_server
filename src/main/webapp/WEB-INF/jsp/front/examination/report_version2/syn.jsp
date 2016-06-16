@@ -12,6 +12,16 @@
     <link type="text/css" rel="stylesheet" href="${ctx}/front-static/report_version2/css/index.css">
     <script src="${ctx}/front-static/report_version2/js/jquery-1.12.1.min.js"></script>
     <script src="${ctx}/front-static/report_version2/js/index.js"></script>
+    <script type="text/javascript">
+
+        var paramsSickLeve = {
+            <c:forEach items="${sickRiskLeveFormMapList}" var="item" varStatus="status">
+            'pingfen_${item.id}min': ${item.rout_min},
+            'pingfen_${item.id}max': ${item.rout_max},
+            </c:forEach>
+        }
+
+    </script>
 </head>
 
 <body>
@@ -24,10 +34,7 @@
                 <a href="#" class="logo"><img src="${ctx}/front-static/report_version2/img/logo.png" alt=""/></a>
             </li>
             <li><h1>疾病风险评估分析</h1></li>
-            <li style="float:right;">
-                <%--<button class="s-btn">上一页</button>
-                <button class="s-btn">下一页</button>--%>
-            </li>
+            <li style="float:right;"></li>
         </ul>
     </div>
 
