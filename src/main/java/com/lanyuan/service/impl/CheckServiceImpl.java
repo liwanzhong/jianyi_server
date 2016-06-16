@@ -772,8 +772,22 @@ public class CheckServiceImpl implements ICheckService {
             BigDecimal sickRiskValue = item.getBigDecimal("score");
             sumSickRiskValue = sumSickRiskValue.add(sickRiskValue);
         }
-        BigDecimal score = new BigDecimal(0.6).add(new BigDecimal(80).subtract(sumSickRiskValue).multiply(new BigDecimal(2.5)).multiply(new BigDecimal(1)));
-//        BigDecimal score = new BigDecimal(60).add(new BigDecimal(80).subtract(sumSickRiskValue).multiply(new BigDecimal(2.5)).multiply(new BigDecimal(1)));
+        BigDecimal score = new BigDecimal(0);
+        if(sumSickRiskValue.doubleValue()<=65.5){
+            //todo 如果几率总和小于65.5则，生成93-98的随机数
+            int max = 98*1000;
+            int min = 93*1000;
+            int randomNumber = (int) Math.round(Math.random()*(max-min)+min);
+            score = new BigDecimal(randomNumber/1000d);
+        }else if(sumSickRiskValue.doubleValue()>80){
+            //todo 如果几率和大于80，则生成5-30的随机数
+            int max = 30*1000;
+            int min = 5*1000;
+            int randomNumber = (int) Math.round(Math.random()*(max-min)+min);
+            score = new BigDecimal(randomNumber/1000d);
+        }else {
+            score = new BigDecimal(0.6).add(new BigDecimal(80).subtract(sumSickRiskValue).multiply(new BigDecimal(2.5)).multiply(new BigDecimal(1)));
+        }
         PhysicalExaminationSickRiskMainResultFormMap physicalExaminationSickRiskMainResultFormMap = new PhysicalExaminationSickRiskMainResultFormMap();
         physicalExaminationSickRiskMainResultFormMap.put("risk_value",sumSickRiskValue);
         physicalExaminationSickRiskMainResultFormMap.put("check_item_rout",score);

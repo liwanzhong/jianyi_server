@@ -562,7 +562,7 @@ public class PhysicalExaminationRecordController extends BaseController {
             PhysicalExaminationSickRiskResultFormMap physicalExaminationSickRiskResultFormMap = getFormMap(PhysicalExaminationSickRiskResultFormMap.class);
             physicalExaminationSickRiskResultFormMap.put("examination_record_id",recordFormMap.getLong("id"));
 
-            List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMapsBigList = physicalExaminationSickRiskResultMapper.findRecordSickResultSmall(physicalExaminationSickRiskResultFormMap);
+           /* List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMapsBigList = physicalExaminationSickRiskResultMapper.findRecordSickResultSmall(physicalExaminationSickRiskResultFormMap);
             List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMapsSmallList = physicalExaminationSickRiskResultMapper.findRecordSickResultBig(physicalExaminationSickRiskResultFormMap);
             List<Map<Map<String,Object>,List<PhysicalExaminationSickRiskResultFormMap>>> mapList = new ArrayList<Map<Map<String,Object>, List<PhysicalExaminationSickRiskResultFormMap>>>();
             for(CheckBigItemFormMap checkBigItemFormMap:checkBigItemFormMapList){
@@ -584,7 +584,7 @@ public class PhysicalExaminationRecordController extends BaseController {
 
                 }
             }
-
+*/
             //
         }catch (Exception ex){
             ex.printStackTrace();

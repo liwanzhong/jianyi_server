@@ -111,7 +111,7 @@ SELECT
   per.check_time,
   per.update_time
 FROM physical_examination_record per
-WHERE per.status = ${status} AND per.check_time &lt;= DATE_ADD(NOW(),  ${before_minute}) AND per.report_path IS NULL OR per.report_path = '' ORDER BY per.id ASC
+WHERE per.status = ${status} AND per.check_time &lt;= DATE_ADD(NOW(),INTERVAL   ${before_minute} MINUTE) AND ( per.report_path IS NULL OR per.report_path = '') ORDER BY per.id ASC
 	</select>
 
 
