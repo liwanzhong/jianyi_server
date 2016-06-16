@@ -79,7 +79,7 @@
 		ON cbe.custom_id = ci.id
 		WHERE ci.isvalid = 1 AND cbe.isdelete = 0
 		<if test="name != null">
-			AND ci.name = '${name}'
+			AND ci.name LIKE '%${name}%'
 		</if>
 		<if test="idcard != null">
 			AND ci.idcard = '${idcard}'
