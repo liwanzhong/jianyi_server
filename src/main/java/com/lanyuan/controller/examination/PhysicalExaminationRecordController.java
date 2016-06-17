@@ -145,6 +145,55 @@ public class PhysicalExaminationRecordController extends BaseController {
     }
 
 
+    /**
+     * 生成pdf的疾病风险页面
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("sickRiskSyn_pdfgen")
+    public String sickRiskSyn_pdfgen(Model model) throws Exception {
+        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
+        List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList = physicalExaminationRecordMapper.findByNames(physicalExaminationRecordFormMap);
+        if(CollectionUtils.isEmpty(physicalExaminationRecordFormMapList)){
+            throw new Exception("参数异常");
+        }
+        physicalExaminationRecordFormMap = physicalExaminationRecordFormMapList.get(0);
+        //todo 加载疾病风险结果
+        PhysicalExaminationSickRiskMainResultFormMap physicalExaminationSickRiskMainResultFormMap = getFormMap(PhysicalExaminationSickRiskMainResultFormMap.class);
+        physicalExaminationSickRiskMainResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
+        List<PhysicalExaminationSickRiskMainResultFormMap> physicalExaminationSickRiskMainResultFormMapList = physicalExaminationSickRiskMainResultMapper.findAllShowInReportSickRiskList(physicalExaminationSickRiskMainResultFormMap);
+        if(CollectionUtils.isNotEmpty(physicalExaminationSickRiskMainResultFormMapList)){
+            //todo 加载疾病风险等级所有列表
+            List<SickRiskLeveFormMap> sickRiskLeveFormMapList = sickRiskLeveMapper.findByNames(getFormMap(SickRiskLeveFormMap.class));
+            Map<Long,List<PhysicalExaminationSickRiskMainResultFormMap>> sickLeveCountMap = new HashMap<Long, List<PhysicalExaminationSickRiskMainResultFormMap>>();
+            for(SickRiskLeveFormMap sickRiskLeveFormMap:sickRiskLeveFormMapList){
+                List<PhysicalExaminationSickRiskMainResultFormMap> currentLeveList = new ArrayList<PhysicalExaminationSickRiskMainResultFormMap>();
+                for(PhysicalExaminationSickRiskMainResultFormMap physicalExaminationSickRiskMainResultFormMapTemp:physicalExaminationSickRiskMainResultFormMapList){
+                    if(physicalExaminationSickRiskMainResultFormMapTemp.get("risk_leve")!=null){
+                        if(physicalExaminationSickRiskMainResultFormMapTemp.getLong("risk_leve") == sickRiskLeveFormMap.getLong("id").longValue()){
+                            currentLeveList.add(physicalExaminationSickRiskMainResultFormMapTemp);
+                        }
+                    }
+
+                }
+                sickLeveCountMap.put(sickRiskLeveFormMap.getLong("id"),currentLeveList);
+            }
+
+            model.addAttribute("sickLeveCountMap",sickLeveCountMap);
+        }
+        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMap);
+
+        //todo 获取疾病等级
+        List<SickRiskLeveFormMap> sickRiskLeveFormMapList = sickRiskLeveMapper.findByNames(getFormMap(SickRiskLeveFormMap.class));
+        model.addAttribute("sickRiskLeveFormMapList",sickRiskLeveFormMapList);
+
+        return Common.BACKGROUND_PATH + "/front/examination/report_version2/syn_pdf_gen";
+    }
+
+
+
+
     @RequestMapping("report_pdf_gen")
     public String report_pdf_gen(Model model) throws Exception {
         PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
