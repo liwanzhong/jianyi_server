@@ -24,6 +24,8 @@ public class PropertiesUtils {
 	public static final String REPORT_URL_PDF_GEN_MAIN = "REPORT_URL_PDF_GEN_MAIN";
 	public static final String REPORT_URL_PDF_GEN_ITEM = "REPORT_URL_PDF_GEN_ITEM";
 	public static final String REPORT_PDF_SAVED_PAHT = "REPORT_PDF_SAVED_PAHT";
+	public static final String REPORT_URL_PDF_GEN_SYN = "REPORT_URL_PDF_GEN_SYN";
+
 
 	public static final String REMOTE_WEB_DRIVER_REQ_HTTP = "REMOTE_WEB_DRIVER_REQ_HTTP";
 

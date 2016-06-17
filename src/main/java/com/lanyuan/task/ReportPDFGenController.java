@@ -101,10 +101,7 @@ public class ReportPDFGenController {
 		if(CollectionUtils.isNotEmpty(physicalExaminationBigResultFormMapList)){
 			List<InputStream> pdfs = new ArrayList<InputStream>();
 			//todo 循环拼接url
-			//生成首页pdf
-			StringBuffer  httpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_MAIN));
-			httpUrl.append("?");
-			httpUrl.append("physicalExaminationRecordFormMap.id=").append(physicalExaminationRecordFormMap.getLong("id"));
+
 
 			StringBuffer pdfFilePath = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_PDF_SAVED_PAHT));
 			pdfFilePath.append(File.separator);
@@ -124,12 +121,16 @@ public class ReportPDFGenController {
 			}
 
 			//首页
+			StringBuffer  httpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_MAIN));
+			httpUrl.append("?");
+			httpUrl.append("physicalExaminationRecordFormMap.id=").append(physicalExaminationRecordFormMap.getLong("id"));
 			String pdfPath = genReportPdfWithImg(httpUrl.toString(), pdfFilePath.toString()+File.separator+"0.png",pdfFilePath.toString()+File.separator+"0.pdf");
 			if(pdfPath !=null){
 				pdfs.add(new FileInputStream(pdfPath));
 			}
 
 
+			//检查打项
 			for(int i=0;i< physicalExaminationBigResultFormMapList.size();i++){
 				httpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_ITEM));
 				httpUrl.append("?");
@@ -139,6 +140,8 @@ public class ReportPDFGenController {
 					pdfs.add(new FileInputStream(pdfPath));
 				}
 			}
+
+			final String sickRiskPdfPathBuffer = pdfFilePath.toString();
 
 			// 合并pdf文件到一个文件中
 			String mgrgePdfFilePath = pdfFilePath.append(File.separator).append(physicalExaminationRecordFormMap.getLong("id")+"_marge.pdf").toString();
@@ -150,6 +153,23 @@ public class ReportPDFGenController {
 			OutputStream output = new FileOutputStream(mgrgePdfFilePath);
 			MergePDF.concatPDFs(pdfs, output, true);
 			margePdfPath = file.getAbsolutePath();
+
+			// 疾病风险(疾病风险pdf报告只是生成了pdf文件，没有做保存，如果需要下载，直接通过规则路径下载)
+			final PhysicalExaminationRecordFormMap temp = physicalExaminationRecordFormMap;
+
+			new Thread(new Runnable() {
+				public void run() {
+					try{
+						StringBuffer httpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_SYN));
+						httpUrl.append("?");
+						httpUrl.append("physicalExaminationRecordFormMap.id=").append(temp.getLong("id"));
+						genReportPdfWithImg(httpUrl.toString(), sickRiskPdfPathBuffer+File.separator+"sick_risk.png",sickRiskPdfPathBuffer+File.separator+"sick_risk.pdf");
+					}catch (Exception ex){
+						logger.error(ex.getMessage());
+						ex.printStackTrace();
+					}
+				}
+			}).start();
 
 		}
 		if(StringUtils.isNotBlank(margePdfPath)){

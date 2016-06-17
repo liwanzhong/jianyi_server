@@ -535,6 +535,76 @@ public class PhysicalExaminationRecordController extends BaseController {
 
 
 
+    @RequestMapping("/downloadSickRiskReport")
+    public String downloadSickRiskReport(@RequestParam(value = "recordid",required = true) Long recordid, HttpServletRequest request, HttpServletResponse response) throws Exception{
+        try{
+            PhysicalExaminationRecordFormMap recordFormMap = physicalExaminationRecordMapper.findbyFrist("id",recordid.toString(),PhysicalExaminationRecordFormMap.class);
+            if(recordFormMap==null){
+                throw new Exception("无效下载请求!");
+            }
+            if(recordFormMap.getInt("status")!=4){
+                throw new Exception("请求的报告还没有生成!");
+            }
+
+            StringBuffer report_path = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_PDF_SAVED_PAHT));
+            report_path.append(File.separator);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            if(recordFormMap.get("check_time") instanceof  java.util.Date){
+                report_path.append(dateFormat.format(recordFormMap.getDate("check_time")));
+            }else{
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                report_path.append(dateFormat.format(simpleDateFormat.parse(recordFormMap.get("check_time").toString())));
+            }
+            report_path.append(File.separator);
+            report_path.append(recordFormMap.getLong("id"));
+            report_path.append(File.separator);
+            report_path.append("sick_risk.pdf");
+
+            // 查询用户
+            CustomInfoFormMap customInfoFormMap = customInfoMapper.findbyFrist("id",recordFormMap.get("custom_id").toString(),CustomInfoFormMap.class);
+
+            //显示给客户的文件名（保存的文件名）
+            String fileName = customInfoFormMap.getStr("name")+"_疾病风险"+simpleDateFormat.format(recordFormMap.getDate("check_time"))+".pdf";
+
+
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + new String(fileName.getBytes("UTF-8"),"ISO8859-1"));//这里做一下取byte的转码，否则中文则乱码或者不显示
+
+            InputStream inputStream =null;
+            OutputStream os = null;
+            try {
+                File pdfFile = new File(report_path.toString());
+                if(!pdfFile.exists()||!pdfFile.isFile()){
+                    throw new Exception("下载异常，文件不存在！");
+                }
+                inputStream = new FileInputStream(pdfFile);
+
+                os = response.getOutputStream();
+                byte[] b = new byte[2048];
+                int length;
+                while ((length = inputStream.read(b)) > 0) {
+                    os.write(b, 0, length);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                if(os!=null){
+                    os.close();
+                }
+                if(inputStream!=null){
+                    inputStream.close();
+                }
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+
 
 
     @Autowired
