@@ -413,6 +413,7 @@ public class CheckServiceImpl implements ICheckService {
                     Long smallItemLeveId = checkSmallItemResult.getLong("tzed_leve_id")!=null?checkSmallItemResult.getLong("tzed_leve_id"):checkSmallItemResult.getLong("orgin_leve_id");
                     for(CfPingfenLeveFormMap cfPingfenLeveProcent:cfPingfenLeveFormMapList){
                         if(cfPingfenLeveProcent.getLong("id").longValue() == smallItemLeveId.longValue()){
+                            logger.info("Sco："+Sco==null?null:Sco.doubleValue()+"    cfPingfenLeveProcent:"+cfPingfenLeveProcent.getBigDecimal("small_tz_procent")==null?null:cfPingfenLeveProcent.getBigDecimal("small_tz_procent").doubleValue());
                             Sco = Sco.multiply(cfPingfenLeveProcent.getBigDecimal("small_tz_procent"));
                             break;
                         }
