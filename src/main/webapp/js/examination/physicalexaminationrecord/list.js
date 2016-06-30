@@ -64,7 +64,8 @@ $(function() {
 			//actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/result.shtml?recordid='+rowdata.id+'">检测值</a>&nbsp;&nbsp;&nbsp;';
 			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看报告</a>&nbsp;&nbsp;&nbsp;';
 			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/sick_risk.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看疾病风险评估</a>&nbsp;&nbsp;&nbsp;';
-			actionStr+='<a href="'+rootPath + '/examination/physicalExamination/downloadReport.shtml?recordid='+rowdata.id+'">下载PDF报告</a>';
+			actionStr+='<a href="'+rootPath + '/examination/physicalExamination/downloadReport.shtml?recordid='+rowdata.id+'">下载PDF报告</a>&nbsp;&nbsp;&nbsp;';
+			actionStr+='<a href="'+rootPath + '/examination/physicalExamination/downloadSickRiskReport.shtml?recordid='+rowdata.id+'">下载疾病风险PDF报告</a>&nbsp;&nbsp;&nbsp;';
 		}
 		return actionStr;
 	}
