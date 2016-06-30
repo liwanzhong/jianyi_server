@@ -299,7 +299,8 @@ public class CheckServiceImpl implements ICheckService {
                     BigDecimal M = n.divide(new BigDecimal(20.0),3, RoundingMode.HALF_UP);
                     checkSmallItemResult.put("in_value_score",M);
                     //随机生成
-                    int max = checkSmallItemResult.getBigDecimal("gen_max_value").multiply(new BigDecimal(1000)).intValue();
+                    //todo 随机的最大值为==基准高值+区间值
+                    int max = checkSmallItemResult.getBigDecimal("gen_max_value").add(n).multiply(new BigDecimal(1000)).intValue();
                     int min = checkSmallItemResult.getBigDecimal("gen_min_value").multiply(new BigDecimal(1000)).intValue();
                     int randomNumber = (int) Math.round(Math.random()*(max-min)+min);
 
