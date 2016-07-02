@@ -87,6 +87,7 @@
 				/citfc/client_call/** = anon
 				/examination/physicalExamination/report_big_item_pdf_gen.shtml = anon
 				/examination/physicalExamination/report_pdf_gen.shtml = anon
+				/examination/physicalExamination/sickRiskSyn_pdfgen.shtml = anon
 			</value>
 		</property>
 	</bean>

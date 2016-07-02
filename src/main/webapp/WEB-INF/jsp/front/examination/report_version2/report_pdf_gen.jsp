@@ -8,7 +8,7 @@
 	<meta charset="utf-8">
 	<title>双螺旋机能检测报告</title>
 	<link type="text/css" rel="stylesheet" href="${ctx}/front-static/report_version2/css/base.css">
-	<link type="text/css" rel="stylesheet" href="${ctx}/front-static/report_version2/css/index.css">
+	<link type="text/css" rel="stylesheet" href="${ctx}/front-static/report_version2/css/index-3.css">
 	<script src="${ctx}/front-static/report_version2/js/jquery-1.12.1.min.js"></script>
 	<script src="${ctx}/front-static/report_version2/js/radialIndicator.js"></script>
 	<script>

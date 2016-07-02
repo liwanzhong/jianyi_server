@@ -299,7 +299,8 @@ public class CheckServiceImpl implements ICheckService {
                     BigDecimal M = n.divide(new BigDecimal(20.0),3, RoundingMode.HALF_UP);
                     checkSmallItemResult.put("in_value_score",M);
                     //随机生成
-                    int max = checkSmallItemResult.getBigDecimal("gen_max_value").multiply(new BigDecimal(1000)).intValue();
+                    //todo 随机的最大值为==基准高值+区间值
+                    int max = checkSmallItemResult.getBigDecimal("gen_max_value").add(n).multiply(new BigDecimal(1000)).intValue();
                     int min = checkSmallItemResult.getBigDecimal("gen_min_value").multiply(new BigDecimal(1000)).intValue();
                     int randomNumber = (int) Math.round(Math.random()*(max-min)+min);
 
@@ -456,8 +457,10 @@ public class CheckServiceImpl implements ICheckService {
             BigDecimal totalQuanzhong = new BigDecimal(0);
             BigDecimal totalScore = new BigDecimal(0);
             for(PhysicalExaminationResultFormMap item :physicalExaminationResultFormMapListIn){
-                totalQuanzhong=totalQuanzhong.add(item.getBigDecimal("gen_quanzhong"));
-                totalScore=totalScore.add(item.getBigDecimal("quanzhong_score"));
+//                totalQuanzhong=totalQuanzhong.add(item.getBigDecimal("gen_quanzhong"));
+                totalQuanzhong=totalQuanzhong.add(new BigDecimal(1));
+//                totalScore=totalScore.add(item.getBigDecimal("quanzhong_score"));
+                totalScore=totalScore.add(item.getBigDecimal("item_score"));
             }
             if(totalQuanzhong.doubleValue()>0.00d){
                 BigDecimal checkScore = totalScore.divide(totalQuanzhong,3,BigDecimal.ROUND_HALF_UP);
@@ -502,7 +505,8 @@ public class CheckServiceImpl implements ICheckService {
         BigDecimal totalQuanzhong = new BigDecimal(0);
         for(PhysicalExaminationBigResultFormMap item:physicalExaminationBigResultFormMapList){
             totalScore = totalScore.add(item.getBigDecimal("check_score"));
-            totalQuanzhong = totalQuanzhong.add(item.getBigDecimal("gen_quanzhong"));
+//            totalQuanzhong = totalQuanzhong.add(item.getBigDecimal("gen_quanzhong"));
+            totalQuanzhong = totalQuanzhong.add(new BigDecimal(1));
         }
         physicalExaminationMainReportFormMap.put("check_total_score",totalScore.divide(totalQuanzhong,3, RoundingMode.HALF_UP));
 

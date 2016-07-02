@@ -145,6 +145,55 @@ public class PhysicalExaminationRecordController extends BaseController {
     }
 
 
+    /**
+     * 生成pdf的疾病风险页面
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("sickRiskSyn_pdfgen")
+    public String sickRiskSyn_pdfgen(Model model) throws Exception {
+        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
+        List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList = physicalExaminationRecordMapper.findByNames(physicalExaminationRecordFormMap);
+        if(CollectionUtils.isEmpty(physicalExaminationRecordFormMapList)){
+            throw new Exception("参数异常");
+        }
+        physicalExaminationRecordFormMap = physicalExaminationRecordFormMapList.get(0);
+        //todo 加载疾病风险结果
+        PhysicalExaminationSickRiskMainResultFormMap physicalExaminationSickRiskMainResultFormMap = getFormMap(PhysicalExaminationSickRiskMainResultFormMap.class);
+        physicalExaminationSickRiskMainResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
+        List<PhysicalExaminationSickRiskMainResultFormMap> physicalExaminationSickRiskMainResultFormMapList = physicalExaminationSickRiskMainResultMapper.findAllShowInReportSickRiskList(physicalExaminationSickRiskMainResultFormMap);
+        if(CollectionUtils.isNotEmpty(physicalExaminationSickRiskMainResultFormMapList)){
+            //todo 加载疾病风险等级所有列表
+            List<SickRiskLeveFormMap> sickRiskLeveFormMapList = sickRiskLeveMapper.findByNames(getFormMap(SickRiskLeveFormMap.class));
+            Map<Long,List<PhysicalExaminationSickRiskMainResultFormMap>> sickLeveCountMap = new HashMap<Long, List<PhysicalExaminationSickRiskMainResultFormMap>>();
+            for(SickRiskLeveFormMap sickRiskLeveFormMap:sickRiskLeveFormMapList){
+                List<PhysicalExaminationSickRiskMainResultFormMap> currentLeveList = new ArrayList<PhysicalExaminationSickRiskMainResultFormMap>();
+                for(PhysicalExaminationSickRiskMainResultFormMap physicalExaminationSickRiskMainResultFormMapTemp:physicalExaminationSickRiskMainResultFormMapList){
+                    if(physicalExaminationSickRiskMainResultFormMapTemp.get("risk_leve")!=null){
+                        if(physicalExaminationSickRiskMainResultFormMapTemp.getLong("risk_leve") == sickRiskLeveFormMap.getLong("id").longValue()){
+                            currentLeveList.add(physicalExaminationSickRiskMainResultFormMapTemp);
+                        }
+                    }
+
+                }
+                sickLeveCountMap.put(sickRiskLeveFormMap.getLong("id"),currentLeveList);
+            }
+
+            model.addAttribute("sickLeveCountMap",sickLeveCountMap);
+        }
+        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMap);
+
+        //todo 获取疾病等级
+        List<SickRiskLeveFormMap> sickRiskLeveFormMapList = sickRiskLeveMapper.findByNames(getFormMap(SickRiskLeveFormMap.class));
+        model.addAttribute("sickRiskLeveFormMapList",sickRiskLeveFormMapList);
+
+        return Common.BACKGROUND_PATH + "/front/examination/report_version2/syn_pdf_gen";
+    }
+
+
+
+
     @RequestMapping("report_pdf_gen")
     public String report_pdf_gen(Model model) throws Exception {
         PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
@@ -533,6 +582,76 @@ public class PhysicalExaminationRecordController extends BaseController {
         return null;
     }
 
+
+
+    @RequestMapping("/downloadSickRiskReport")
+    public String downloadSickRiskReport(@RequestParam(value = "recordid",required = true) Long recordid, HttpServletRequest request, HttpServletResponse response) throws Exception{
+        try{
+            PhysicalExaminationRecordFormMap recordFormMap = physicalExaminationRecordMapper.findbyFrist("id",recordid.toString(),PhysicalExaminationRecordFormMap.class);
+            if(recordFormMap==null){
+                throw new Exception("无效下载请求!");
+            }
+            if(recordFormMap.getInt("status")!=4){
+                throw new Exception("请求的报告还没有生成!");
+            }
+
+            StringBuffer report_path = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_PDF_SAVED_PAHT));
+            report_path.append(File.separator);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            if(recordFormMap.get("check_time") instanceof  java.util.Date){
+                report_path.append(dateFormat.format(recordFormMap.getDate("check_time")));
+            }else{
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                report_path.append(dateFormat.format(simpleDateFormat.parse(recordFormMap.get("check_time").toString())));
+            }
+            report_path.append(File.separator);
+            report_path.append(recordFormMap.getLong("id"));
+            report_path.append(File.separator);
+            report_path.append("sick_risk.pdf");
+
+            // 查询用户
+            CustomInfoFormMap customInfoFormMap = customInfoMapper.findbyFrist("id",recordFormMap.get("custom_id").toString(),CustomInfoFormMap.class);
+
+            //显示给客户的文件名（保存的文件名）
+            String fileName = customInfoFormMap.getStr("name")+"_疾病风险"+simpleDateFormat.format(recordFormMap.getDate("check_time"))+".pdf";
+
+
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + new String(fileName.getBytes("UTF-8"),"ISO8859-1"));//这里做一下取byte的转码，否则中文则乱码或者不显示
+
+            InputStream inputStream =null;
+            OutputStream os = null;
+            try {
+                File pdfFile = new File(report_path.toString());
+                if(!pdfFile.exists()||!pdfFile.isFile()){
+                    throw new Exception("下载异常，文件不存在！");
+                }
+                inputStream = new FileInputStream(pdfFile);
+
+                os = response.getOutputStream();
+                byte[] b = new byte[2048];
+                int length;
+                while ((length = inputStream.read(b)) > 0) {
+                    os.write(b, 0, length);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                if(os!=null){
+                    os.close();
+                }
+                if(inputStream!=null){
+                    inputStream.close();
+                }
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
 
 
 

@@ -158,8 +158,8 @@
 			progressLoad();
 			$.post('${ctx}/citfc/client_call/check/upload.shtml', {
 				customerId : customId,
-//				instrumentCode:'ac605175f17ca2941d6783798c2767c7'
-				instrumentCode:'708c0006bfbcd930bf872f521aceeb00'
+				instrumentCode:'ac605175f17ca2941d6783798c2767c7'
+//				instrumentCode:'708c0006bfbcd930bf872f521aceeb00'
 			}, function(result) {
 				if (result.status == 1) {
 					parent.$.messager.alert('提示', "生成测算数据成功", 'info');
