@@ -192,8 +192,8 @@
                             type: 'line',
                             renderAt: 'chart-container_zhexian',
                             id: 'myChart',
-                            width: '970',
-                            height: '430',
+                            width: '980',
+                            height: '325',
                             dataFormat: 'json',
                             dataSource: {
                                 "chart": {
