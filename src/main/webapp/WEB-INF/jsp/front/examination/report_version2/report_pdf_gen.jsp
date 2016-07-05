@@ -20,8 +20,8 @@
 			//起始角度
 			var stard = 0;
 			//半径
-			var radius = 226;
-			var radius2 = 280;
+			var radius = 320;
+			var radius2 = 384;
 			//BOX对应的角度;
 			var avd = 360/$("#indicatorContainer2 canvas").length;
 			//BOX对应的弧度;
@@ -168,10 +168,10 @@
 					<c:forEach items="${physicalExaminationBigResultFormMapList}" var="item">
 
 					$('#indicatorContainer2').radialIndicator({
-						radius: 30, //圆的半径，默认50
+						radius: 50, //圆的半径，默认50
 						barBgColor: '#8df8f1', //刻度条的背景颜色,默认#eee
 						barColor:'${item.show_color}', //刻度条的颜色
-						barWidth: 7, //刻度条的宽度，默认5
+						barWidth: 10, //刻度条的宽度，默认5
 						initValue:  ${item.check_score}, //圆形指示器初始化的值
 						roundCorner:false, //刻度条是否圆角
 						percentage: false //显示百分数
