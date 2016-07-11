@@ -105,27 +105,20 @@ public class CheckServiceImpl implements ICheckService {
 
         PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = saveCheckRecord(customBelonetoEntFormMap,instrumentId);
 
-        //  获取所有的项目（排除切割项目关联项 ,排除性别相关项）
-        List<CheckSmallItemFormMap> checkSmallItemFormMapList = getCustomerCheckSmallItemsList(customInfoFormMap);
-        if(CollectionUtils.isEmpty(checkSmallItemFormMapList)){
-            throw new Exception("没有配置检测项");
+
+        //todo 过滤生成报告的规则（如果在一定时间内有做过体检的，直接拷贝上一份报告的数据即可）
+        // 获取最后一次检测记录
+        PhysicalExaminationRecordFormMap lastRecordMap = new PhysicalExaminationRecordFormMap();
+        lastRecordMap.put("custom_id",physicalExaminationRecordFormMap.getLong("custom_id"));
+        lastRecordMap.put("exclude_id",physicalExaminationRecordFormMap.getLong("id"));
+        lastRecordMap = physicalExaminationRecordMapper.findLastTeastRecord(lastRecordMap);
+
+        int resultCount = physicalExaminationResultMapper.resultSizeByRecordid(lastRecordMap.getLong("id"));
+        if(lastRecordMap!=null && resultCount >0){
+            getCheckSmallItemResultByHistory(lastRecordMap.getLong("id"),physicalExaminationRecordFormMap.getLong("id"));
+        }else {
+            genCheckSmallItemResult(customInfoFormMap, physicalExaminationRecordFormMap );
         }
-
-
-
-
-        // 循环保存检测项
-        List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = new ArrayList<PhysicalExaminationResultFormMap>();
-        for(CheckSmallItemFormMap checkSmallItemFormMap:checkSmallItemFormMapList){
-            PhysicalExaminationResultFormMap physicalExaminationResultFormMap = new PhysicalExaminationResultFormMap();
-            physicalExaminationResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
-            physicalExaminationResultFormMap.put("bit_item_id",checkSmallItemFormMap.getLong("big_item_id"));
-            physicalExaminationResultFormMap.put("small_item_id",checkSmallItemFormMap.getLong("id"));
-//            physicalExaminationResultMapper.addEntity(physicalExaminationResultFormMap);
-            physicalExaminationResultFormMapList.add(physicalExaminationResultFormMap);
-        }
-
-        physicalExaminationResultMapper.batchSave(physicalExaminationResultFormMapList);
 
         final ICheckService checkService = this;
         final PhysicalExaminationRecordFormMap item = physicalExaminationRecordFormMap;
@@ -246,18 +239,24 @@ public class CheckServiceImpl implements ICheckService {
         if(CollectionUtils.isEmpty(cfPingfenLeveFormMapList)){
             throw new Exception("评分等级未配置！");
         }
-        genCheckSmallItemResult(customInfoFormMap, physicalExaminationResultFormMapList, checkSmallItemFormMapList, cfPingfenLeveFormMapList);
-
-
         // 获取所有的检测大项
         List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = genCheckBigItemResult(recordFormMap, cfPingfenLeveFormMapList);
-
-
 
         // 保存总评
         genMainResult(cfPingfenLeveFormMapList, physicalExaminationBigResultFormMapList, recordFormMap.getLong("id"));
 
 
+    }
+
+
+    /**
+     * 根据历史数据生成报告
+     */
+    private void getCheckSmallItemResultByHistory(Long sourceRecordId,Long distRecordId) {
+        PhysicalExaminationResultFormMap physicalExaminationResultFormMap = new PhysicalExaminationResultFormMap();
+        physicalExaminationResultFormMap.put("sourceRecordId",sourceRecordId);
+        physicalExaminationResultFormMap.put("distRecordId",distRecordId);
+        physicalExaminationResultMapper.insertByHistory(physicalExaminationResultFormMap);
     }
 
 
@@ -272,13 +271,30 @@ public class CheckServiceImpl implements ICheckService {
     /**
      * 生成检测项检测结果
      * @param customInfoFormMap
-     * @param physicalExaminationResultFormMapList
      * @param checkSmallItemFormMapList
-     * @param cfPingfenLeveFormMapList
      * @throws Exception
      */
-    private void genCheckSmallItemResult(CustomInfoFormMap customInfoFormMap, List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList, List<CheckSmallItemFormMap> checkSmallItemFormMapList, List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList) throws Exception {
-        // 循环检测结果，计算各项内容，并更新
+    private void genCheckSmallItemResult(CustomInfoFormMap customInfoFormMap,  PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap) throws Exception {
+        List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList = cfPingfenLeveMapper.findByNames(new CfPingfenLeveFormMap());
+        if(CollectionUtils.isEmpty(cfPingfenLeveFormMapList)){
+            throw new Exception("评分等级未配置！");
+        }
+        List<CheckSmallItemFormMap> checkSmallItemFormMapList = getCustomerCheckSmallItemsList(customInfoFormMap);
+        if(CollectionUtils.isEmpty(checkSmallItemFormMapList)){
+            throw new Exception("没有配置检测项");
+        }
+        List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = new ArrayList<PhysicalExaminationResultFormMap>();
+        for(CheckSmallItemFormMap checkSmallItemFormMap:checkSmallItemFormMapList){
+            PhysicalExaminationResultFormMap physicalExaminationResultFormMap = new PhysicalExaminationResultFormMap();
+            physicalExaminationResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
+            physicalExaminationResultFormMap.put("bit_item_id",checkSmallItemFormMap.getLong("big_item_id"));
+            physicalExaminationResultFormMap.put("small_item_id",checkSmallItemFormMap.getLong("id"));
+//            physicalExaminationResultMapper.addEntity(physicalExaminationResultFormMap);
+            physicalExaminationResultFormMapList.add(physicalExaminationResultFormMap);
+        }
+
+//        physicalExaminationResultMapper.batchSave(physicalExaminationResultFormMapList);
+
 
         for(PhysicalExaminationResultFormMap checkSmallItemResult:physicalExaminationResultFormMapList){
 
@@ -409,7 +425,7 @@ public class CheckServiceImpl implements ICheckService {
 
                     //根据调整概率，生成新的功能等级
 
-                    BigDecimal Sco = checkSmallItemResult.getBigDecimal("item_score").multiply(checkSmallItemFormMap.getBigDecimal("quanzhong"));
+                    /*BigDecimal Sco = checkSmallItemResult.getBigDecimal("item_score").multiply(checkSmallItemFormMap.getBigDecimal("quanzhong"));
                     //todo 根据等级配置中的小项调整的百分比，对当前得分再乘以一个百分比
                     Long smallItemLeveId = checkSmallItemResult.getLong("tzed_leve_id")!=null?checkSmallItemResult.getLong("tzed_leve_id"):checkSmallItemResult.getLong("orgin_leve_id");
                     for(CfPingfenLeveFormMap cfPingfenLeveProcent:cfPingfenLeveFormMapList){
@@ -419,13 +435,17 @@ public class CheckServiceImpl implements ICheckService {
                             break;
                         }
                     }
-                    checkSmallItemResult.put("quanzhong_score",Sco);
+                    checkSmallItemResult.put("quanzhong_score",Sco);*/
 
-                    physicalExaminationResultMapper.editEntity(checkSmallItemResult);
+//                    physicalExaminationResultMapper.editEntity(checkSmallItemResult);
                     break;
                 }
 
             }
+        }
+//        physicalExaminationResultMapper.batchSave(physicalExaminationResultFormMapList);
+        for(PhysicalExaminationResultFormMap item:physicalExaminationResultFormMapList){
+            physicalExaminationResultMapper.addEntity(item);
         }
     }
 
@@ -457,9 +477,7 @@ public class CheckServiceImpl implements ICheckService {
             BigDecimal totalQuanzhong = new BigDecimal(0);
             BigDecimal totalScore = new BigDecimal(0);
             for(PhysicalExaminationResultFormMap item :physicalExaminationResultFormMapListIn){
-//                totalQuanzhong=totalQuanzhong.add(item.getBigDecimal("gen_quanzhong"));
                 totalQuanzhong=totalQuanzhong.add(new BigDecimal(1));
-//                totalScore=totalScore.add(item.getBigDecimal("quanzhong_score"));
                 totalScore=totalScore.add(item.getBigDecimal("item_score"));
             }
             if(totalQuanzhong.doubleValue()>0.00d){

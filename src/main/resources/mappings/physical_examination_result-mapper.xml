@@ -94,6 +94,34 @@
     </select>
 
 
+    <insert id="insertByHistory">
+  INSERT INTO physical_examination_result (examination_record_id, bit_item_id, small_item_id, gen_min_value, gen_max_value, gen_in_value, in_value_score, check_value, item_score, orgin_leve_id, gen_quanzhong, quanzhong_score, pinggu, tzed_leve_id, tzed_check_value)
+  SELECT
+    ${distRecordId},
+    per.bit_item_id,
+    per.small_item_id,
+    per.gen_min_value,
+    per.gen_max_value,
+    per.gen_in_value,
+    per.in_value_score,
+    per.check_value,
+    per.item_score,
+    per.orgin_leve_id,
+    per.gen_quanzhong,
+    per.quanzhong_score,
+    per.pinggu,
+    per.tzed_leve_id,
+    per.tzed_check_value
+  FROM physical_examination_result per
+  WHERE per.examination_record_id = ${sourceRecordId}
+    </insert>
+
+
+    <select id="resultSizeByRecordid" resultType="java.lang.Integer">
+        SELECT COUNT(1) ct FROM physical_examination_result per WHERE per.examination_record_id = #{examination_record_id};
+    </select>
+
+
 
 
 
