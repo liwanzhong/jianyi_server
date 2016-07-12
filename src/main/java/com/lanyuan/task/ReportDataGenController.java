@@ -59,7 +59,7 @@ public class ReportDataGenController {
 				try{
 					//todo 生成检测数据
 					checkService.deleteGenedData(item);
-					checkService.genCheckResult(item);
+					checkService.genCheckResultByChosen(item);
 					checkService.genSickRiskResult(item);
 					item.put("status",2);
 					item.put("update_time",dateTimeFormat.format(new Date()));

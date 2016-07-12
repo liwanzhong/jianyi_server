@@ -21,4 +21,6 @@ public interface ICheckService {
 
 
     void deleteGenedData(PhysicalExaminationRecordFormMap recordFormMap)throws Exception;
+
+    void genCheckResultByChosen(PhysicalExaminationRecordFormMap item)throws Exception;
 }

@@ -746,6 +746,27 @@ public class CheckServiceImpl implements ICheckService {
         physicalExaminationSickRiskResultMapper.deleteByAttribute("examination_record_id",recordFormMap.get("id").toString(),PhysicalExaminationSickRiskResultFormMap.class);
     }
 
+    public void genCheckResultByChosen(PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap) throws Exception {
+        CustomInfoFormMap customInfoFormMap = customInfoMapper.findbyFrist("id", physicalExaminationRecordFormMap.get("custom_id").toString(),CustomInfoFormMap.class);
+        if(null == customInfoFormMap){
+            throw new Exception("无此用户!");
+        }
+        // 获取最后一次检测记录
+        PhysicalExaminationRecordFormMap lastRecordMap = new PhysicalExaminationRecordFormMap();
+        lastRecordMap.put("custom_id",physicalExaminationRecordFormMap.getLong("custom_id"));
+        lastRecordMap.put("exclude_id",physicalExaminationRecordFormMap.getLong("id"));
+        lastRecordMap = physicalExaminationRecordMapper.findLastTeastRecord(lastRecordMap);
+
+        int resultCount = physicalExaminationResultMapper.resultSizeByRecordid(lastRecordMap.getLong("id"));
+        if(lastRecordMap!=null && resultCount >0){
+            getCheckSmallItemResultByHistory(lastRecordMap.getLong("id"),physicalExaminationRecordFormMap.getLong("id"));
+        }else {
+            genCheckSmallItemResult(customInfoFormMap, physicalExaminationRecordFormMap );
+        }
+
+        genCheckResult(physicalExaminationRecordFormMap);
+    }
+
     @Autowired
     private AgeSickRiskRoutMapper ageSickRiskRoutMapper;
 
