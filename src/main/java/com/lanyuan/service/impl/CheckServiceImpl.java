@@ -113,7 +113,10 @@ public class CheckServiceImpl implements ICheckService {
         lastRecordMap.put("exclude_id",physicalExaminationRecordFormMap.getLong("id"));
         lastRecordMap = physicalExaminationRecordMapper.findLastTeastRecord(lastRecordMap);
 
-        int resultCount = physicalExaminationResultMapper.resultSizeByRecordid(lastRecordMap.getLong("id"));
+        int resultCount = 0;
+        if(lastRecordMap.get("id")!=null){
+            resultCount = physicalExaminationResultMapper.resultSizeByRecordid(lastRecordMap.getLong("id"));
+        }
         if(lastRecordMap!=null && resultCount >0){
             getCheckSmallItemResultByHistory(lastRecordMap.getLong("id"),physicalExaminationRecordFormMap.getLong("id"));
         }else {
@@ -757,7 +760,10 @@ public class CheckServiceImpl implements ICheckService {
         lastRecordMap.put("exclude_id",physicalExaminationRecordFormMap.getLong("id"));
         lastRecordMap = physicalExaminationRecordMapper.findLastTeastRecord(lastRecordMap);
 
-        int resultCount = physicalExaminationResultMapper.resultSizeByRecordid(lastRecordMap.getLong("id"));
+        int resultCount = 0;
+        if(lastRecordMap.get("id")!=null){
+            resultCount = physicalExaminationResultMapper.resultSizeByRecordid(lastRecordMap.getLong("id"));
+        }
         if(lastRecordMap!=null && resultCount >0){
             getCheckSmallItemResultByHistory(lastRecordMap.getLong("id"),physicalExaminationRecordFormMap.getLong("id"));
         }else {
