@@ -3,6 +3,7 @@ package com.lanyuan.task;
 import br.eti.mertz.wkhtmltopdf.wrapper.Pdf;
 import br.eti.mertz.wkhtmltopdf.wrapper.page.PageType;
 import br.eti.mertz.wkhtmltopdf.wrapper.params.Param;
+import com.google.common.util.concurrent.*;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -32,9 +33,10 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
@@ -120,29 +122,91 @@ public class ReportPDFGenController {
 				savePathFile.mkdirs();
 			}
 
+
+
+			//todo 加入多线程执行
+			// 创建线程池
+			final  ListeningExecutorService executorService = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+
+
 			//首页
 			StringBuffer  httpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_MAIN));
 			httpUrl.append("?");
 			httpUrl.append("physicalExaminationRecordFormMap.id=").append(physicalExaminationRecordFormMap.getLong("id"));
-			String pdfPath = genReportPdfWithImg(httpUrl.toString(), pdfFilePath.toString()+File.separator+"0.png",pdfFilePath.toString()+File.separator+"0.pdf");
-			if(pdfPath !=null){
-				pdfs.add(new FileInputStream(pdfPath));
-			}
+			final ListenableFuture<Map<Long,String>> firstPageFuture = executorService.submit(new GenPdfTask(httpUrl.toString(),pdfFilePath.toString()+File.separator+"0.png",pdfFilePath.toString()+File.separator+"0.pdf",null));
 
 
+
+
+			final Map<Long,String> itemMaps = new HashMap<Long, String>();
+			List<Long> bigItemIdList = new ArrayList<Long>();
 			//检查打项
 			for(int i=0;i< physicalExaminationBigResultFormMapList.size();i++){
 				httpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_ITEM));
 				httpUrl.append("?");
 				httpUrl.append("bigItemId=").append(physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")).append("&").append("recordId=").append(physicalExaminationRecordFormMap.getLong("id"));
-				pdfPath = genReportPdfWithImg(httpUrl.toString(), pdfFilePath.toString()+File.separator+physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")+".png",pdfFilePath.toString()+File.separator+physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")+".pdf");
-				if(pdfPath !=null){
-					pdfs.add(new FileInputStream(pdfPath));
+				final ListenableFuture<Map<Long,String>> itemPageFuture = executorService.submit(new GenPdfTask(httpUrl.toString(),pdfFilePath.toString()+File.separator+physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")+".png",pdfFilePath.toString()+File.separator+physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")+".pdf",physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")));
+
+				bigItemIdList.add(physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id"));
+				itemMaps.put(physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id"),"0");
+
+				Futures.addCallback(itemPageFuture, new FutureCallback<Map<Long,String>>() {
+					public void onSuccess(Map<Long,String> pdfPathMap) {
+						for (Map.Entry<Long, String> entryItem : pdfPathMap.entrySet()) {
+							itemMaps.put(entryItem.getKey(),entryItem.getValue());
+						}
+
+					}
+					public void onFailure(Throwable thrown) {
+						try {
+							throw thrown;
+						} catch (Throwable throwable) {
+							throwable.printStackTrace();
+						}
+					}
+				});
+
+			}
+
+
+			try {
+				Map<Long,String> pdfPathMap = firstPageFuture.get();
+				if(pdfPathMap !=null){
+					for (Map.Entry<Long, String> entryItem : pdfPathMap.entrySet()) {
+						pdfs.add(new FileInputStream(entryItem.getValue()));
+					}
+				}
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			} catch (ExecutionException e1) {
+				e1.printStackTrace();
+			}
+			while (true){
+				Thread.sleep(300);
+				boolean isWait = false;
+				for (Map.Entry<Long, String> entryItem : itemMaps.entrySet()) {
+					if(StringUtils.equalsIgnoreCase(entryItem.getValue(),"0")){
+						isWait = true;
+						break;
+					}
+				}
+				if(!isWait){
+					break;
 				}
 			}
 
-			final String sickRiskPdfPathBuffer = pdfFilePath.toString();
+			for(Long item:bigItemIdList){
+				for (Map.Entry<Long, String> entryItem : itemMaps.entrySet()) {
+					if(entryItem.getKey().longValue() == item.longValue()){
+						pdfs.add(new FileInputStream(entryItem.getValue()));
+						continue;
+					}
+				}
+			}
 
+
+
+			final String sickRiskPdfPathBuffer = pdfFilePath.toString();
 			// 合并pdf文件到一个文件中
 			String mgrgePdfFilePath = pdfFilePath.append(File.separator).append(physicalExaminationRecordFormMap.getLong("id")+"_marge.pdf").toString();
 			File  file = new File(mgrgePdfFilePath);
@@ -153,6 +217,7 @@ public class ReportPDFGenController {
 			OutputStream output = new FileOutputStream(mgrgePdfFilePath);
 			MergePDF.concatPDFs(pdfs, output, true);
 			margePdfPath = file.getAbsolutePath();
+
 
 			// 疾病风险(疾病风险pdf报告只是生成了pdf文件，没有做保存，如果需要下载，直接通过规则路径下载)
 			final PhysicalExaminationRecordFormMap temp = physicalExaminationRecordFormMap;
@@ -192,7 +257,7 @@ public class ReportPDFGenController {
 			try{
 				driver.get(genUrl);
 				//打开以后等待4秒钟
-				Thread.sleep(4000);
+				Thread.sleep(3000);
 				File screenShotFile = ((TakesScreenshot) driver) .getScreenshotAs(OutputType.FILE);
 				FileUtils.copyFile(screenShotFile, new File(pngPath));
 			}catch (Exception ex){
@@ -328,5 +393,31 @@ public class ReportPDFGenController {
 		document.add(image);
 		document.close();
 
+	}
+
+	private class GenPdfTask implements  Callable<Map<Long,String>> {
+
+		private String url = null;
+
+		private String pdfPath = null;
+
+		private String pngPath = null;
+
+		private Long bigItemId = 0l;
+
+		public GenPdfTask(String url,String pngPath,String pdfPath,Long bigItemId) {
+			this.url = url;
+			this.pdfPath = pdfPath;
+			this.pngPath = pngPath;
+			this.bigItemId = bigItemId;
+		}
+
+		@Override
+		public Map<Long,String> call() throws Exception {
+			String pdfPathIn = genReportPdfWithImg(url, pngPath,pdfPath);
+			Map<Long,String> retMap = new HashMap<Long, String>();
+			retMap.put(bigItemId,pdfPathIn);
+			return retMap;
+		}
 	}
 }
