@@ -53,6 +53,7 @@
 				<ref bean="pagePlugin" />
 			</array>
 		</property>
+		<!--<property name="configLocation" value="classpath:spring-application.xml"/>-->
 	</bean>
 	<!-- 通过扫描的模式，扫描目录在com.lanyuan.mapper目录下，所有的mapper都继承SqlMapper接口的接口， 这样一个bean就可以了 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">

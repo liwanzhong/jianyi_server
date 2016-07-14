@@ -274,7 +274,7 @@ public class CheckServiceImpl implements ICheckService {
     /**
      * 生成检测项检测结果
      * @param customInfoFormMap
-     * @param checkSmallItemFormMapList
+     * @param physicalExaminationRecordFormMap
      * @throws Exception
      */
     private void genCheckSmallItemResult(CustomInfoFormMap customInfoFormMap,  PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap) throws Exception {
@@ -292,11 +292,9 @@ public class CheckServiceImpl implements ICheckService {
             physicalExaminationResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
             physicalExaminationResultFormMap.put("bit_item_id",checkSmallItemFormMap.getLong("big_item_id"));
             physicalExaminationResultFormMap.put("small_item_id",checkSmallItemFormMap.getLong("id"));
-//            physicalExaminationResultMapper.addEntity(physicalExaminationResultFormMap);
             physicalExaminationResultFormMapList.add(physicalExaminationResultFormMap);
         }
 
-//        physicalExaminationResultMapper.batchSave(physicalExaminationResultFormMapList);
 
 
         for(PhysicalExaminationResultFormMap checkSmallItemResult:physicalExaminationResultFormMapList){
@@ -427,29 +425,35 @@ public class CheckServiceImpl implements ICheckService {
                     }
 
                     //根据调整概率，生成新的功能等级
-
-                    /*BigDecimal Sco = checkSmallItemResult.getBigDecimal("item_score").multiply(checkSmallItemFormMap.getBigDecimal("quanzhong"));
-                    //todo 根据等级配置中的小项调整的百分比，对当前得分再乘以一个百分比
-                    Long smallItemLeveId = checkSmallItemResult.getLong("tzed_leve_id")!=null?checkSmallItemResult.getLong("tzed_leve_id"):checkSmallItemResult.getLong("orgin_leve_id");
-                    for(CfPingfenLeveFormMap cfPingfenLeveProcent:cfPingfenLeveFormMapList){
-                        if(cfPingfenLeveProcent.getLong("id").longValue() == smallItemLeveId.longValue()){
-                            logger.info("Sco："+Sco==null?null:Sco.doubleValue()+"    cfPingfenLeveProcent:"+cfPingfenLeveProcent.getBigDecimal("small_tz_procent")==null?null:cfPingfenLeveProcent.getBigDecimal("small_tz_procent").doubleValue());
-                            Sco = Sco.multiply(cfPingfenLeveProcent.getBigDecimal("small_tz_procent"));
-                            break;
-                        }
-                    }
-                    checkSmallItemResult.put("quanzhong_score",Sco);*/
-
-//                    physicalExaminationResultMapper.editEntity(checkSmallItemResult);
                     break;
                 }
 
             }
         }
-//        physicalExaminationResultMapper.batchSave(physicalExaminationResultFormMapList);
-        for(PhysicalExaminationResultFormMap item:physicalExaminationResultFormMapList){
-            physicalExaminationResultMapper.addEntity(item);
+        List<PhysicalExaminationResult> physicalExaminationResultList = new ArrayList<PhysicalExaminationResult>();
+        if(CollectionUtils.isNotEmpty(physicalExaminationResultFormMapList)){
+            for(PhysicalExaminationResultFormMap item:physicalExaminationResultFormMapList){
+                PhysicalExaminationResult result = new PhysicalExaminationResult();
+                result.setBit_item_id(item.get("bit_item_id")==null?null:item.getLong("bit_item_id"));
+                result.setCheck_value(item.get("check_value")==null?null:item.getBigDecimal("check_value"));
+                result.setExamination_record_id(item.get("examination_record_id")==null?null:item.getLong("examination_record_id"));
+                result.setGen_in_value(item.get("gen_in_value")==null?null:item.getBigDecimal("gen_in_value"));
+                result.setGen_max_value(item.get("gen_max_value")==null?null:item.getBigDecimal("gen_max_value"));
+                result.setGen_min_value(item.get("gen_min_value")==null?null:item.getBigDecimal("gen_min_value"));
+                result.setGen_quanzhong(item.get("gen_quanzhong")==null?null:item.getBigDecimal("gen_quanzhong"));
+                result.setIn_value_score(item.get("in_value_score")==null?null:item.getBigDecimal("in_value_score"));
+                result.setItem_score(item.get("item_score")==null?null:item.getBigDecimal("item_score"));
+                result.setOrgin_leve_id(item.get("orgin_leve_id")==null?null:item.getLong("orgin_leve_id"));
+                result.setQuanzhong_score(item.get("quanzhong_score")==null?null:item.getBigDecimal("quanzhong_score"));
+                result.setSmall_item_id(item.get("small_item_id")==null?null:item.getLong("small_item_id"));
+                result.setTzed_leve_id(item.get("tzed_leve_id")==null?null:item.getLong("tzed_leve_id"));
+                physicalExaminationResultList.add(result);
+            }
+            if(CollectionUtils.isNotEmpty(physicalExaminationResultList)){
+                physicalExaminationResultMapper.saveBatchResult(physicalExaminationResultList);
+            }
         }
+
     }
 
 
@@ -538,29 +542,6 @@ public class CheckServiceImpl implements ICheckService {
             }
         }
 
-
-        //todo 生成总评内容
-        /*ZongpingLeveDescConfigFormMap zongpingLeveDescConfigFormMap = new ZongpingLeveDescConfigFormMap();
-        zongpingLeveDescConfigFormMap.put("check_total_score",physicalExaminationMainReportFormMap.getBigDecimal("check_total_score"));
-        zongpingLeveDescConfigFormMap = zongpingLeveDescConfigMapper.findFixedItem(zongpingLeveDescConfigFormMap);
-        if(null!=zongpingLeveDescConfigFormMap){
-            StringBuffer zongPingBuffer = new StringBuffer();
-
-            PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = new PhysicalExaminationBigResultFormMap();
-            physicalExaminationBigResultFormMap.put("examination_record_id",recordid);
-            List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapListOrdered =  physicalExaminationBigResultMapper.findCheckResultOrderByCheckScoreAsc(physicalExaminationBigResultFormMap);
-            if(CollectionUtils.isNotEmpty(physicalExaminationBigResultFormMapListOrdered) && physicalExaminationBigResultFormMapListOrdered.size()>5){
-                String zuicha = physicalExaminationBigResultFormMapListOrdered.get(0).getStr("name")+"、"+physicalExaminationBigResultFormMapListOrdered.get(1).getStr("name")+"、"+physicalExaminationBigResultFormMapListOrdered.get(2).getStr("name");
-                String cicha = physicalExaminationBigResultFormMapListOrdered.get(3).getStr("name")+"、"+physicalExaminationBigResultFormMapListOrdered.get(4).getStr("name");
-
-                zongPingBuffer.append("健康特工007提醒您：您的身体总分")
-                        .append(physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue()) .append("分，您的健康状态处于").append(zongpingLeveDescConfigFormMap.getStr("leve_name")).append("，")
-                        .append(zongpingLeveDescConfigFormMap.getStr("leve_des"))
-                        .append("您身体的短板是（").append(zuicha).append("），同时需要注意的还有（").append(cicha).append(").");
-
-                physicalExaminationMainReportFormMap.put("with_flow",zongPingBuffer.toString());
-            }
-        }*/
 
         physicalExaminationMainReportMapper.addEntity(physicalExaminationMainReportFormMap);
     }
@@ -656,7 +637,7 @@ public class CheckServiceImpl implements ICheckService {
                         physicalExaminationSickRiskResultFormMap.put("sick_risk_item_id",sickRiskItemFormMap.getLong("id"));
                         physicalExaminationSickRiskResultFormMap.put("risk_rout",(BigDecimal)sickReskMap.get("rout"));
                         physicalExaminationSickRiskResultFormMap.put("score",(BigDecimal)sickReskMap.get("sickRiskValue") );
-                        physicalExaminationSickRiskResultMapper.addEntity(physicalExaminationSickRiskResultFormMap);
+//                        physicalExaminationSickRiskResultMapper.addEntity(physicalExaminationSickRiskResultFormMap);
                         physicalExaminationSickRiskResultFormMapList.add(physicalExaminationSickRiskResultFormMap);
                     }
                 }
@@ -678,7 +659,7 @@ public class CheckServiceImpl implements ICheckService {
                         physicalExaminationSickRiskResultFormMap.put("sick_risk_item_id",sickRiskItemFormMap.getLong("id"));
                         physicalExaminationSickRiskResultFormMap.put("risk_rout",(BigDecimal) sickReskMap.get("rout"));
                         physicalExaminationSickRiskResultFormMap.put("score",(BigDecimal)sickReskMap.get("sickRiskValue"));
-                        physicalExaminationSickRiskResultMapper.addEntity(physicalExaminationSickRiskResultFormMap);
+//                        physicalExaminationSickRiskResultMapper.addEntity(physicalExaminationSickRiskResultFormMap);
                         physicalExaminationSickRiskResultFormMapList.add(physicalExaminationSickRiskResultFormMap);
                     }
 
@@ -690,6 +671,22 @@ public class CheckServiceImpl implements ICheckService {
                 continue;
             }
 
+            List<PhysicalExaminationSickRiskResult> physicalExaminationSickRiskResultList = new ArrayList<PhysicalExaminationSickRiskResult>();
+            for(PhysicalExaminationSickRiskResultFormMap physicalExaminationSickRiskResultFormMap:physicalExaminationSickRiskResultFormMapList){
+
+
+                PhysicalExaminationSickRiskResult result = new PhysicalExaminationSickRiskResult();
+                result.setCheck_item_id(physicalExaminationSickRiskResultFormMap.get("check_item_id")==null?null:physicalExaminationSickRiskResultFormMap.getLong("check_item_id"));
+                result.setCheck_item_type(physicalExaminationSickRiskResultFormMap.get("check_item_type")==null?null:physicalExaminationSickRiskResultFormMap.getInt("check_item_type"));
+                result.setExamination_record_id(physicalExaminationSickRiskResultFormMap.get("examination_record_id")==null?null:physicalExaminationSickRiskResultFormMap.getLong("examination_record_id"));
+                result.setRisk_rout(physicalExaminationSickRiskResultFormMap.get("risk_rout")==null?null:physicalExaminationSickRiskResultFormMap.getBigDecimal("risk_rout"));
+                result.setScore(physicalExaminationSickRiskResultFormMap.get("score")==null?null:physicalExaminationSickRiskResultFormMap.getBigDecimal("score"));
+                result.setSick_risk_item_id(physicalExaminationSickRiskResultFormMap.get("sick_risk_item_id")==null?null:physicalExaminationSickRiskResultFormMap.getLong("sick_risk_item_id"));
+                physicalExaminationSickRiskResultList.add(result);
+            }
+            if(CollectionUtils.isNotEmpty(physicalExaminationSickRiskResultList)){
+                physicalExaminationSickRiskResultMapper.saveBatchResult(physicalExaminationSickRiskResultList);
+            }
 
 
             //todo 计算检测项疾病风险概率

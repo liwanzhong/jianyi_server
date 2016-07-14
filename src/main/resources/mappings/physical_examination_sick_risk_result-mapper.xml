@@ -104,6 +104,15 @@ SELECT
 	</select>
 
 
+	<insert id="saveBatchResult" parameterType="java.util.List">
+		INSERT INTO physical_examination_sick_risk_result (examination_record_id, check_item_id, check_item_type, sick_risk_item_id, risk_rout, score)
+		VALUES
+		<foreach collection="list" item="item" index="index" separator="," >
+			(#{item.examination_record_id}, #{item.check_item_id}, #{item.check_item_type}, #{item.sick_risk_item_id}, #{item.risk_rout}, #{item.score})
+		</foreach>
+	</insert>
+
+
 
 
 </mapper>

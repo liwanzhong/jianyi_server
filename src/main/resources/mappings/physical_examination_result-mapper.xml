@@ -123,6 +123,16 @@
 
 
 
+    <insert id="saveBatchResult" parameterType="java.util.List">
+        INSERT INTO physical_examination_result (examination_record_id, bit_item_id, small_item_id, gen_min_value, gen_max_value, gen_in_value, in_value_score, check_value, item_score, orgin_leve_id, gen_quanzhong, quanzhong_score, tzed_leve_id)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.examination_record_id}, #{item.bit_item_id}, #{item.small_item_id}, #{item.gen_min_value}, #{item.gen_max_value}, #{item.gen_in_value}, #{item.in_value_score}, #{item.check_value}, #{item.item_score}, #{item.orgin_leve_id}, #{item.gen_quanzhong}, #{item.quanzhong_score}, #{item.tzed_leve_id})
+        </foreach>
+    </insert>
+
+
+
 
 
 </mapper>
