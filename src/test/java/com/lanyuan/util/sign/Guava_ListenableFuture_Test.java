@@ -3,14 +3,20 @@ package com.lanyuan.util.sign;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.lanyuan.util.PropertiesUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -35,11 +41,11 @@ public class Guava_ListenableFuture_Test {
 
         final ListenableFuture<Integer> listenableFuture3 = executorService.submit(new TaskBak("listenableFuture3",3000l,"http://blog.csdn.net/wwwqjpcom/article/details/51232302"));
 
-        final ListenableFuture<Integer> listenableFuture4 = executorService.submit(new TaskBak("listenableFuture4",5000l,"https://learnsoapui.wordpress.com/"));
+        final ListenableFuture<Integer> listenableFuture4 = executorService.submit(new TaskBak("listenableFuture4",5000l,"http://blog.csdn.net/appleheshuang/article/details/7899335"));
 
-        final ListenableFuture<Integer> listenableFutur5 = executorService.submit(new TaskBak("listenableFuture5",3000l,"http://www.programcreek.com/java-api-examples/index.php?api=org.junit.rules.TestRule"));
+        final ListenableFuture<Integer> listenableFutur5 = executorService.submit(new TaskBak("listenableFuture5",3000l,"https://support.mozilla.org/zh-CN/kb/%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"));
 
-        final ListenableFuture<Integer> listenableFuture6 = executorService.submit(new TaskBak("listenableFuture6",5000l,"http://www.programcreek.com/java-api-examples/index.php?api=org.openqa.selenium.remote.HttpCommandExecutor"));
+        final ListenableFuture<Integer> listenableFuture6 = executorService.submit(new TaskBak("listenableFuture6",5000l,"http://www.jb51.net/article/26470.htm"));
 
         //同步获取调用结果
         try {
@@ -159,7 +165,8 @@ public class Guava_ListenableFuture_Test {
         public Integer call() throws Exception {
             try{
                 //todo 处理请求
-                WebDriver driver = new FirefoxDriver(); // 这个URL
+                /*FirefoxProfile profile = new FirefoxProfile(new File("G:\\ihavecar\\git-codes\\jianyi\\FirefoxProfiles\\"));
+                WebDriver driver = new FirefoxDriver(profile); // 这个URL
                 driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS); // 设置页面加载超时的最大时长(最大等待时间)
                 driver.get(urlPaht);
 
@@ -167,7 +174,31 @@ public class Guava_ListenableFuture_Test {
                 TimeUnit.MILLISECONDS.sleep(sleepMis);
                 File screenShotFile = ((TakesScreenshot) driver) .getScreenshotAs(OutputType.FILE);
                 FileUtils.copyFile(screenShotFile, new File("G:\\ihavecar\\git-codes\\jianyi\\png\\"+str+".png"));
-                driver.quit();
+                driver.quit();*/
+
+
+                WebDriver driver = null;
+                try {
+                    driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"),   DesiredCapabilities.firefox()); // 这个URL
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                if(driver!=null){
+                    driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS); // 设置页面加载超时的最大时长
+                    try{
+                        driver.get(urlPaht);
+                        //打开以后等待4秒钟
+                        Thread.sleep(3000);
+                        File screenShotFile = ((TakesScreenshot) driver) .getScreenshotAs(OutputType.FILE);
+                        FileUtils.copyFile(screenShotFile, new File("G:\\ihavecar\\git-codes\\jianyi\\png\\"+str+".png"));
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                    }
+                    driver.quit();
+
+
+                }
+
             }catch (Exception ex){
                 ex.printStackTrace();
             }
