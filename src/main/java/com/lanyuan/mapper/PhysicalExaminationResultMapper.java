@@ -1,5 +1,6 @@
 package com.lanyuan.mapper;
 
+import com.lanyuan.entity.PhysicalExaminationResult;
 import com.lanyuan.entity.PhysicalExaminationResultFormMap;
 import com.lanyuan.mapper.base.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -16,4 +17,7 @@ public interface PhysicalExaminationResultMapper extends BaseMapper{
 	void insertByHistory(PhysicalExaminationResultFormMap physicalExaminationResultFormMap);
 
 	int resultSizeByRecordid(@Param(value = "examination_record_id") Long examination_record_id);
+
+
+	void saveBatchResult(List<PhysicalExaminationResult> physicalExaminationResultList);
 }

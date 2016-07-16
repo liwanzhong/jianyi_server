@@ -28,12 +28,48 @@
 		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="url" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
 		<property name="driverClassName" value="${jdbc.driverClass}" />
+	</bean>-->
+
+	<!-- Druid数据库连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+		<!-- 数据库基本信息配置 -->
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${mysql.username}" />
+		<property name="password" value="${mysql.password}" />
+		<property name="driverClassName" value="${jdbc.driverClass}" />
+		<property name="filters" value="${druid.filters}" />
+		<property name="connectionProperties" value="config.decrypt=true" />
+		<!-- 最大并发连接数 -->
+		<property name="maxActive" value="${maxActive}" />
+		<!-- 初始化连接数量 -->
+		<property name="initialSize" value="${initialSize}" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="${maxWait}" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
+		<!-- 最小空闲连接数 -->
+		<property name="minIdle" value="${minIdle}" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${timeBetweenEvictionRunsMillis}" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="${minEvictableIdleTimeMillis}" />
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testWhileIdle" value="${testWhileIdle}" />
+		<property name="testOnBorrow" value="${testOnBorrow}" />
+		<property name="testOnReturn" value="${testOnReturn}" />
+		<property name="maxOpenPreparedStatements" value="${maxOpenPreparedStatements}" />
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="${removeAbandoned}" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="${logAbandoned}" />
 	</bean>
+
 
 	<bean id="pagePlugin" class="com.lanyuan.plugin.PagePlugin">
 		<property name="properties">
@@ -62,30 +98,6 @@
 	<bean id="transactionManager"  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	<!-- <aop:config>
-		<aop:pointcut
-			expression="execution(public * com.lanyuan.controller.*(..))"
-			id="pointcut" />
-		<aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut" />
-	</aop:config>
-	<tx:advice id="txAdvice" transaction-manager="transactionManager">
-		<tx:attributes>
-			<tx:method name="query*" propagation="REQUIRED" read-only="true" />
-			<tx:method name="find*" propagation="REQUIRED" read-only="true" />
-			<tx:method name="save*" propagation="REQUIRED" />
-			<tx:method name="delete*" propagation="REQUIRED" />
-			<tx:method name="add*" propagation="REQUIRED" />
-			<tx:method name="modify*" propagation="REQUIRED" />
-			<tx:method name="logicDelById" propagation="REQUIRED" />
-		</tx:attributes>
-	</tx:advice> -->
-	<!-- <aop:aspectj-autoproxy proxy-target-class="true"/> 
-	 <bean id="log4jHandlerAOP" class="com.lanyuan.logAop.LogAopAction"></bean> 
-		<aop:config proxy-target-class="true">
-		    <aop:aspect id="logAspect" ref="log4jHandlerAOP"> 
-		    <aop:pointcut id="logPointCut" expression="execution(* org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(..))" /> 
-		    <aop:around method="logAll" pointcut-ref="logPointCut" /> </aop:aspect> 
-		</aop:config> -->
 	<!-- 使用Spring组件扫描的方式来实现自动注入bean -->
 	<context:component-scan base-package="com.lanyuan.task" />
 	<context:component-scan base-package="com.lanyuan.service" />
