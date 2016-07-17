@@ -137,7 +137,7 @@ public class CheckServiceImpl implements ICheckService {
                     item.put("update_time",dateFormat.format(new Date()));
                     physicalExaminationRecordMapper.editEntity(item);
 
-                    new Thread(new Runnable() {
+                    /*new Thread(new Runnable() {
                         public void run() {
                             try{
                                 Thread.sleep(2000);
@@ -160,7 +160,7 @@ public class CheckServiceImpl implements ICheckService {
                                 ex.printStackTrace();
                             }
                         }
-                    }).start();
+                    }).start();*/
                 }catch (Exception ex){
                     logger.error(ex.getMessage());
                     ex.printStackTrace();
