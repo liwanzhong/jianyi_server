@@ -6,6 +6,7 @@ import com.lanyuan.controller.index.BaseController;
 import com.lanyuan.entity.*;
 import com.lanyuan.mapper.*;
 import com.lanyuan.plugin.PageView;
+import com.lanyuan.task.ReportPDFGenController;
 import com.lanyuan.util.AgeCal;
 import com.lanyuan.util.Common;
 import com.lanyuan.util.PropertiesUtils;
@@ -13,6 +14,7 @@ import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.LineChartJSONVO;
 import com.lanyuan.vo.PageFilter;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by liwanzhong on 2016/2/21.
@@ -40,6 +39,10 @@ import java.util.Map;
 @Controller
 @RequestMapping("/examination/physicalExamination/")
 public class PhysicalExaminationRecordController extends BaseController {
+
+
+    private static Logger logger = Logger.getLogger(PhysicalExaminationRecordController.class);
+
     @Inject
     private PhysicalExaminationRecordMapper physicalExaminationRecordMapper;
 
@@ -684,40 +687,79 @@ public class PhysicalExaminationRecordController extends BaseController {
 
             PhysicalExaminationSickRiskResultFormMap physicalExaminationSickRiskResultFormMap = getFormMap(PhysicalExaminationSickRiskResultFormMap.class);
             physicalExaminationSickRiskResultFormMap.put("examination_record_id",recordFormMap.getLong("id"));
-
-           /* List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMapsBigList = physicalExaminationSickRiskResultMapper.findRecordSickResultSmall(physicalExaminationSickRiskResultFormMap);
-            List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMapsSmallList = physicalExaminationSickRiskResultMapper.findRecordSickResultBig(physicalExaminationSickRiskResultFormMap);
-            List<Map<Map<String,Object>,List<PhysicalExaminationSickRiskResultFormMap>>> mapList = new ArrayList<Map<Map<String,Object>, List<PhysicalExaminationSickRiskResultFormMap>>>();
-            for(CheckBigItemFormMap checkBigItemFormMap:checkBigItemFormMapList){
-                //检查是否有疾病配置
-                if(checkBigItemFormMap!=null && CollectionUtils.isNotEmpty(sickRiskResultFormMapsBigList)){
-                    Map<String,Object> checkItemMap = new HashMap<String, Object>();
-                    checkItemMap.put("id",checkBigItemFormMap.getLong("id"));
-                    checkItemMap.put("name",checkBigItemFormMap.getStr("name"));
-                    this.queryBigItemsSick(checkItemMap,sickRiskResultFormMapsBigList,mapList);
-                }
-
-                //获取检测小项
-                CheckSmallItemFormMap checkSmallItemFormMapQuery = getFormMap(CheckSmallItemFormMap.class);
-                checkSmallItemFormMapQuery.put("big_item_id",checkBigItemFormMap.getLong("id"));
-                List<CheckSmallItemFormMap> checkSmallItemFormMapList = checkSmallItemMapper.findByNames(checkSmallItemFormMapQuery);
-                for(CheckSmallItemFormMap checkSmallItemFormMap:checkSmallItemFormMapList){
-
-                    //检查是否有疾病配置
-
-                }
-            }
-*/
-            //
         }catch (Exception ex){
             ex.printStackTrace();
         }
         return Common.BACKGROUND_PATH + "/examination/physicalexaminationrecord/sick_result";
     }
 
-    private void queryBigItemsSick(Map<String,Object> checkMap, List<PhysicalExaminationSickRiskResultFormMap> sickRiskResultFormMapsBigList, List<Map<Map<String, Object>, List<PhysicalExaminationSickRiskResultFormMap>>> mapList) {
 
+
+    @Autowired
+    private ReportPDFGenController reportPDFGenController;
+
+
+    @RequestMapping("genPdfReport")
+    @ResponseBody
+    @SystemLog(module="检测管理",methods="生成PDF报告")
+    public Map<String,Object> genPdfReport(String recordid)throws Exception {
+        Map<String,Object> retMap = new HashMap<String, Object>();
+        retMap.put("status",0);
+        try{
+            //获取检测记录
+            final PhysicalExaminationRecordFormMap recordFormMap = physicalExaminationRecordMapper.findbyFrist("id",recordid,PhysicalExaminationRecordFormMap.class);
+            if(null == recordFormMap){
+                throw new Exception("生成pdf报告失败，[无效检测]");
+            }
+            Integer status = recordFormMap.getInt("status");
+            if(status==3){
+                throw new Exception("PDF报告正在生成中，请耐心等待或刷新页面查看最新结果!");
+            }
+            if(status == 4){
+                throw new Exception("PDF报告已经生成，请刷新页面查看下载!");
+            }
+            new Thread(new Runnable() {
+                public void run() {
+                    try{
+                        Thread.sleep(2000);
+                        recordFormMap.put("status",3);
+                        recordFormMap.put("update_time",dateFormat.format(new Date()));
+                        physicalExaminationRecordMapper.editEntity(recordFormMap);
+                        String pdfPath = null;
+                        try{
+                            pdfPath = reportPDFGenController.reportGen(recordFormMap);
+                        }catch (Exception ex){
+                            ex.printStackTrace();
+                            recordFormMap.put("status",2);
+                            recordFormMap.put("update_time",dateFormat.format(new Date()));
+                            physicalExaminationRecordMapper.editEntity(recordFormMap);
+                            throw ex;
+                        }
+                        recordFormMap.put("status",4);
+                        recordFormMap.put("report_gentime",dateFormat.format(new Date()));
+                        recordFormMap.put("update_time",dateFormat.format(new Date()));
+                        recordFormMap.put("report_path",pdfPath);
+                        physicalExaminationRecordMapper.editEntity(recordFormMap);
+                    }catch (Exception ex){
+                        logger.error(ex.getMessage());
+                        ex.printStackTrace();
+                    }
+                }
+            }).start();
+            retMap.put("status","1");
+            retMap.put("msg","您申请生成pdf报告已经接收，请耐心等待生成结果，刷新页面查看最新结果!");
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+            logger.error(ex.getMessage());
+            retMap.put("status","0");
+            retMap.put("msg",ex.getMessage());
+        }
+
+        return retMap;
     }
+
+
 
 
 }

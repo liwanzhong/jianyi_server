@@ -3,7 +3,6 @@ package com.lanyuan.task;
 import br.eti.mertz.wkhtmltopdf.wrapper.Pdf;
 import br.eti.mertz.wkhtmltopdf.wrapper.page.PageType;
 import br.eti.mertz.wkhtmltopdf.wrapper.params.Param;
-import com.google.common.util.concurrent.*;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -25,7 +24,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -35,8 +33,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
@@ -56,7 +52,7 @@ public class ReportPDFGenController {
 	private static final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
-	@Scheduled(cron = "0 0/5 * * * ? ")
+	//	@Scheduled(cron = "0 0/5 * * * ? ")
 	public void task() throws Exception {
 		logger.info("======================================定时任务生成pdf报告================start==============================================================");
 		// 获取没有生成的列表
@@ -94,7 +90,7 @@ public class ReportPDFGenController {
 
 
 
-	public String reportGen(PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap)throws Exception{
+	/*public String reportGen(PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap)throws Exception{
 		String margePdfPath = null;
 		//获取当前检测记录的所有检测大项(排序方式)
 		PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = new PhysicalExaminationBigResultFormMap();
@@ -241,37 +237,159 @@ public class ReportPDFGenController {
 			margePdfPath = margePdfPath.replace('\\','/');
 		}
 		return margePdfPath;
+	}*/
+
+
+
+	public String reportGen(PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap)throws Exception{
+		String margePdfPath = null;
+		//获取当前检测记录的所有检测大项(排序方式)
+		PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = new PhysicalExaminationBigResultFormMap();
+		physicalExaminationBigResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
+		List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapList = physicalExaminationBigResultMapper.findByNames(physicalExaminationBigResultFormMap);
+		if(CollectionUtils.isNotEmpty(physicalExaminationBigResultFormMapList)){
+			List<InputStream> pdfs = new ArrayList<InputStream>();
+			//todo 循环拼接url
+
+
+			StringBuffer pdfFilePath = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_PDF_SAVED_PAHT));
+			pdfFilePath.append(File.separator);
+			if(physicalExaminationRecordFormMap.get("check_time") instanceof  java.util.Date){
+				pdfFilePath.append(dateFormat.format(physicalExaminationRecordFormMap.getDate("check_time")));
+			}else{
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				pdfFilePath.append(dateFormat.format(simpleDateFormat.parse(physicalExaminationRecordFormMap.get("check_time").toString())));
+			}
+
+
+			pdfFilePath.append(File.separator);
+			pdfFilePath.append(physicalExaminationRecordFormMap.getLong("id"));
+			File savePathFile = new File(pdfFilePath.toString());
+			if(!savePathFile.exists()||!savePathFile.isDirectory()){
+				savePathFile.mkdirs();
+			}
+
+			List<Map<String,String>> itemUrlList = new ArrayList<Map<String, String>>();
+			//首页
+			StringBuffer  httpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_MAIN));
+			httpUrl.append("?");
+			httpUrl.append("physicalExaminationRecordFormMap.id=").append(physicalExaminationRecordFormMap.getLong("id"));
+			Map<String,String> firstPageMap = new HashMap<String, String>();
+			firstPageMap.put("REQ_URL",httpUrl.toString());
+			firstPageMap.put("PNG_ABS_PATH",pdfFilePath.toString()+File.separator+"0.png");
+			firstPageMap.put("PDF_ABS_PATH",pdfFilePath.toString()+File.separator+"0.pdf");
+			itemUrlList.add(firstPageMap);
+
+
+
+			//检测大项
+			for(int i=0;i< physicalExaminationBigResultFormMapList.size();i++){
+				httpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_ITEM));
+				httpUrl.append("?");
+				httpUrl.append("bigItemId=").append(physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")).append("&").append("recordId=").append(physicalExaminationRecordFormMap.getLong("id"));
+
+				Map<String,String> itemPageMap = new HashMap<String, String>();
+				itemPageMap.put("REQ_URL",httpUrl.toString());
+				itemPageMap.put("PNG_ABS_PATH",pdfFilePath.toString()+File.separator+physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")+".png");
+				itemPageMap.put("PDF_ABS_PATH",pdfFilePath.toString()+File.separator+physicalExaminationBigResultFormMapList.get(i).getLong("big_item_id")+".pdf");
+				itemUrlList.add(itemPageMap);
+			}
+
+			//疾病风险项
+			StringBuffer sickRiskhttpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_SYN));
+			sickRiskhttpUrl.append("?");
+			sickRiskhttpUrl.append("physicalExaminationRecordFormMap.id=").append(physicalExaminationRecordFormMap.getLong("id"));
+			Map<String,String> sickRiskPageMap = new HashMap<String, String>();
+			sickRiskPageMap.put("REQ_URL",sickRiskhttpUrl.toString());
+			sickRiskPageMap.put("PNG_ABS_PATH",pdfFilePath+File.separator+"sick_risk.png");
+			sickRiskPageMap.put("PDF_ABS_PATH",pdfFilePath+File.separator+"sick_risk.pdf");
+			itemUrlList.add(sickRiskPageMap);
+
+
+
+			//生成报告pdf
+			pdfs = genReportPdfWithImg(itemUrlList);
+
+			// 合并pdf文件到一个文件中
+			String mgrgePdfFilePath = pdfFilePath.append(File.separator).append(physicalExaminationRecordFormMap.getLong("id")+"_marge.pdf").toString();
+			File  file = new File(mgrgePdfFilePath);
+			if (!file.getParentFile().exists()) {
+				file.getParentFile().mkdirs();
+			}
+			OutputStream output = new FileOutputStream(mgrgePdfFilePath);
+			MergePDF.concatPDFs(pdfs, output, true);
+			margePdfPath = file.getAbsolutePath();
+
+
+			// 疾病风险(疾病风险pdf报告只是生成了pdf文件，没有做保存，如果需要下载，直接通过规则路径下载)
+			/*final PhysicalExaminationRecordFormMap temp = physicalExaminationRecordFormMap;
+
+			new Thread(new Runnable() {
+				public void run() {
+					try{
+						StringBuffer httpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_SYN));
+						httpUrl.append("?");
+						httpUrl.append("physicalExaminationRecordFormMap.id=").append(temp.getLong("id"));
+						List<Map<String,String>> itemUrlList = new ArrayList<Map<String, String>>();
+						Map<String,String> sickRiskPageMap = new HashMap<String, String>();
+						sickRiskPageMap.put("REQ_URL",httpUrl.toString());
+						sickRiskPageMap.put("PNG_ABS_PATH",sickRiskPdfPathBuffer+File.separator+"sick_risk.png");
+						sickRiskPageMap.put("PDF_ABS_PATH",sickRiskPdfPathBuffer+File.separator+"sick_risk.pdf");
+						itemUrlList.add(sickRiskPageMap);
+						genReportPdfWithImg(itemUrlList);
+					}catch (Exception ex){
+						logger.error(ex.getMessage());
+						ex.printStackTrace();
+					}
+				}
+			}).start();*/
+
+		}
+		if(StringUtils.isNotBlank(margePdfPath)){
+			margePdfPath = margePdfPath.replace('\\','/');
+		}
+		return margePdfPath;
 	}
 
 
 
-	public String genReportPdfWithImg(String genUrl,String pngPath,String pdfPath)throws Exception{
+	public List<InputStream> genReportPdfWithImg(List<Map<String,String>> reqUrlMapList)throws Exception{
+		if(CollectionUtils.isEmpty(reqUrlMapList)){
+			throw new Exception("生成PDF失败，无请求连接!");
+		}
 		WebDriver driver = null;
 		try {
 			driver = new RemoteWebDriver(new URL( PropertiesUtils.findPropertiesKey(PropertiesUtils.REMOTE_WEB_DRIVER_REQ_HTTP)),   DesiredCapabilities.firefox()); // 这个URL
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-		if(driver!=null){
-			driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS); // 设置页面加载超时的最大时长
+		if(driver == null){
+			throw new Exception("生成浏览器驱动异常!");
+		}
+		driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS); // 设置页面加载超时的最大时长
+//		driver.manage().window().maximize();
+
+		List<InputStream> pdfList = new ArrayList<InputStream>();
+		for(Map<String,String> reqItem:reqUrlMapList){
 			try{
-				driver.get(genUrl);
+				driver.get(reqItem.get("REQ_URL"));
 				//打开以后等待4秒钟
 				Thread.sleep(3000);
 				File screenShotFile = ((TakesScreenshot) driver) .getScreenshotAs(OutputType.FILE);
-				FileUtils.copyFile(screenShotFile, new File(pngPath));
+				FileUtils.copyFile(screenShotFile, new File(reqItem.get("PNG_ABS_PATH")));
+				File pngFile = new File(reqItem.get("PNG_ABS_PATH"));
+				//调用itext将图片转为pdf文件(仅支持一张图片放在一张pdf上)
+				convertPNG2PDF(reqItem.get("PDF_ABS_PATH"),pngFile.getAbsolutePath());
+				pdfList.add(new FileInputStream(reqItem.get("PDF_ABS_PATH")));
 			}catch (Exception ex){
 				ex.printStackTrace();
 			}
-			driver.quit();
-
-			//todo 吧图片放到pdf上面
-			File pngFile = new File(pngPath);
-			//调用itext将图片转为pdf文件(仅支持一张图片放在一张pdf上)
-			convertPNG2PDF(pdfPath,pngFile.getAbsolutePath());
-			return pdfPath;
 		}
-		return null;
+
+		driver.quit();
+
+
+		return pdfList;
 
 	}
 
@@ -395,7 +513,7 @@ public class ReportPDFGenController {
 
 	}
 
-	private class GenPdfTask implements  Callable<Map<Long,String>> {
+	/*private class GenPdfTask implements  Callable<Map<Long,String>> {
 
 		private String url = null;
 
@@ -419,5 +537,5 @@ public class ReportPDFGenController {
 			retMap.put(bigItemId,pdfPathIn);
 			return retMap;
 		}
-	}
+	}*/
 }

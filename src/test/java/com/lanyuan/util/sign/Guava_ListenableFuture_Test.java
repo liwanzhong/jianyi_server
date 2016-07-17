@@ -3,14 +3,14 @@ package com.lanyuan.util.sign;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.lanyuan.util.PropertiesUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -18,7 +18,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +29,7 @@ public class Guava_ListenableFuture_Test {
     // 创建线程池
     final static ListeningExecutorService executorService = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
 
-    @Test
+//    @Test
     public void test(){
 
 
@@ -48,7 +47,7 @@ public class Guava_ListenableFuture_Test {
         final ListenableFuture<Integer> listenableFuture6 = executorService.submit(new TaskBak("listenableFuture6",5000l,"http://www.jb51.net/article/26470.htm"));
 
         //同步获取调用结果
-        try {
+        /*try {
             System.out.println(listenableFuture.get());
         } catch (InterruptedException e1) {
             e1.printStackTrace();
@@ -63,7 +62,7 @@ public class Guava_ListenableFuture_Test {
             e1.printStackTrace();
         } catch (ExecutionException e1) {
             e1.printStackTrace();
-        }
+        }*/
 
         try {
             Thread.sleep(900000);
@@ -74,8 +73,115 @@ public class Guava_ListenableFuture_Test {
     }
 
 
+//    @Test
+    public void test4() throws InterruptedException {
+        for (int i=0;i<3;i++) {
+            final int abc = i;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        System.setProperty("webdriver.chrome.driver", "C:\\Users\\liwanzhong\\Desktop\\webdriver\\chromedriver-2.12\\chromedriver.exe");
+                        System.setProperty("webdriver.opera.driver", "C:\\Users\\liwanzhong\\Desktop\\webdriver\\operadriver.exe");
 
-    @Test
+                        ProfilesIni allProfiles = new ProfilesIni();
+                        FirefoxProfile profile = allProfiles.getProfile("WebDriver");
+
+                        WebDriver driver = new ChromeDriver();
+                        driver.manage().window().maximize();
+//                        driver = new FirefoxDriver();
+
+                        if(driver!=null){
+                            driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS); // 设置页面加载超时的最大时长
+                            try{
+                                System.out.println(abc+".................................");
+                                driver.get("http://www.testwo.com/blog/6931");
+                                //打开以后等待4秒钟
+                                Thread.sleep(3000);
+                                File screenShotFile = ((TakesScreenshot) driver) .getScreenshotAs(OutputType.FILE);
+                                FileUtils.copyFile(screenShotFile, new File("D:\\idea-workspack\\works\\jianyi_server\\png\\"+abc+".png"));
+                                /*final Screenshot screenshot = new AShot().shootingStrategy(ShootingStrategies.simple()).takeScreenshot(driver);
+                                final BufferedImage image = screenshot.getImage();
+                                ImageIO.write(image, "PNG", new File("D:\\idea-workspack\\works\\jianyi_server\\png\\"+abc+".png"));*/
+                                /*CutStrategy cutting = new VariableCutStrategy(50, 50, 50);
+                                ShootingStrategy rotating = new RotatingDecorator(cutting, ShootingStrategies.simple());
+                                ShootingStrategy pasting = new ViewportPastingDecorator(rotating)
+                                        .withScrollTimeout(2000);
+                                final Screenshot screenshot =new AShot()
+                                        .shootingStrategy(pasting)
+                                        .takeScreenshot(driver);
+                                final BufferedImage image = screenshot.getImage();
+                                ImageIO.write(image, "PNG", new File("D:\\idea-workspack\\works\\jianyi_server\\png\\"+abc+".png"));*/
+                            }catch (Exception ex){
+                                ex.printStackTrace();
+                            }
+                            driver.quit();
+                        }
+
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                    }
+                }
+            }).start();
+
+        }
+        Thread.sleep(88888888);
+    }
+
+
+
+
+
+
+//    @Test
+    public void test3(){
+
+        for (int i=0;i<3;i++){
+            final int abc = i;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        WebDriver driver = null;
+                        try {
+                            driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"),   DesiredCapabilities.firefox()); // 这个URL
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                        if(driver!=null){
+                            driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS); // 设置页面加载超时的最大时长
+                            try{
+                                System.out.println(abc+".................................");
+                                driver.get("http://localhost:8080/front/login.shtml");
+                                //打开以后等待4秒钟
+                                Thread.sleep(3000);
+                                File screenShotFile = ((TakesScreenshot) driver) .getScreenshotAs(OutputType.FILE);
+                                FileUtils.copyFile(screenShotFile, new File("G:\\ihavecar\\git-codes\\jianyi\\png\\"+abc+".png"));
+                            }catch (Exception ex){
+                                ex.printStackTrace();
+                            }
+                            driver.quit();
+                        }
+
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+        try {
+            Thread.sleep(100000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+
+    /*@Test
     public void test2(){
 
         //todo 处理请求
@@ -116,7 +222,7 @@ public class Guava_ListenableFuture_Test {
         }
         driver.quit();
 
-    }
+    }*/
 
 
     class Task implements Callable<Integer> {
@@ -164,19 +270,6 @@ public class Guava_ListenableFuture_Test {
         @Override
         public Integer call() throws Exception {
             try{
-                //todo 处理请求
-                /*FirefoxProfile profile = new FirefoxProfile(new File("G:\\ihavecar\\git-codes\\jianyi\\FirefoxProfiles\\"));
-                WebDriver driver = new FirefoxDriver(profile); // 这个URL
-                driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS); // 设置页面加载超时的最大时长(最大等待时间)
-                driver.get(urlPaht);
-
-                //打开以后等待4秒钟
-                TimeUnit.MILLISECONDS.sleep(sleepMis);
-                File screenShotFile = ((TakesScreenshot) driver) .getScreenshotAs(OutputType.FILE);
-                FileUtils.copyFile(screenShotFile, new File("G:\\ihavecar\\git-codes\\jianyi\\png\\"+str+".png"));
-                driver.quit();*/
-
-
                 WebDriver driver = null;
                 try {
                     driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"),   DesiredCapabilities.firefox()); // 这个URL
@@ -186,7 +279,9 @@ public class Guava_ListenableFuture_Test {
                 if(driver!=null){
                     driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS); // 设置页面加载超时的最大时长
                     try{
+                        System.out.println(str);
                         driver.get(urlPaht);
+                        System.out.println(urlPaht);
                         //打开以后等待4秒钟
                         Thread.sleep(3000);
                         File screenShotFile = ((TakesScreenshot) driver) .getScreenshotAs(OutputType.FILE);
@@ -195,8 +290,6 @@ public class Guava_ListenableFuture_Test {
                         ex.printStackTrace();
                     }
                     driver.quit();
-
-
                 }
 
             }catch (Exception ex){

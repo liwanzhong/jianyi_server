@@ -28,16 +28,16 @@ $(function() {
 			}
 		}, {
 			colkey : "status",
-			name : "检测状态",
-			renderData : function(rowindex,data, rowdata, column) {
-				if(data==2){
-					return '数据已经处理'
-				}else if(data==1){
-					return '数据已上传';
-				}else if(data==3){
-					return '报告生成中';
-				}else if(data == 4){
-					return '报告已经生成';
+					name : "检测状态",
+					renderData : function(rowindex,data, rowdata, column) {
+					if(data==2){
+						return '数据已经处理'
+					}else if(data==1){
+						return '数据已上传';
+					}else if(data==3){
+						return 'PDF报告生成中';
+					}else if(data == 4){
+					return 'PDF报告已经生成';
 				}
 			}
 		}, {
@@ -55,11 +55,11 @@ $(function() {
 	function  retActionChosen(rowindex ,data, rowdata, colkeyn){
 		var actionStr = '';
 		if(rowdata.status == 2 || rowdata.status == 3){
-			//actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/result.shtml?recordid='+rowdata.id+'">检测值</a>&nbsp;&nbsp;&nbsp;';
 			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看报告</a>&nbsp;&nbsp;&nbsp;';
 			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/sick_risk.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看疾病风险评估</a>&nbsp;&nbsp;&nbsp;';
-
+			actionStr+='<a href="javascript:void(genPdfReport('+rowdata.id+'))">生成pdf报告</a>&nbsp;&nbsp;&nbsp;';
 		}
+
 		if(rowdata.status==4){
 			//actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/result.shtml?recordid='+rowdata.id+'">检测值</a>&nbsp;&nbsp;&nbsp;';
 			actionStr+='<a target="_blank" href="'+rootPath + '/examination/physicalExamination/report.shtml?physicalExaminationRecordFormMap.id='+rowdata.id+'">查看报告</a>&nbsp;&nbsp;&nbsp;';
@@ -128,4 +128,19 @@ function delAccount() {
 			layer.msg('删除失败');
 		}
 	});
+}
+
+
+
+function genPdfReport( recordid){
+	var url = rootPath + '/examination/physicalExamination/genPdfReport.shtml';
+	var s = CommnUtil.ajax(url, {
+		recordid : recordid
+	}, "json");
+	if (s) {
+		layer.msg(s.msg);
+		grid.loadData();
+	} else {
+		layer.msg("系统异常，操作失败!");
+	}
 }
