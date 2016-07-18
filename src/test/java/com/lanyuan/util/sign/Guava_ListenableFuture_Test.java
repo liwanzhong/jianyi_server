@@ -5,14 +5,15 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -73,23 +74,23 @@ public class Guava_ListenableFuture_Test {
     }
 
 
-//    @Test
+    @Test
     public void test4() throws InterruptedException {
-        for (int i=0;i<3;i++) {
+        /*for (int i=0;i<3;i++) {
             final int abc = i;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try{
-                        System.setProperty("webdriver.chrome.driver", "C:\\Users\\liwanzhong\\Desktop\\webdriver\\chromedriver-2.12\\chromedriver.exe");
+                        System.setProperty("webdriver.chrome.driver", "G:\\yitian_projects\\chh_manager\\src\\main\\webapp\\components\\chrome\\chromedriver.exe");
                         System.setProperty("webdriver.opera.driver", "C:\\Users\\liwanzhong\\Desktop\\webdriver\\operadriver.exe");
 
                         ProfilesIni allProfiles = new ProfilesIni();
                         FirefoxProfile profile = allProfiles.getProfile("WebDriver");
 
                         WebDriver driver = new ChromeDriver();
-                        driver.manage().window().maximize();
-//                        driver = new FirefoxDriver();
+//                        driver.manage().window().maximize();
+//                        WebDriver driver  = new FirefoxDriver();
 
                         if(driver!=null){
                             driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS); // 设置页面加载超时的最大时长
@@ -100,10 +101,10 @@ public class Guava_ListenableFuture_Test {
                                 Thread.sleep(3000);
                                 File screenShotFile = ((TakesScreenshot) driver) .getScreenshotAs(OutputType.FILE);
                                 FileUtils.copyFile(screenShotFile, new File("D:\\idea-workspack\\works\\jianyi_server\\png\\"+abc+".png"));
-                                /*final Screenshot screenshot = new AShot().shootingStrategy(ShootingStrategies.simple()).takeScreenshot(driver);
+                                *//*final Screenshot screenshot = new AShot().shootingStrategy(ShootingStrategies.simple()).takeScreenshot(driver);
                                 final BufferedImage image = screenshot.getImage();
-                                ImageIO.write(image, "PNG", new File("D:\\idea-workspack\\works\\jianyi_server\\png\\"+abc+".png"));*/
-                                /*CutStrategy cutting = new VariableCutStrategy(50, 50, 50);
+                                ImageIO.write(image, "PNG", new File("D:\\idea-workspack\\works\\jianyi_server\\png\\"+abc+".png"));*//*
+                                *//*CutStrategy cutting = new VariableCutStrategy(50, 50, 50);
                                 ShootingStrategy rotating = new RotatingDecorator(cutting, ShootingStrategies.simple());
                                 ShootingStrategy pasting = new ViewportPastingDecorator(rotating)
                                         .withScrollTimeout(2000);
@@ -111,7 +112,7 @@ public class Guava_ListenableFuture_Test {
                                         .shootingStrategy(pasting)
                                         .takeScreenshot(driver);
                                 final BufferedImage image = screenshot.getImage();
-                                ImageIO.write(image, "PNG", new File("D:\\idea-workspack\\works\\jianyi_server\\png\\"+abc+".png"));*/
+                                ImageIO.write(image, "PNG", new File("D:\\idea-workspack\\works\\jianyi_server\\png\\"+abc+".png"));*//*
                             }catch (Exception ex){
                                 ex.printStackTrace();
                             }
@@ -124,7 +125,26 @@ public class Guava_ListenableFuture_Test {
                 }
             }).start();
 
+        }*/
+
+
+        System.setProperty("webdriver.chrome.driver", "G:\\yitian_projects\\chh_manager\\src\\main\\webapp\\components\\chrome\\chromedriver.exe");
+        WebDriver driver = new ChromeDriver();
+        try{
+//            String URL="C:\\Users\\Administrator\\Desktop\\报告\\报告\\人体生理机能状况评估报告.html";
+            String URL="http://www.51testing.com/zhuanti/selenium.html";
+            driver.get(URL);
+            File screenShotFile = ((TakesScreenshot) driver) .getScreenshotAs(OutputType.FILE);
+            if(screenShotFile!=null&&screenShotFile.exists()){//截图已经存在
+                FileUtils.copyFile(screenShotFile, new File("G:\\ihavecar\\code_demo\\Selenium\\webdriver\\aabC.png"));
+                System.out.println("sssssssss");
+            }
+
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
+        driver.quit();
+
         Thread.sleep(88888888);
     }
 
