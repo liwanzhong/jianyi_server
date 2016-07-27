@@ -263,8 +263,6 @@ public class CheckServiceImpl implements ICheckService {
     }
 
 
-    @Inject
-    private CheckValueScoreInMapper checkValueScoreInMapper;
 
 
     @Inject

@@ -295,7 +295,7 @@ public class ReportPDFGenController {
 				itemUrlList.add(itemPageMap);
 			}
 
-			//疾病风险项
+			/*//疾病风险项 todo 暂时屏蔽
 			StringBuffer sickRiskhttpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_SYN));
 			sickRiskhttpUrl.append("?");
 			sickRiskhttpUrl.append("physicalExaminationRecordFormMap.id=").append(physicalExaminationRecordFormMap.getLong("id"));
@@ -303,7 +303,7 @@ public class ReportPDFGenController {
 			sickRiskPageMap.put("REQ_URL",sickRiskhttpUrl.toString());
 			sickRiskPageMap.put("PNG_ABS_PATH",pdfFilePath+File.separator+"sick_risk.png");
 			sickRiskPageMap.put("PDF_ABS_PATH",pdfFilePath+File.separator+"sick_risk.pdf");
-			itemUrlList.add(sickRiskPageMap);
+			itemUrlList.add(sickRiskPageMap);*/
 
 
 
