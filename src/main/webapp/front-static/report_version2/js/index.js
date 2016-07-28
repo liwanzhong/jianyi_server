@@ -297,7 +297,8 @@ $(function(e){
 
 
 	$('.disease-per').each(function(index, element) {
-		var score = $(element).text().replace("%","");
+		// var score = $(element).text().replace("%","");
+		var score = $(element).attr("value");
 		//颜色变化
 		if( score>=paramsSickLeve.pingfen_10min && score <=paramsSickLeve.pingfen_10max ){
 			$(element).addClass('circle-red');

@@ -49,7 +49,7 @@
                             <c:forEach items="${entry.value}" var="item" varStatus="status">
                                 <c:if test="${status.index+1<=mid}">
                                     <li>
-                                        <div class="disease-per disease-per-red"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-per disease-per-red" value="${item.total_rout}"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
                                         <div class="disease-name disease-name-b">${item.name}</div>
                                     </li>
                                 </c:if>
@@ -59,7 +59,7 @@
                             <c:forEach items="${entry.value}" var="item" varStatus="status">
                                 <c:if test="${status.index+1>mid}">
                                     <li>
-                                        <div class="disease-per disease-per-red"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-per disease-per-red" value="${item.total_rout}"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
                                         <div class="disease-name disease-name-b">${item.name}</div>
                                     </li>
                                 </c:if>
@@ -79,7 +79,7 @@
                             <c:forEach items="${entry.value}" var="item" varStatus="status">
                                 <c:if test="${status.index+1<=mid}">
                                     <li>
-                                        <div class="disease-per disease-per-yellow"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-per disease-per-yellow" value="${item.total_rout}"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
                                         <div class="disease-name disease-name-b">${item.name}</div>
                                     </li>
                                 </c:if>
@@ -89,7 +89,7 @@
                             <c:forEach items="${entry.value}" var="item" varStatus="status">
                                 <c:if test="${status.index+1>mid}">
                                     <li>
-                                        <div class="disease-per disease-per-yellow"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-per disease-per-yellow" value="${item.total_rout}"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
                                         <div class="disease-name disease-name-b">${item.name}</div>
                                     </li>
                                 </c:if>
@@ -109,7 +109,7 @@
                             <c:forEach items="${entry.value}" var="item" varStatus="status">
                                 <c:if test="${status.index+1<=mid}">
                                     <li>
-                                        <div class="disease-per disease-per-yellow"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-per disease-per-yellow" value="${item.total_rout}"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
                                         <div class="disease-name disease-name-b">${item.name}</div>
                                     </li>
                                 </c:if>
@@ -119,7 +119,7 @@
                             <c:forEach items="${entry.value}" var="item" varStatus="status">
                                 <c:if test="${status.index+1>mid}">
                                     <li>
-                                        <div class="disease-per disease-per-yellow"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-per disease-per-yellow" value="${item.total_rout}"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
                                         <div class="disease-name disease-name-b">${item.name}</div>
                                     </li>
                                 </c:if>
@@ -139,7 +139,7 @@
                             <c:forEach items="${entry.value}" var="item" varStatus="status">
                                 <c:if test="${status.index+1<=mid}">
                                     <li>
-                                        <div class="disease-per disease-per-blue"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-per disease-per-blue" value="${item.total_rout}"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
                                         <div class="disease-name disease-name-b">${item.name}</div>
                                     </li>
                                 </c:if>
@@ -149,7 +149,7 @@
                             <c:forEach items="${entry.value}" var="item" varStatus="status">
                                 <c:if test="${status.index+1>mid}">
                                     <li>
-                                        <div class="disease-per disease-per-blue"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-per disease-per-blue" value="${item.total_rout}"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
                                         <div class="disease-name disease-name-b">${item.name}</div>
                                     </li>
                                 </c:if>
@@ -169,7 +169,7 @@
                             <c:forEach items="${entry.value}" var="item" varStatus="status">
                                 <c:if test="${status.index+1<=mid}">
                                     <li>
-                                        <div class="disease-per disease-per-blue"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-per disease-per-blue" value="${item.total_rout}"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
                                         <div class="disease-name disease-name-b">${item.name}</div>
                                     </li>
                                 </c:if>
@@ -179,7 +179,7 @@
                             <c:forEach items="${entry.value}" var="item" varStatus="status">
                                 <c:if test="${status.index+1>mid}">
                                     <li>
-                                        <div class="disease-per disease-per-blue"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
+                                        <div class="disease-per disease-per-blue" value="${item.total_rout}"><fmt:formatNumber value="${item.total_rout}" pattern="#0"/>%</div>
                                         <div class="disease-name disease-name-b">${item.name}</div>
                                     </li>
                                 </c:if>
