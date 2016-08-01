@@ -151,61 +151,61 @@ ORDER BY per.id DESC LIMIT 1
 
 
 	<select id="statsExamination" resultType="com.lanyuan.entity.PhysicalExaminationRecordFormMap">
-/*SELECT
-  lo.id,
-  lo.name org_name,
-  lo.pid,
-  lo.createdatetime,
-  zz.ct2 jcrenshu,
-  zz.ct jcrenci
-FROM ly_organization lo
-  LEFT JOIN (SELECT
-      aa.organization_id,
-      aa.ct2,
-      bb.ct
-    FROM (SELECT
-        per.organization_id,
-        COUNT(DISTINCT (per.custom_id)) ct2
-      FROM physical_examination_record per
-      GROUP BY per.organization_id) aa
-      LEFT JOIN (SELECT
-          per.organization_id,
-          COUNT(1) ct
-        FROM physical_examination_record per
-        GROUP BY per.organization_id) bb
-        ON aa.organization_id = bb.organization_id) zz
-    ON zz.organization_id = lo.id*/
+		/*SELECT
+		lo.id,
+		lo.name org_name,
+		lo.pid,
+		lo.createdatetime,
+		zz.ct2 jcrenshu,
+		zz.ct jcrenci
+		FROM ly_organization lo
+		LEFT JOIN (SELECT
+		aa.organization_id,
+		aa.ct2,
+		bb.ct
+		FROM (SELECT
+		per.organization_id,
+		COUNT(DISTINCT (per.custom_id)) ct2
+		FROM physical_examination_record per
+		GROUP BY per.organization_id) aa
+		LEFT JOIN (SELECT
+		per.organization_id,
+		COUNT(1) ct
+		FROM physical_examination_record per
+		GROUP BY per.organization_id) bb
+		ON aa.organization_id = bb.organization_id) zz
+		ON zz.organization_id = lo.id*/
 
- SELECT
-  lo.id,
-  lo.name org_name,
-  lo.pid,
-  lo.createdatetime,
-  zz.ct2 jcrenshu,
-  zz.ct jcrenci
-FROM ly_organization lo
-  LEFT JOIN (SELECT
-      aa.organization_id,
-      aa.ct2,
-      bb.ct
-    FROM (SELECT
-        per.organization_id,
-        COUNT(DISTINCT (per.custom_id)) ct2
-      FROM physical_examination_record per
-      <if test="month !=null">
-		  WHERE per.check_time>DATE_ADD(NOW(),INTERVAL -${month} MONTH)
-	  </if>
-      GROUP BY per.organization_id) aa
-      LEFT JOIN (SELECT
-          per.organization_id,
-          COUNT(1) ct
-        FROM physical_examination_record per
+		SELECT
+		lo.id,
+		lo.name org_name,
+		lo.pid,
+		lo.createdatetime,
+		zz.ct2 jcrenshu,
+		zz.ct jcrenci
+		FROM ly_organization lo
+		LEFT JOIN (SELECT
+		aa.organization_id,
+		aa.ct2,
+		bb.ct
+		FROM (SELECT
+		per.organization_id,
+		COUNT(DISTINCT (per.custom_id)) ct2
+		FROM physical_examination_record per
 		<if test="month !=null">
 			WHERE per.check_time>DATE_ADD(NOW(),INTERVAL -${month} MONTH)
 		</if>
-        GROUP BY per.organization_id) bb
-        ON aa.organization_id = bb.organization_id) zz
-    ON zz.organization_id = lo.id
+		GROUP BY per.organization_id) aa
+		LEFT JOIN (SELECT
+		per.organization_id,
+		COUNT(1) ct
+		FROM physical_examination_record per
+		<if test="month !=null">
+			WHERE per.check_time>DATE_ADD(NOW(),INTERVAL -${month} MONTH)
+		</if>
+		GROUP BY per.organization_id) bb
+		ON aa.organization_id = bb.organization_id) zz
+		ON zz.organization_id = lo.id
 		<if test="organization_id != null">
 			WHERE lo.id = ${organization_id}
 		</if>
@@ -226,6 +226,51 @@ FROM (SELECT
       COUNT(1) zjiancerenshu
     FROM physical_examination_record per) dd
     ON cc.total1 = cc.total1
+	</select>
+
+
+	<select id="findAllExaminationResultList" resultType="com.lanyuan.entity.PhysicalExaminationRecordFormMap">
+		SELECT
+		per.id,
+		per.status,
+		per.report_gentime,
+		per.check_time,
+		ci.idcard,
+		ci.mobile,
+		ci.name custom_name,
+		ci.sex,
+		ci.birthday,
+		ci.body_height,
+		ci.weight,
+		ci.insert_time,
+		lo.name org_name
+		FROM physical_examination_record per
+		LEFT JOIN custom_info ci
+		ON per.custom_id = ci.id
+		LEFT JOIN ly_organization lo
+		ON lo.id = per.organization_id
+		WHERE per.organization_id >= 10
+		<if test="name != null">
+			AND ci.name = '${name}'
+		</if>
+		<if test="mobile != null">
+			AND ci.mobile = '${mobile}'
+		</if>
+		<if test="id_card != null">
+			AND ci.idcard = '${id_card}'
+		</if>
+		<if test="organization_id != null">
+			AND per.organization_id = ${organization_id}
+		</if>
+		<if test="check_time_start != null">
+			AND per.check_time &gt;= '${check_time_start}'
+		</if>
+		<if test="check_time_end != null">
+			AND per.check_time &lt;= '${check_time_end}'
+		</if>
+		<if test="orderby != null">
+			ORDER BY ${orderby}
+		</if>
 	</select>
 
 </mapper>
