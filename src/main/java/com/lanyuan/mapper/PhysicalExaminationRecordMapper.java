@@ -25,4 +25,6 @@ public interface PhysicalExaminationRecordMapper extends BaseMapper{
 	List<PhysicalExaminationRecordFormMap> statsExamination(PhysicalExaminationRecordFormMap formMap);
 
 	PhysicalExaminationRecordFormMap statsExamination_Total();
+
+	List<PhysicalExaminationRecordFormMap> findAllExaminationResultList(PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap);
 }

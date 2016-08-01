@@ -482,6 +482,25 @@ public class PhysicalExaminationRecordController extends BaseController {
 
     }
 
+
+    @ResponseBody
+    @RequestMapping("dataGridExaminationList")
+    @SystemLog(module="检测管理",methods="检测管理列表")
+    public Grid dataGridExaminationList(PageFilter ph)throws Exception {
+        Grid grid = new Grid();
+        PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
+        physicalExaminationRecordFormMap.put("orderby",ph.getSort()+" "+ph.getOrder());
+        physicalExaminationRecordFormMap=toFormMap(physicalExaminationRecordFormMap,  String.valueOf(ph.getPage()), String.valueOf(ph.getRows()),physicalExaminationRecordFormMap.getStr("orderby"));
+        List<PhysicalExaminationRecordFormMap> userFormMapList =physicalExaminationRecordMapper.findAllExaminationResultList(physicalExaminationRecordFormMap);
+        if(CollectionUtils.isNotEmpty(userFormMapList)){
+            grid.setRows(userFormMapList);
+        }
+        PageView pageView = (PageView) physicalExaminationRecordFormMap.get("paging");
+        grid.setTotal(pageView.getRowCount());
+        return grid;
+
+    }
+
     @Inject
     private PhysicalExaminationMainReportMapper physicalExaminationMainReportMapper;
 
