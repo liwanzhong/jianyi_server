@@ -149,4 +149,83 @@ WHERE per.custom_id = ${custom_id} AND per.id != ${exclude_id}
 ORDER BY per.id DESC LIMIT 1
 	</select>
 
+
+	<select id="statsExamination" resultType="com.lanyuan.entity.PhysicalExaminationRecordFormMap">
+/*SELECT
+  lo.id,
+  lo.name org_name,
+  lo.pid,
+  lo.createdatetime,
+  zz.ct2 jcrenshu,
+  zz.ct jcrenci
+FROM ly_organization lo
+  LEFT JOIN (SELECT
+      aa.organization_id,
+      aa.ct2,
+      bb.ct
+    FROM (SELECT
+        per.organization_id,
+        COUNT(DISTINCT (per.custom_id)) ct2
+      FROM physical_examination_record per
+      GROUP BY per.organization_id) aa
+      LEFT JOIN (SELECT
+          per.organization_id,
+          COUNT(1) ct
+        FROM physical_examination_record per
+        GROUP BY per.organization_id) bb
+        ON aa.organization_id = bb.organization_id) zz
+    ON zz.organization_id = lo.id*/
+
+ SELECT
+  lo.id,
+  lo.name org_name,
+  lo.pid,
+  lo.createdatetime,
+  zz.ct2 jcrenshu,
+  zz.ct jcrenci
+FROM ly_organization lo
+  LEFT JOIN (SELECT
+      aa.organization_id,
+      aa.ct2,
+      bb.ct
+    FROM (SELECT
+        per.organization_id,
+        COUNT(DISTINCT (per.custom_id)) ct2
+      FROM physical_examination_record per
+      <if test="month !=null">
+		  WHERE per.check_time>DATE_ADD(NOW(),INTERVAL -${month} MONTH)
+	  </if>
+      GROUP BY per.organization_id) aa
+      LEFT JOIN (SELECT
+          per.organization_id,
+          COUNT(1) ct
+        FROM physical_examination_record per
+		<if test="month !=null">
+			WHERE per.check_time>DATE_ADD(NOW(),INTERVAL -${month} MONTH)
+		</if>
+        GROUP BY per.organization_id) bb
+        ON aa.organization_id = bb.organization_id) zz
+    ON zz.organization_id = lo.id
+		<if test="organization_id != null">
+			WHERE lo.id = ${organization_id}
+		</if>
+	</select>
+
+
+	<select id="statsExamination_Total" resultType="com.lanyuan.entity.PhysicalExaminationRecordFormMap">
+SELECT
+  cc.total1,
+  cc.zrenshu zrenshu,
+  dd.zjiancerenshu zrenci
+FROM (SELECT
+    - 100 AS total1,
+    COUNT(DISTINCT (per.custom_id)) AS zrenshu
+  FROM physical_examination_record per) cc
+  LEFT JOIN (SELECT
+      - 100 AS total2,
+      COUNT(1) zjiancerenshu
+    FROM physical_examination_record per) dd
+    ON cc.total1 = cc.total1
+	</select>
+
 </mapper>
