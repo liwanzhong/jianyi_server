@@ -106,7 +106,7 @@
 				},{
 					field : 'action',
 					title : '操作',
-					width : 300,
+					width : 400,
 					formatter : function(value, rowdata, index) {
 						var actionStr = '';
 						if(rowdata.status == 2 || rowdata.status == 3){
