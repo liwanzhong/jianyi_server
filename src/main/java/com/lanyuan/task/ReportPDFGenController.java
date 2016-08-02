@@ -295,7 +295,7 @@ public class ReportPDFGenController {
 				itemUrlList.add(itemPageMap);
 			}
 
-			/*//疾病风险项 todo 暂时屏蔽
+			//疾病风险项 todo 暂时屏蔽
 			StringBuffer sickRiskhttpUrl = new StringBuffer(PropertiesUtils.findPropertiesKey(PropertiesUtils.REPORT_URL_PDF_GEN_SYN));
 			sickRiskhttpUrl.append("?");
 			sickRiskhttpUrl.append("physicalExaminationRecordFormMap.id=").append(physicalExaminationRecordFormMap.getLong("id"));
@@ -303,7 +303,7 @@ public class ReportPDFGenController {
 			sickRiskPageMap.put("REQ_URL",sickRiskhttpUrl.toString());
 			sickRiskPageMap.put("PNG_ABS_PATH",pdfFilePath+File.separator+"sick_risk.png");
 			sickRiskPageMap.put("PDF_ABS_PATH",pdfFilePath+File.separator+"sick_risk.pdf");
-			itemUrlList.add(sickRiskPageMap);*/
+			itemUrlList.add(sickRiskPageMap);
 
 
 
@@ -380,7 +380,9 @@ public class ReportPDFGenController {
 				File pngFile = new File(reqItem.get("PNG_ABS_PATH"));
 				//调用itext将图片转为pdf文件(仅支持一张图片放在一张pdf上)
 				convertPNG2PDF(reqItem.get("PDF_ABS_PATH"),pngFile.getAbsolutePath());
-				pdfList.add(new FileInputStream(reqItem.get("PDF_ABS_PATH")));
+				if(!StringUtils.contains(reqItem.get("PNG_ABS_PATH"),"sick_risk")){
+					pdfList.add(new FileInputStream(reqItem.get("PDF_ABS_PATH")));
+				}
 			}catch (Exception ex){
 				ex.printStackTrace();
 			}
