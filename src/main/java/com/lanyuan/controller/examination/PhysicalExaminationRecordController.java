@@ -110,11 +110,17 @@ public class PhysicalExaminationRecordController extends BaseController {
     @RequestMapping("sick_risk")
     public String sickRiskSyn(Model model) throws Exception {
         PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
-        List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList = physicalExaminationRecordMapper.findByNames(physicalExaminationRecordFormMap);
+        List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList = physicalExaminationRecordMapper.findExaminationRecordCustomInfo(physicalExaminationRecordFormMap);
         if(CollectionUtils.isEmpty(physicalExaminationRecordFormMapList)){
             throw new Exception("参数异常");
         }
         physicalExaminationRecordFormMap = physicalExaminationRecordFormMapList.get(0);
+        //计算年龄
+        physicalExaminationRecordFormMap.put("age",AgeCal.getAge(physicalExaminationRecordFormMap.getDate("birthday")));
+        Double bmi = physicalExaminationRecordFormMap.getDouble("weight")/(((double)physicalExaminationRecordFormMap.getInt("body_height")/100)*((double)physicalExaminationRecordFormMap.getInt("body_height")/100));
+
+        physicalExaminationRecordFormMap.put("bmi",new BigDecimal(bmi).setScale(0,BigDecimal.ROUND_DOWN).intValue());
+
         //todo 加载疾病风险结果
         PhysicalExaminationSickRiskMainResultFormMap physicalExaminationSickRiskMainResultFormMap = getFormMap(PhysicalExaminationSickRiskMainResultFormMap.class);
         physicalExaminationSickRiskMainResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
@@ -157,11 +163,18 @@ public class PhysicalExaminationRecordController extends BaseController {
     @RequestMapping("sickRiskSyn_pdfgen")
     public String sickRiskSyn_pdfgen(Model model) throws Exception {
         PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
-        List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList = physicalExaminationRecordMapper.findByNames(physicalExaminationRecordFormMap);
+        List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList = physicalExaminationRecordMapper.findExaminationRecordCustomInfo(physicalExaminationRecordFormMap);
         if(CollectionUtils.isEmpty(physicalExaminationRecordFormMapList)){
             throw new Exception("参数异常");
         }
         physicalExaminationRecordFormMap = physicalExaminationRecordFormMapList.get(0);
+
+        //计算年龄
+        physicalExaminationRecordFormMap.put("age",AgeCal.getAge(physicalExaminationRecordFormMap.getDate("birthday")));
+        Double bmi = physicalExaminationRecordFormMap.getDouble("weight")/(((double)physicalExaminationRecordFormMap.getInt("body_height")/100)*((double)physicalExaminationRecordFormMap.getInt("body_height")/100));
+
+        physicalExaminationRecordFormMap.put("bmi",new BigDecimal(bmi).setScale(0,BigDecimal.ROUND_DOWN).intValue());
+
         //todo 加载疾病风险结果
         PhysicalExaminationSickRiskMainResultFormMap physicalExaminationSickRiskMainResultFormMap = getFormMap(PhysicalExaminationSickRiskMainResultFormMap.class);
         physicalExaminationSickRiskMainResultFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
@@ -223,6 +236,12 @@ public class PhysicalExaminationRecordController extends BaseController {
 
         physicalExaminationRecordFormMap = physicalExaminationRecordFormMapList.get(0);
 
+        //计算年龄
+        physicalExaminationRecordFormMap.put("age",AgeCal.getAge(physicalExaminationRecordFormMap.getDate("birthday")));
+        Double bmi = physicalExaminationRecordFormMap.getDouble("weight")/(((double)physicalExaminationRecordFormMap.getInt("body_height")/100)*((double)physicalExaminationRecordFormMap.getInt("body_height")/100));
+
+        physicalExaminationRecordFormMap.put("bmi",new BigDecimal(bmi).setScale(0,BigDecimal.ROUND_DOWN).intValue());
+
         PhysicalExaminationMainReportFormMap physicalExaminationMainReportFormMap = getFormMap(PhysicalExaminationMainReportFormMap.class);
         physicalExaminationMainReportFormMap.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
         physicalExaminationMainReportFormMap = physicalExaminationMainReportMapper.findMainResultWithColor(physicalExaminationMainReportFormMap);
@@ -251,7 +270,7 @@ public class PhysicalExaminationRecordController extends BaseController {
         model.addAttribute("physicalExaminationBigResultFormMapList",physicalExaminationBigResultFormMapList);
 
         //todo 计算bmi
-        Double bmi = physicalExaminationRecordFormMap.getDouble("weight")/(((double)physicalExaminationRecordFormMap.getInt("body_height")/100)*((double)physicalExaminationRecordFormMap.getInt("body_height")/100));
+//        Double bmi = physicalExaminationRecordFormMap.getDouble("weight")/(((double)physicalExaminationRecordFormMap.getInt("body_height")/100)*((double)physicalExaminationRecordFormMap.getInt("body_height")/100));
 
         //todo 通过bmi查询当前的肥胖标准状态
         BmiLeveConfigFormMap bmiLeveConfigFormMap = getFormMap(BmiLeveConfigFormMap.class);
@@ -311,8 +330,19 @@ public class PhysicalExaminationRecordController extends BaseController {
         PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
         physicalExaminationRecordFormMap.put("id",recordId);
         List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList = physicalExaminationRecordMapper.findExaminationRecordCustomInfo(physicalExaminationRecordFormMap);
-        physicalExaminationRecordFormMapList.get(0).put("age", AgeCal.getAge(physicalExaminationRecordFormMapList.get(0).getDate("birthday")));
-        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMapList.get(0));
+//        physicalExaminationRecordFormMapList.get(0).put("age", AgeCal.getAge(physicalExaminationRecordFormMapList.get(0).getDate("birthday")));
+
+        if(CollectionUtils.isEmpty(physicalExaminationRecordFormMapList)){
+            throw new Exception("参数异常");
+        }
+        physicalExaminationRecordFormMap = physicalExaminationRecordFormMapList.get(0);
+        //计算年龄
+        physicalExaminationRecordFormMap.put("age",AgeCal.getAge(physicalExaminationRecordFormMap.getDate("birthday")));
+        Double bmi = physicalExaminationRecordFormMap.getDouble("weight")/(((double)physicalExaminationRecordFormMap.getInt("body_height")/100)*((double)physicalExaminationRecordFormMap.getInt("body_height")/100));
+
+        physicalExaminationRecordFormMap.put("bmi",new BigDecimal(bmi).setScale(0,BigDecimal.ROUND_DOWN).intValue());
+
+        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMap);
 
 
         PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
@@ -380,8 +410,19 @@ public class PhysicalExaminationRecordController extends BaseController {
         PhysicalExaminationRecordFormMap physicalExaminationRecordFormMap = getFormMap(PhysicalExaminationRecordFormMap.class);
         physicalExaminationRecordFormMap.put("id",recordId);
         List<PhysicalExaminationRecordFormMap> physicalExaminationRecordFormMapList = physicalExaminationRecordMapper.findExaminationRecordCustomInfo(physicalExaminationRecordFormMap);
-        physicalExaminationRecordFormMapList.get(0).put("age", AgeCal.getAge(physicalExaminationRecordFormMapList.get(0).getDate("birthday")));
-        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMapList.get(0));
+        /*physicalExaminationRecordFormMapList.get(0).put("age", AgeCal.getAge(physicalExaminationRecordFormMapList.get(0).getDate("birthday")));
+        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMapList.get(0));*/
+        if(CollectionUtils.isEmpty(physicalExaminationRecordFormMapList)){
+            throw new Exception("参数异常");
+        }
+        physicalExaminationRecordFormMap = physicalExaminationRecordFormMapList.get(0);
+        //计算年龄
+        physicalExaminationRecordFormMap.put("age",AgeCal.getAge(physicalExaminationRecordFormMap.getDate("birthday")));
+        Double bmi = physicalExaminationRecordFormMap.getDouble("weight")/(((double)physicalExaminationRecordFormMap.getInt("body_height")/100)*((double)physicalExaminationRecordFormMap.getInt("body_height")/100));
+
+        physicalExaminationRecordFormMap.put("bmi",new BigDecimal(bmi).setScale(0,BigDecimal.ROUND_DOWN).intValue());
+
+        model.addAttribute("physicalExaminationRecordFormMap",physicalExaminationRecordFormMap);
 
         PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = getFormMap(PhysicalExaminationBigResultFormMap.class);
         physicalExaminationBigResultFormMap.put("examination_record_id",recordId);

@@ -63,6 +63,8 @@
 		<span class="name">${physicalExaminationRecordFormMap.name}</span>
 		<span class="sex">${physicalExaminationRecordFormMap.sex==1?"男":"女"}</span>
 		<span class="birth">${physicalExaminationRecordFormMap.birthday}</span>
+		<span class="sex">年龄：${physicalExaminationRecordFormMap.age}</span>
+		<span class="sex">BMI：${physicalExaminationRecordFormMap.bmi}</span>
 		<span class="time">   <fmt:formatDate value="${physicalExaminationRecordFormMap.check_time}" pattern="yyyy-MM-dd"/>检测</span>
 	</div>
 	<!--细胞功能-->
