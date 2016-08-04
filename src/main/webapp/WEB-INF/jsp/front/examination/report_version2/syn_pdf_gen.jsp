@@ -3,6 +3,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<%
+    double randomCode = Math.random();
+%>
 <!doctype html>
 <html>
 <head>
@@ -11,7 +14,7 @@
     <link type="text/css" rel="stylesheet" href="${ctx}/front-static/report_version2/css/base.css">
     <link type="text/css" rel="stylesheet" href="${ctx}/front-static/report_version2/css/index-3.css">
     <script src="${ctx}/front-static/report_version2/js/jquery-1.12.1.min.js"></script>
-    <script src="${ctx}/front-static/report_version2/js/index.js"></script>
+    <script src="${ctx}/front-static/report_version2/js/index.js?randomCode=<%=randomCode%>"></script>
     <script type="text/javascript">
 
         var paramsSickLeve = {
