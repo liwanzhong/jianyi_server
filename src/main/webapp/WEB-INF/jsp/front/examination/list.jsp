@@ -1,9 +1,11 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
-
+<%
+    double randomCode = Math.random();
+%>
 <html lang="en" class="app">
 <head>
     <%@include file="/common/common.jspf"%>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/js/examination/physicalexaminationrecord/list.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/examination/physicalexaminationrecord/list.js?randomCode=<%=randomCode%>"></script>
 </head>
 <body>
 <section class="vbox">
