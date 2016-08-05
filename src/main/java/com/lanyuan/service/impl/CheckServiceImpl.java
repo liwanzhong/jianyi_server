@@ -255,12 +255,69 @@ public class CheckServiceImpl implements ICheckService {
     /**
      * 根据历史数据生成报告
      */
-    private void getCheckSmallItemResultByHistory(Long sourceRecordId,Long distRecordId) {
+    private void getCheckSmallItemResultByHistory(Long sourceRecordId,Long distRecordId)throws Exception {
+
+        List<CfPingfenLeveFormMap> cfPingfenLeveFormMapList = cfPingfenLeveMapper.findByNames(new CfPingfenLeveFormMap());
+        if(CollectionUtils.isEmpty(cfPingfenLeveFormMapList)){
+            throw new Exception("评分等级未配置！");
+        }
+
+        //在原来的基础上复制一份作为新的检测数据
         PhysicalExaminationResultFormMap physicalExaminationResultFormMap = new PhysicalExaminationResultFormMap();
         physicalExaminationResultFormMap.put("sourceRecordId",sourceRecordId);
         physicalExaminationResultFormMap.put("distRecordId",distRecordId);
         physicalExaminationResultMapper.insertByHistory(physicalExaminationResultFormMap);
+
+        //获取新的数据，在此基础上面做调整（得分，检测值）
+        physicalExaminationResultFormMap = new PhysicalExaminationResultFormMap();
+        physicalExaminationResultFormMap.put("examination_record_id",distRecordId);
+        List<PhysicalExaminationResultFormMap> sourcePhysicalExaminationResultFormMapList = physicalExaminationResultMapper.findByNames(physicalExaminationResultFormMap);
+        //todo 遍历上次体检的结果，在结果上面加上（-3  --- 3 随机数值）
+        if(CollectionUtils.isNotEmpty(sourcePhysicalExaminationResultFormMapList)){
+//            List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = new ArrayList<PhysicalExaminationResultFormMap>();
+            for(PhysicalExaminationResultFormMap resultFormMap : sourcePhysicalExaminationResultFormMapList){
+                int max = 3;
+                int min = 0;
+                int chosenRandom = Math.round(Math.random())%2==0?1:-1;
+                int randomNumber = (int) Math.round(Math.random()*(max-min)+min)*chosenRandom;
+                if(resultFormMap.getBigDecimal("item_score")==null || resultFormMap.getBigDecimal("item_score").doubleValue()<=0){
+                    resultFormMap.put("item_score", new BigDecimal(Math.round(Math.random()*(100-60)+60)));
+                }else{
+                    if((resultFormMap.getBigDecimal("item_score").doubleValue()+randomNumber)>=100){
+                        resultFormMap.put("item_score", new BigDecimal(99));
+                    }else if ((resultFormMap.getBigDecimal("item_score").doubleValue()+randomNumber)<=60){
+                        resultFormMap.put("item_score", new BigDecimal(62));
+                    }else{
+                        resultFormMap.put("item_score", resultFormMap.getBigDecimal("item_score").add(new BigDecimal(randomNumber)));
+                    }
+                }
+                BigDecimal tzA = new BigDecimal(100).subtract(resultFormMap.getBigDecimal("item_score")).multiply(resultFormMap.getBigDecimal("in_value_score")).add(resultFormMap.getBigDecimal("gen_min_value"));
+                resultFormMap.put("check_value", tzA);
+
+                //设置等级
+                for(CfPingfenLeveFormMap item:cfPingfenLeveFormMapList){
+                    if(item.getDouble("pingfen_min")<=resultFormMap.getBigDecimal("item_score").doubleValue() && item.getDouble("pingfen_max")>=resultFormMap.getBigDecimal("item_score").doubleValue()){
+                        resultFormMap.put("tzed_leve_id",item.getLong("id"));
+                        resultFormMap.put("orgin_leve_id",item.getLong("id"));
+                        break;
+                    }
+                }
+//                physicalExaminationResultFormMapList.add(resultFormMap);
+                physicalExaminationResultMapper.editEntity(resultFormMap);
+
+
+            }
+
+            /*if(CollectionUtils.isNotEmpty(physicalExaminationResultFormMapList)){
+                physicalExaminationResultMapper.batchSave(physicalExaminationResultFormMapList);
+            }*/
+
+        }
+
     }
+
+
+
 
 
 
