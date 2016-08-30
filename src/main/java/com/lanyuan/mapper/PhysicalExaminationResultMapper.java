@@ -20,4 +20,6 @@ public interface PhysicalExaminationResultMapper extends BaseMapper{
 
 
 	void saveBatchResult(List<PhysicalExaminationResult> physicalExaminationResultList);
+
+	List<PhysicalExaminationResultFormMap> findLeveGroupCount(PhysicalExaminationResultFormMap physicalExaminationResultFormMap)throws Exception;
 }

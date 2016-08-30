@@ -134,6 +134,8 @@
 						str += $.formatString('<a href="javascript:void(0)" onclick="smallCheckItemFun(\'{0}\');" >检测小项</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="sickRiskConfig(\'{0}\');" >疾病关联</a>', row.id);
+						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="duanbanConfig(\'{0}\');" >短板配置</a>', row.id);
 						return str;
 					}
 				}] ],
@@ -192,6 +194,11 @@
 
 		function sickRiskConfig(id){
 			window.location.href = '${ctx}/instrument/sickRisk/list.shtml?checkItemId='+id+'&checkItemType=1';
+		}
+
+
+		function duanbanConfig(id){
+			window.location.href = '${ctx}/instrument/duanbanconfig/list.shtml?checkItemId='+id;
 		}
 
 		function editFun(id) {

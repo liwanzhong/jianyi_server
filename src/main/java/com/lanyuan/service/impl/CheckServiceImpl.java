@@ -512,6 +512,10 @@ public class CheckServiceImpl implements ICheckService {
     }
 
 
+    @Autowired
+    private DuanbanConfigMapper duanbanConfigMapper;
+
+
     /**
      * 生成检测大项检测结果
      * @param recordFormMap
@@ -555,6 +559,27 @@ public class CheckServiceImpl implements ICheckService {
                     if(item.getDouble("pingfen_min")<=checkScore.doubleValue() && item.getDouble("pingfen_max")>=checkScore.doubleValue()){
                         physicalExaminationBigResultFormMap.put("leve_id",item.getLong("id"));
                         break;
+                    }
+                }
+
+                //todo 获取短板项配置
+                DuanbanConfigFormMap duanbanConfigFormMap = new DuanbanConfigFormMap();
+                duanbanConfigFormMap.set("big_item_id",checkBigItemFormMap.getLong("id"));
+                List<DuanbanConfigFormMap> duanbanConfigFormMapList =duanbanConfigMapper.findByNames(duanbanConfigFormMap);
+                if(CollectionUtils.isNotEmpty(duanbanConfigFormMapList)){
+                    //获取检测小项的等级数量列表
+                    PhysicalExaminationResultFormMap physicalExaminationResultFormMap = new PhysicalExaminationResultFormMap();
+                    physicalExaminationResultFormMap.put("examination_record_id",recordFormMap.getLong("id"));
+                    physicalExaminationResultFormMap.put("bit_item_id",checkBigItemFormMap.getLong("id"));
+                    List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapList = physicalExaminationResultMapper.findLeveGroupCount(physicalExaminationResultFormMap);
+                    if(CollectionUtils.isNotEmpty(physicalExaminationResultFormMapList)){
+                        for (DuanbanConfigFormMap duanbanConfigFormMapTemp:duanbanConfigFormMapList){
+                            for(PhysicalExaminationResultFormMap physicalExaminationResultFormMapTemp:physicalExaminationResultFormMapList){
+                                if (physicalExaminationResultFormMapTemp.getLong("leveid").longValue() == duanbanConfigFormMapTemp.getLong("duanban_leve_id").longValue() && duanbanConfigFormMapTemp.getInt("duanban_item_tz_count")<=physicalExaminationResultFormMapTemp.getLong("leveCount").intValue()){
+                                    physicalExaminationBigResultFormMap.put("check_score",physicalExaminationBigResultFormMap.getBigDecimal("check_score").add(duanbanConfigFormMapTemp.getBigDecimal("tz_rout")));
+                                }
+                            }
+                        }
                     }
                 }
                 physicalExaminationBigResultMapper.addEntity(physicalExaminationBigResultFormMap);

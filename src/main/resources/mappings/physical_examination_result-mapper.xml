@@ -132,6 +132,15 @@
     </insert>
 
 
+    <select id="findLeveGroupCount" resultType="com.lanyuan.entity.PhysicalExaminationResultFormMap">
+SELECT
+  IF(per.tzed_leve_id IS NULL, per.orgin_leve_id, per.tzed_leve_id) AS leveid,
+  COUNT(1) as leveCount
+FROM physical_examination_result per
+WHERE per.examination_record_id = ${examination_record_id} AND per.bit_item_id = ${bit_item_id}
+GROUP BY IF(per.tzed_leve_id IS NULL, per.orgin_leve_id, per.tzed_leve_id);
+    </select>
+
 
 
 

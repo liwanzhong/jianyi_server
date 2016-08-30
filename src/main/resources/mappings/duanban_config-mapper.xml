@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.DuanbanConfigMapper">
+
+	<select id="findDuanbanConfigByBigItem" resultType="com.lanyuan.entity.DuanbanConfigFormMap">
+SELECT
+  dc.id,
+  cpl.name duanban_leve,
+  dc.tz_rout,
+  dc.duanban_item_tz_count,
+  cbi.name check_big_item
+FROM duanban_config dc
+  LEFT JOIN check_big_item cbi
+    ON dc.big_item_id = cbi.id
+  LEFT JOIN cf_pingfen_leve cpl
+    ON cpl.id = dc.duanban_leve_id WHERE dc.big_item_id=${big_item_id}
+		<if test="orderby != null">
+			ORDER BY ${orderby}
+		</if>
+	</select>
+
+
+
+
+</mapper>
