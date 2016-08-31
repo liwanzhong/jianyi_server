@@ -12,6 +12,7 @@ import com.lanyuan.util.Common;
 import com.lanyuan.vo.Grid;
 import com.lanyuan.vo.PageFilter;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -44,14 +45,24 @@ public class DuanbanConfigController extends BaseController {
 
 	@RequestMapping("list")
 	public String listUI(Model model,String checkItemId) throws Exception {
+		if(StringUtils.isBlank(checkItemId)){
+			checkItemId = "0";
+		}
 		model.addAttribute("checkItemId",checkItemId);
 		CheckBigItemFormMap checkBigItemFormMap = checkBigItemMapper.findbyFrist("id",checkItemId,CheckBigItemFormMap.class);
+		if(checkBigItemFormMap == null || checkBigItemFormMap.get("id")==null){
+			checkBigItemFormMap = new CheckBigItemFormMap();
+			checkBigItemFormMap.put("name","短板总评");
+		}
 		model.addAttribute("checkBigItemFormMap",checkBigItemFormMap);
 		return Common.BACKGROUND_PATH + "/instrument/duanbanconfig/list";
 	}
 
 	@RequestMapping("addPage")
 	public String addPage(Model model,String checkItemId) throws Exception {
+		if(StringUtils.isBlank(checkItemId)){
+			checkItemId = "0";
+		}
 		model.addAttribute("checkItemId",checkItemId);
 		return Common.BACKGROUND_PATH + "/instrument/duanbanconfig/add";
 	}
@@ -68,7 +79,7 @@ public class DuanbanConfigController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("dataGrid")
-	@SystemLog(module="短板管理",methods="加载用户列表")//凡需要处理业务逻辑的.都需要记录操作日志
+	@SystemLog(module="短板管理",methods="短板列表")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	public Grid dataGrid(PageFilter ph)throws Exception {
 		Grid grid = new Grid();
@@ -97,6 +108,12 @@ public class DuanbanConfigController extends BaseController {
 		retMap.put("status",0);
 		try {
 			DuanbanConfigFormMap duanbanConfigFormMap = getFormMap(DuanbanConfigFormMap.class);
+			if(duanbanConfigFormMap.getLong("big_item_id")==null || duanbanConfigFormMap.getLong("big_item_id")==0){
+				duanbanConfigFormMap.put("is_zongping",1);
+			}else{
+				duanbanConfigFormMap.put("is_zongping",0);
+			}
+
 			duanbanConfigMapper.addEntity(duanbanConfigFormMap);
 			retMap.put("msg","添加成功");
 			retMap.put("status",1);
