@@ -1,3 +1,4 @@
+/*
 package com.lanyuan.util.sign;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -22,9 +23,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+*/
 /**
  * Created by Administrator on 2016/7/13.
- */
+ *//*
+
 public class Guava_ListenableFuture_Test {
 
     // 创建线程池
@@ -48,7 +51,8 @@ public class Guava_ListenableFuture_Test {
         final ListenableFuture<Integer> listenableFuture6 = executorService.submit(new TaskBak("listenableFuture6",5000l,"http://www.jb51.net/article/26470.htm"));
 
         //同步获取调用结果
-        /*try {
+        */
+/*try {
             System.out.println(listenableFuture.get());
         } catch (InterruptedException e1) {
             e1.printStackTrace();
@@ -63,7 +67,8 @@ public class Guava_ListenableFuture_Test {
             e1.printStackTrace();
         } catch (ExecutionException e1) {
             e1.printStackTrace();
-        }*/
+        }*//*
+
 
         try {
             Thread.sleep(900000);
@@ -76,7 +81,8 @@ public class Guava_ListenableFuture_Test {
 
     @Test
     public void test4() throws InterruptedException {
-        /*for (int i=0;i<3;i++) {
+        */
+/*for (int i=0;i<3;i++) {
             final int abc = i;
             new Thread(new Runnable() {
                 @Override
@@ -101,10 +107,16 @@ public class Guava_ListenableFuture_Test {
                                 Thread.sleep(3000);
                                 File screenShotFile = ((TakesScreenshot) driver) .getScreenshotAs(OutputType.FILE);
                                 FileUtils.copyFile(screenShotFile, new File("D:\\idea-workspack\\works\\jianyi_server\\png\\"+abc+".png"));
-                                *//*final Screenshot screenshot = new AShot().shootingStrategy(ShootingStrategies.simple()).takeScreenshot(driver);
+                                *//*
+*/
+/*final Screenshot screenshot = new AShot().shootingStrategy(ShootingStrategies.simple()).takeScreenshot(driver);
                                 final BufferedImage image = screenshot.getImage();
                                 ImageIO.write(image, "PNG", new File("D:\\idea-workspack\\works\\jianyi_server\\png\\"+abc+".png"));*//*
-                                *//*CutStrategy cutting = new VariableCutStrategy(50, 50, 50);
+*/
+/*
+                                *//*
+*/
+/*CutStrategy cutting = new VariableCutStrategy(50, 50, 50);
                                 ShootingStrategy rotating = new RotatingDecorator(cutting, ShootingStrategies.simple());
                                 ShootingStrategy pasting = new ViewportPastingDecorator(rotating)
                                         .withScrollTimeout(2000);
@@ -113,6 +125,8 @@ public class Guava_ListenableFuture_Test {
                                         .takeScreenshot(driver);
                                 final BufferedImage image = screenshot.getImage();
                                 ImageIO.write(image, "PNG", new File("D:\\idea-workspack\\works\\jianyi_server\\png\\"+abc+".png"));*//*
+*/
+/*
                             }catch (Exception ex){
                                 ex.printStackTrace();
                             }
@@ -125,7 +139,8 @@ public class Guava_ListenableFuture_Test {
                 }
             }).start();
 
-        }*/
+        }*//*
+
 
 
         System.setProperty("webdriver.chrome.driver", "G:\\yitian_projects\\chh_manager\\src\\main\\webapp\\components\\chrome\\chromedriver.exe");
@@ -201,7 +216,8 @@ public class Guava_ListenableFuture_Test {
 
 
 
-    /*@Test
+    */
+/*@Test
     public void test2(){
 
         //todo 处理请求
@@ -242,7 +258,8 @@ public class Guava_ListenableFuture_Test {
         }
         driver.quit();
 
-    }*/
+    }*//*
+
 
 
     class Task implements Callable<Integer> {
@@ -321,3 +338,4 @@ public class Guava_ListenableFuture_Test {
         }
     }
 }
+*/

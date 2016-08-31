@@ -1,3 +1,4 @@
+/*
 package com.lanyuan.util.sign;
 
 import org.junit.Test;
@@ -7,9 +8,11 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
+*/
 /**
  * Created by liwanzhong on 2016/3/2.
- */
+ *//*
+
 public class RSASignatureTest {
 
     @Test
@@ -36,4 +39,4 @@ public class RSASignatureTest {
 
         System.out.println(RSASignature.verify(stringData,stringSign));
     }
-}
+}*/
