@@ -623,6 +623,27 @@ public class CheckServiceImpl implements ICheckService {
         }
 
 
+        // 获取短板项配置
+        DuanbanConfigFormMap duanbanConfigFormMap = new DuanbanConfigFormMap();
+        duanbanConfigFormMap.set("big_item_id",0l);
+        List<DuanbanConfigFormMap> duanbanConfigFormMapList =duanbanConfigMapper.findByNames(duanbanConfigFormMap);
+        if(CollectionUtils.isNotEmpty(duanbanConfigFormMapList)){
+            //获取大项的等级数量列表
+            PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap = new PhysicalExaminationBigResultFormMap();
+            physicalExaminationBigResultFormMap.put("examination_record_id",recordid);
+            List<PhysicalExaminationBigResultFormMap> physicalExaminationBigResultFormMapTempsList = physicalExaminationBigResultMapper.findLeveGroupCount(physicalExaminationBigResultFormMap);
+            if(CollectionUtils.isNotEmpty(physicalExaminationBigResultFormMapTempsList)){
+                for (DuanbanConfigFormMap duanbanConfigFormMapTemp:duanbanConfigFormMapList){
+                    for(PhysicalExaminationBigResultFormMap physicalExaminationResultFormMapTemp:physicalExaminationBigResultFormMapTempsList){
+                        if (physicalExaminationResultFormMapTemp.getLong("leveid").longValue() == duanbanConfigFormMapTemp.getLong("duanban_leve_id").longValue() && duanbanConfigFormMapTemp.getInt("duanban_item_tz_count")<=physicalExaminationResultFormMapTemp.getLong("leveCount").intValue()){
+                            physicalExaminationMainReportFormMap.put("check_total_score",physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").add(duanbanConfigFormMapTemp.getBigDecimal("tz_rout")));
+                        }
+                    }
+                }
+            }
+        }
+
+
         physicalExaminationMainReportMapper.addEntity(physicalExaminationMainReportFormMap);
     }
 
