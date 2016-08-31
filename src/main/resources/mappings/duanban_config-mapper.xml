@@ -9,7 +9,8 @@ SELECT
   cpl.name duanban_leve,
   dc.tz_rout,
   dc.duanban_item_tz_count,
-  cbi.name check_big_item
+--   cbi.name check_big_item
+  IF(cbi.name IS NULL,'总评短板', cbi.name) check_big_item
 FROM duanban_config dc
   LEFT JOIN check_big_item cbi
     ON dc.big_item_id = cbi.id
