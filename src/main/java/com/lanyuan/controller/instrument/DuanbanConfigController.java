@@ -108,7 +108,7 @@ public class DuanbanConfigController extends BaseController {
 		retMap.put("status",0);
 		try {
 			DuanbanConfigFormMap duanbanConfigFormMap = getFormMap(DuanbanConfigFormMap.class);
-			if(duanbanConfigFormMap.getLong("big_item_id")==null || duanbanConfigFormMap.getLong("big_item_id")==0){
+			if(duanbanConfigFormMap.get("big_item_id")==null || Long.parseLong(duanbanConfigFormMap.get("big_item_id").toString())==0){
 				duanbanConfigFormMap.put("is_zongping",1);
 			}else{
 				duanbanConfigFormMap.put("is_zongping",0);
