@@ -1,7 +1,6 @@
 package com.lanyuan.mapper;
 
 import com.lanyuan.entity.PhysicalExaminationBigResultFormMap;
-import com.lanyuan.entity.PhysicalExaminationRecordFormMap;
 import com.lanyuan.mapper.base.BaseMapper;
 
 import java.util.List;
@@ -17,4 +16,6 @@ public interface PhysicalExaminationBigResultMapper extends BaseMapper{
 
 
 	List<PhysicalExaminationBigResultFormMap> findCheckResultOrderByCheckScoreAsc(PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap);
+
+    List<PhysicalExaminationBigResultFormMap> findLeveGroupCount(PhysicalExaminationBigResultFormMap physicalExaminationBigResultFormMap);
 }
