@@ -122,7 +122,7 @@ ORDER BY pebr.check_score ASC
 	</select>
 
 
-	<select id="findLeveGroupCount" resultType="com.lanyuan.entity.PhysicalExaminationResultFormMap">
+	<select id="findLeveGroupCount" resultType="com.lanyuan.entity.PhysicalExaminationBigResultFormMap">
 SELECT
   COUNT(1) AS leveCount,
   pebr.leve_id AS leveid
