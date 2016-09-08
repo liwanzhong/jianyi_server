@@ -636,7 +636,9 @@ public class CheckServiceImpl implements ICheckService {
                 for (DuanbanConfigFormMap duanbanConfigFormMapTemp:duanbanConfigFormMapList){
                     for(PhysicalExaminationBigResultFormMap physicalExaminationResultFormMapTemp:physicalExaminationBigResultFormMapTempsList){
                         if (physicalExaminationResultFormMapTemp.getLong("leveid").longValue() == duanbanConfigFormMapTemp.getLong("duanban_leve_id").longValue() && duanbanConfigFormMapTemp.getInt("duanban_item_tz_count")<=physicalExaminationResultFormMapTemp.getLong("leveCount").intValue()){
+                            logger.info("原等级："+physicalExaminationMainReportFormMap.getLong("level")+"------原得分："+physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").doubleValue());
                             physicalExaminationMainReportFormMap.put("check_total_score",physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").add(duanbanConfigFormMapTemp.getBigDecimal("tz_rout")));
+                            logger.info("原等级："+physicalExaminationMainReportFormMap.getLong("level")+"------原得分："+physicalExaminationMainReportFormMap.getBigDecimal("check_total_score").doubleValue());
                         }
                     }
                 }
