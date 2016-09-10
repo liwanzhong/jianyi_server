@@ -1,0 +1,10 @@
+ALTER TABLE physical_examination_result ADD COLUMN random_max decimal(10,3) DEFAULT NULL COMMENT '随机值的最大值';
+ALTER TABLE physical_examination_result ADD COLUMN random_min decimal(10,3) DEFAULT NULL COMMENT '随机值的最小值';
+
+
+ALTER TABLE physical_examination_result ADD COLUMN bmiorage int DEFAULT 0 COMMENT '根据BMI或者年龄调整等级，1：BMI关联调整，2：年龄等级调整，0：没有调整';
+ALTER TABLE physical_examination_result ADD COLUMN bmiorage_leve_change bigint DEFAULT NULL COMMENT '根据BMI或者年龄调整等级,等级值';
+
+
+ALTER TABLE physical_examination_result ADD COLUMN check_value_tzbef decimal(10,3) DEFAULT NULL COMMENT '检测值调整前';
+ALTER TABLE physical_examination_result ADD COLUMN item_score_tzbef decimal(10,3) DEFAULT NULL COMMENT '得分调整前';
