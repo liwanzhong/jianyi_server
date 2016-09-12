@@ -133,6 +133,8 @@
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="smallCheckItemFun(\'{0}\');" >检测小项</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="bmiConf(\'{0}\');" >BMI关联</a>', row.id);
+						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="sickRiskConfig(\'{0}\');" >疾病关联</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="duanbanConfig(\'{0}\');" >短板配置</a>', row.id);
@@ -161,6 +163,11 @@
 					}
 				} ]
 			});
+		}
+
+
+		function bmiConf(id){
+			window.location.href = '${ctx}/instrument/BmiCheckItemConfig/list.shtml?checkItemId='+id+'&checkItemType=1';
 		}
 
 		function deleteFun(id) {

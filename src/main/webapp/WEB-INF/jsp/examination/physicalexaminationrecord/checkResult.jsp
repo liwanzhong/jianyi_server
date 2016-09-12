@@ -37,11 +37,15 @@
                        <td>基准高值</td>
                        <td>区间值</td>
                        <td>区间分值</td>
-                       <td>测量值</td>
-                       <td> 得分</td>
-                       <td>原功能等级（${item.leve}）</td>
-                       <td>调整功能等级（${item.leve}）</td>
-                       <td>权重</td>
+                       <td>最小随机值</td>
+                       <td>最大随机值</td>
+                       <td>最终检测值</td>
+                       <td>最终得分</td>
+                       <td>最终等级</td>
+                       <td>调整类型<br>（0：没有调整，1：BMI关联调整，<br>2：年龄等级调整，3：二次检测 ,<br>4:雷同调整）</td>
+                       <td>调整前检测值</td>
+                       <td>调整前得分</td>
+                       <td>调整前等级</td>
                        <td>&nbsp;</td>
                    </tr>
                    <c:set var="quanzhong"></c:set>
@@ -53,12 +57,17 @@
                                <td>${smItem.gen_max_value}</td>
                                <td>${smItem.gen_in_value}</td>
                                <td>${smItem.in_value_score}</td>
+
+                               <td>${smItem.random_min}</td>
+                               <td>${smItem.random_max}</td>
+
                                <td>${smItem.check_value}</td>
                                <td> ${smItem.item_score}</td>
-                               <td>${smItem.orgin_leve_id}</td>
                                <td>${smItem.tzed_leve_id}</td>
-                               <td>${smItem.gen_quanzhong}</td>
-                               <td>${smItem.quanzhong_score}</td>
+                               <td>${smItem.bmiorage}</td>
+                               <td>${smItem.check_value_tzbef}</td>
+                               <td>${smItem.item_score_tzbef}</td>
+                               <td>${smItem.bmiorage_leve_change}</td>
                            </tr>
                            <c:set var="quanzhong" value="${quanzhong+smItem.gen_quanzhong}"></c:set>
                        </c:if>
@@ -73,7 +82,11 @@
                        <td></td>
                        <td> </td>
                        <td></td>
-                       <td>${quanzhong}</td>
+                       <td></td>
+                       <td></td>
+                       <td></td>
+                       <td></td>
+                       <td></td>
                        <td>${item.check_score}</td>
                    </tr>
                </table>
