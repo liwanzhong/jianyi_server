@@ -8,26 +8,26 @@
     <!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
     <!-- 以下与实体类的中字段一致 -->
     <sql id="selectId">
-  cbe.id,
-  cbe.custom_id,
-  cbe.organization_id,
-  cbe.insert_time,
-  cbe.isdelete,
-  cbe.last_check_time,
-  ci.idcard,
-  ci.vipcard,
-  ci.mobile,
-  ci.username,
-  ci.password,
-  ci.name,
-  ci.sex,
-  ci.birthday,
-  ci.body_height,
-  ci.weight,
-  ci.zhiwen_code,
-  ci.zhiwen_path,
-  lo.name AS organization_name
-	</sql>
+        cbe.id,
+        cbe.custom_id,
+        cbe.organization_id,
+        cbe.insert_time,
+        cbe.isdelete,
+        cbe.last_check_time,
+        ci.idcard,
+        ci.vipcard,
+        ci.mobile,
+        ci.username,
+        ci.password,
+        ci.name,
+        ci.sex,
+        ci.birthday,
+        ci.body_height,
+        ci.weight,
+        ci.zhiwen_code,
+        ci.zhiwen_path,
+        lo.name AS organization_name
+    </sql>
 
     <select id="findEnterprisePage" resultType="com.lanyuan.entity.PhysicalExaminationResultFormMap">
         select
@@ -65,6 +65,12 @@
         per.in_value_score,
         per.check_value,
         per.item_score,
+        per.random_max,
+        per.random_min,
+        per.bmiorage,
+        cpl2.name AS bmiorage_leve_change,
+        per.check_value_tzbef,
+        per.item_score_tzbef,
         cpl.name AS orgin_leve_id,
         cpl.show_color AS org_show_color,
         cpl.id AS orgin_leve_id_id,
@@ -86,6 +92,8 @@
         ON cpl.id = per.orgin_leve_id
         LEFT JOIN cf_pingfen_leve cpl1
         ON cpl1.id = per.tzed_leve_id
+        LEFT JOIN cf_pingfen_leve cpl2
+        ON cpl2.id = per.bmiorage_leve_change
         WHERE per.examination_record_id  = #{examination_record_id}
         <if test="big_item_id != null">
             AND  per.bit_item_id = #{big_item_id}
@@ -95,25 +103,25 @@
 
 
     <insert id="insertByHistory">
-  INSERT INTO physical_examination_result (examination_record_id, bit_item_id, small_item_id, gen_min_value, gen_max_value, gen_in_value, in_value_score, check_value, item_score, orgin_leve_id, gen_quanzhong, quanzhong_score, pinggu, tzed_leve_id, tzed_check_value)
-  SELECT
-    ${distRecordId},
-    per.bit_item_id,
-    per.small_item_id,
-    per.gen_min_value,
-    per.gen_max_value,
-    per.gen_in_value,
-    per.in_value_score,
-    per.check_value,
-    per.item_score,
-    per.orgin_leve_id,
-    per.gen_quanzhong,
-    per.quanzhong_score,
-    per.pinggu,
-    per.tzed_leve_id,
-    per.tzed_check_value
-  FROM physical_examination_result per
-  WHERE per.examination_record_id = ${sourceRecordId}
+        INSERT INTO physical_examination_result (examination_record_id, bit_item_id, small_item_id, gen_min_value, gen_max_value, gen_in_value, in_value_score, check_value, item_score, orgin_leve_id, gen_quanzhong, quanzhong_score, pinggu, tzed_leve_id, tzed_check_value)
+        SELECT
+        ${distRecordId},
+        per.bit_item_id,
+        per.small_item_id,
+        per.gen_min_value,
+        per.gen_max_value,
+        per.gen_in_value,
+        per.in_value_score,
+        per.check_value,
+        per.item_score,
+        per.orgin_leve_id,
+        per.gen_quanzhong,
+        per.quanzhong_score,
+        per.pinggu,
+        per.tzed_leve_id,
+        per.tzed_check_value
+        FROM physical_examination_result per
+        WHERE per.examination_record_id = ${sourceRecordId}
     </insert>
 
 
@@ -124,23 +132,38 @@
 
 
     <insert id="saveBatchResult" parameterType="java.util.List">
-        INSERT INTO physical_examination_result (examination_record_id, bit_item_id, small_item_id, gen_min_value, gen_max_value, gen_in_value, in_value_score, check_value, item_score, orgin_leve_id, gen_quanzhong, quanzhong_score, tzed_leve_id)
+        INSERT INTO physical_examination_result (examination_record_id, bit_item_id, small_item_id, gen_min_value, gen_max_value, gen_in_value, in_value_score, check_value, item_score, orgin_leve_id, gen_quanzhong, quanzhong_score, tzed_leve_id,random_max,random_min,bmiorage,bmiorage_leve_change,check_value_tzbef,item_score_tzbef)
         VALUES
         <foreach collection="list" item="item" index="index" separator="," >
-            (#{item.examination_record_id}, #{item.bit_item_id}, #{item.small_item_id}, #{item.gen_min_value}, #{item.gen_max_value}, #{item.gen_in_value}, #{item.in_value_score}, #{item.check_value}, #{item.item_score}, #{item.orgin_leve_id}, #{item.gen_quanzhong}, #{item.quanzhong_score}, #{item.tzed_leve_id})
+            (#{item.examination_record_id}, #{item.bit_item_id}, #{item.small_item_id}, #{item.gen_min_value}, #{item.gen_max_value}, #{item.gen_in_value}, #{item.in_value_score}, #{item.check_value}, #{item.item_score}, #{item.orgin_leve_id}, #{item.gen_quanzhong}, #{item.quanzhong_score}, #{item.tzed_leve_id}  , #{item.random_max}, #{item.random_min}, #{item.bmiorage}, #{item.bmiorage_leve_change}, #{item.check_value_tzbef}, #{item.item_score_tzbef})
         </foreach>
     </insert>
 
 
     <select id="findLeveGroupCount" resultType="com.lanyuan.entity.PhysicalExaminationResultFormMap">
-SELECT
-  IF(per.tzed_leve_id IS NULL, per.orgin_leve_id, per.tzed_leve_id) AS leveid,
-  COUNT(1) as leveCount
-FROM physical_examination_result per
-WHERE per.examination_record_id = ${examination_record_id} AND per.bit_item_id = ${bit_item_id}
-GROUP BY IF(per.tzed_leve_id IS NULL, per.orgin_leve_id, per.tzed_leve_id);
+        SELECT
+        IF(per.tzed_leve_id IS NULL, per.orgin_leve_id, per.tzed_leve_id) AS leveid,
+        COUNT(1) as leveCount
+        FROM physical_examination_result per
+        WHERE per.examination_record_id = ${examination_record_id} AND per.bit_item_id = ${bit_item_id}
+        GROUP BY IF(per.tzed_leve_id IS NULL, per.orgin_leve_id, per.tzed_leve_id);
     </select>
 
+
+    <select id="findCheckBigItemList" resultType="com.lanyuan.entity.PhysicalExaminationResultFormMap">
+        SELECT  per.bit_item_id,COUNT(1) ct FROM physical_examination_result per WHERE per.examination_record_id = ${examination_record_id} GROUP BY   per.bit_item_id
+    </select>
+
+
+
+    <select id="findLeveGroupCountOrgLeve" resultType="com.lanyuan.entity.PhysicalExaminationResultFormMap">
+        SELECT
+         per.tzed_leve_id AS leveid,
+        COUNT(1) as leveCount
+        FROM physical_examination_result per
+        WHERE per.examination_record_id = ${examination_record_id} AND per.bit_item_id = ${bit_item_id}
+        GROUP BY  per.tzed_leve_id
+    </select>
 
 
 
