@@ -280,7 +280,7 @@ public class CheckServiceImpl implements ICheckService {
                 int min = 0;
                 int chosenRandom = Math.round(Math.random())%2==0?1:-1;
                 int randomNumber = (int) Math.round(Math.random()*(max-min)+min)*chosenRandom;
-                if(resultFormMap.getBigDecimal("item_score")==null || resultFormMap.getBigDecimal("item_score").doubleValue()<=0){
+                /*if(resultFormMap.getBigDecimal("item_score")==null || resultFormMap.getBigDecimal("item_score").doubleValue()<=0){
                     resultFormMap.put("item_score", new BigDecimal(Math.round(Math.random()*(100-60)+60)));
                 }else{
                     if((resultFormMap.getBigDecimal("item_score").doubleValue()+randomNumber)>=100){
@@ -290,7 +290,24 @@ public class CheckServiceImpl implements ICheckService {
                     }else{
                         resultFormMap.put("item_score", resultFormMap.getBigDecimal("item_score").add(new BigDecimal(randomNumber)));
                     }
+                }*/
+                resultFormMap.put("bmiorage",3);
+                resultFormMap.put("bmiorage_leve_change",resultFormMap.get("orgin_leve_id"));
+                resultFormMap.put("check_value_tzbef",resultFormMap.get("check_value"));
+                resultFormMap.put("item_score_tzbef",resultFormMap.get("item_score"));
+
+                if(resultFormMap.getBigDecimal("item_score")==null || resultFormMap.getBigDecimal("item_score").doubleValue()<=0){
+                    resultFormMap.put("item_score", new BigDecimal(Math.round(Math.random()*(95-60)+60)));
+                }else{
+                    if((resultFormMap.getBigDecimal("item_score").doubleValue()+randomNumber)>95){
+                        resultFormMap.put("item_score", new BigDecimal(94.23));
+                    }else if ((resultFormMap.getBigDecimal("item_score").doubleValue()+randomNumber)<60){
+                        resultFormMap.put("item_score", new BigDecimal(60.23));
+                    }else{
+                        resultFormMap.put("item_score", resultFormMap.getBigDecimal("item_score").add(new BigDecimal(randomNumber)));
+                    }
                 }
+
                 BigDecimal tzA = new BigDecimal(100).subtract(resultFormMap.getBigDecimal("item_score")).multiply(resultFormMap.getBigDecimal("in_value_score")).add(resultFormMap.getBigDecimal("gen_min_value"));
                 resultFormMap.put("check_value", tzA);
 
@@ -368,27 +385,34 @@ public class CheckServiceImpl implements ICheckService {
                     checkSmallItemResult.put("gen_quanzhong",checkSmallItemFormMap.getBigDecimal("quanzhong"));
 
 
-                    BigDecimal M = n.divide(new BigDecimal(20.0),3, RoundingMode.HALF_UP);
+                    //计算区间得分
+                    BigDecimal M = n.divide(new BigDecimal(30.0),3, RoundingMode.HALF_UP);
                     checkSmallItemResult.put("in_value_score",M);
                     //随机生成
-                    //todo 随机的最大值为==基准高值+区间值
-                    int max = checkSmallItemResult.getBigDecimal("gen_max_value").add(n).multiply(new BigDecimal(1000)).intValue();
-                    int min = checkSmallItemResult.getBigDecimal("gen_min_value").multiply(new BigDecimal(1000)).intValue();
+                    //todo 随机范围值，采用公式：A小 = N1+5*M   A大=N1+35*M
+                    int max =(n1.add(new BigDecimal(35).multiply(M)).multiply(new BigDecimal(1000))).setScale(3,BigDecimal.ROUND_HALF_UP).intValue();
+                    int min = (n1.add(new BigDecimal(5).multiply(M)).multiply(new BigDecimal(1000))).setScale(3,BigDecimal.ROUND_HALF_UP).intValue();
                     int randomNumber = (int) Math.round(Math.random()*(max-min)+min);
 
                     BigDecimal A = new BigDecimal(randomNumber/1000d);
+
+                    //记录随机值范围的最大和最小值
+                    checkSmallItemResult.put("random_max",new BigDecimal(max/1000d));
+                    checkSmallItemResult.put("random_min",new BigDecimal(min/1000d));
                     checkSmallItemResult.put("check_value",A);
 
+                    //计算得分
                     BigDecimal B = new BigDecimal(100).subtract((A.subtract(n1).divide(M,3,BigDecimal.ROUND_HALF_UP))) ;
 
 
 
                     checkSmallItemResult.put("item_score",B);
 
-                    //根据计算结果判断\
+                    //获取得分等级
                     for(CfPingfenLeveFormMap item:cfPingfenLeveFormMapList){
                         if(item.getDouble("pingfen_min")<=B.doubleValue() && item.getDouble("pingfen_max")>=B.doubleValue()){
                             checkSmallItemResult.put("orgin_leve_id",item.getLong("id"));
+                            checkSmallItemResult.put("tzed_leve_id",item.getLong("id"));
                             break;
                         }
                     }
@@ -403,7 +427,9 @@ public class CheckServiceImpl implements ICheckService {
                     }
                     List<BmiCheckItemConfigFormMap> bmiCheckItemConfigFormMapList = new ArrayList<BmiCheckItemConfigFormMap>();
                     List<CfPingfenRoutFormMap> cfPingfenRoutFormMapList = new ArrayList<CfPingfenRoutFormMap>();
-                    if(checkBigItemFormMap.getInt("withbmi") == 1){
+                    if(checkBigItemFormMap.getInt("withbmi") == 1){//先去找小项配置，如果有配置就不去理会大项配置，否则使用大项配置
+
+
                         //todo 获取bmi评分调整配置（如果bmi评分调整配置的有，则忽略年龄评分配置）
                         BmiCheckItemConfigFormMap bmiCheckItemConfigFormMap = new BmiCheckItemConfigFormMap();
                         Double weight =customInfoFormMap.getDouble("weight");
@@ -416,6 +442,17 @@ public class CheckServiceImpl implements ICheckService {
                         bmiCheckItemConfigFormMap.put("check_type",2);
                         bmiCheckItemConfigFormMap.put("org_leve_id",checkSmallItemResult.getLong("orgin_leve_id"));
                         bmiCheckItemConfigFormMapList = bmiCheckItemConfigMapper.findFixedOneItem(bmiCheckItemConfigFormMap);
+
+                        if(CollectionUtils.isEmpty(bmiCheckItemConfigFormMapList)){
+                            //todo 获取bmi评分调整配置（如果bmi评分调整配置的有，则忽略年龄评分配置）
+                            BmiCheckItemConfigFormMap bmiCheckItemConfigFormMapBig = new BmiCheckItemConfigFormMap();
+                            bmiCheckItemConfigFormMap.put("age",AgeCal.getAge(birthday));//年龄
+                            bmiCheckItemConfigFormMap.put("bmi",new BigDecimal(bmi).setScale(3,BigDecimal.ROUND_HALF_UP));//BMI
+                            bmiCheckItemConfigFormMap.put("check_item_id",checkSmallItemFormMap.getLong("big_item_id"));//检测小项
+                            bmiCheckItemConfigFormMap.put("check_type",1);
+                            bmiCheckItemConfigFormMap.put("org_leve_id",checkSmallItemResult.getLong("orgin_leve_id"));
+                            bmiCheckItemConfigFormMapList = bmiCheckItemConfigMapper.findFixedOneItem(bmiCheckItemConfigFormMap);
+                        }
 
                     }else{
                         // 查找小项等级评分调整概率
@@ -436,9 +473,11 @@ public class CheckServiceImpl implements ICheckService {
                     CfPingfenLeveFormMap cfPingfenLeveFormMap = null;
 
 
-                    if(CollectionUtils.isNotEmpty(bmiCheckItemConfigFormMapList) && bmiCheckItemConfigFormMapList.size()==1){
+                    if(CollectionUtils.isNotEmpty(bmiCheckItemConfigFormMapList) && bmiCheckItemConfigFormMapList.size()==1){//按照bmi配置等级调整
                         BmiCheckItemConfigFormMap bmiCheckItemConfigFormMapTemp = bmiCheckItemConfigFormMapList.get(0);
                         if(randomNumberTz <=bmiCheckItemConfigFormMapTemp.getBigDecimal("rout").doubleValue()*1000) {
+                            checkSmallItemResult.put("bmiorage", 1);
+                            checkSmallItemResult.put("bmiorage_leve_change",checkSmallItemResult.getLong("tzed_leve_id"));
                             checkSmallItemResult.put("tzed_leve_id", bmiCheckItemConfigFormMapTemp.getLong("tz_leve_id"));
                             // 随机生成得分等级范围内的得分值  B
                             for (CfPingfenLeveFormMap temp : cfPingfenLeveFormMapList) {
@@ -449,9 +488,11 @@ public class CheckServiceImpl implements ICheckService {
                             }
                         }
 
-                    }else if(CollectionUtils.isNotEmpty(cfPingfenRoutFormMapList) && cfPingfenRoutFormMapList.size() ==1){
+                    }else if(CollectionUtils.isNotEmpty(cfPingfenRoutFormMapList) && cfPingfenRoutFormMapList.size() ==1){//按照评分概率调整
                         CfPingfenRoutFormMap cfPingfenRoutFormMap = cfPingfenRoutFormMapList.get(0);
                         if(randomNumberTz >=cfPingfenRoutFormMap.getDouble("rout_min")*1000 && randomNumberTz<=cfPingfenRoutFormMap.getDouble("rout_max")*1000) {
+                            checkSmallItemResult.put("bmiorage", 2);
+                            checkSmallItemResult.put("bmiorage_leve_change", checkSmallItemResult.getLong("tzed_leve_id"));
                             checkSmallItemResult.put("tzed_leve_id", cfPingfenRoutFormMap.getLong("tz_pingfen_id"));
                             // 随机生成得分等级范围内的得分值  B
                             for (CfPingfenLeveFormMap temp : cfPingfenLeveFormMapList) {
@@ -463,20 +504,37 @@ public class CheckServiceImpl implements ICheckService {
                         }
                     }else{
                         System.out.println("无等级调整");
+                        checkSmallItemResult.put("bmiorage", 0);
                     }
 
 
                     if(cfPingfenLeveFormMap !=null){
                         //生成随机范围内的得分,作为调整后的得分
-                        int tzmax = cfPingfenLeveFormMap.getDouble("pingfen_min").intValue()*1000;
-                        int tzmin = cfPingfenLeveFormMap.getDouble("pingfen_max").intValue()*1000;
+                        int randomMax = 95*1000;
+                        int randomMin = 65*1000;
+
+
+                        int tzmin = (int) (cfPingfenLeveFormMap.getDouble("pingfen_min")*1000d);
+                        int  tzmax = (int) (cfPingfenLeveFormMap.getDouble("pingfen_max")*1000d);
+                        if(tzmin<=randomMin){
+                            tzmin = randomMin;
+                        }
+                        if(tzmax>=randomMax){
+                            tzmax = randomMax;
+                        }
                         int tzScoreRandom = (int) Math.round(Math.random()*(tzmax-tzmin)+tzmin);
                         BigDecimal tzB = new BigDecimal(tzScoreRandom/1000d);
 
                         //A ? = (100-B)*M+n1
                         BigDecimal tzA = new BigDecimal(100).subtract(tzB).multiply(M).add(n1);
+
+                        checkSmallItemResult.put("check_value_tzbef",checkSmallItemResult.getBigDecimal("check_value"));
+                        checkSmallItemResult.put("item_score_tzbef",checkSmallItemResult.getBigDecimal("item_score"));
+
                         checkSmallItemResult.put("check_value",tzA);
                         checkSmallItemResult.put("item_score",tzB);
+
+
                     }
 
                     //根据调整概率，生成新的功能等级
@@ -485,6 +543,7 @@ public class CheckServiceImpl implements ICheckService {
 
             }
         }
+        //保存到数据库
         List<PhysicalExaminationResult> physicalExaminationResultList = new ArrayList<PhysicalExaminationResult>();
         if(CollectionUtils.isNotEmpty(physicalExaminationResultFormMapList)){
             for(PhysicalExaminationResultFormMap item:physicalExaminationResultFormMapList){
@@ -502,14 +561,95 @@ public class CheckServiceImpl implements ICheckService {
                 result.setQuanzhong_score(item.get("quanzhong_score")==null?null:item.getBigDecimal("quanzhong_score"));
                 result.setSmall_item_id(item.get("small_item_id")==null?null:item.getLong("small_item_id"));
                 result.setTzed_leve_id(item.get("tzed_leve_id")==null?null:item.getLong("tzed_leve_id"));
+
+                result.setRandom_max(item.get("random_max")==null?null:item.getBigDecimal("random_max"));
+                result.setRandom_min(item.get("random_min")==null?null:item.getBigDecimal("random_min"));
+                result.setBmiorage(item.get("bmiorage")==null?null:item.getInt("bmiorage"));
+                result.setBmiorage_leve_change(item.get("bmiorage_leve_change")==null?null:item.getLong("bmiorage_leve_change"));
+                result.setCheck_value_tzbef(item.get("check_value_tzbef")==null?null:item.getBigDecimal("check_value_tzbef"));
+                result.setItem_score_tzbef(item.get("item_score_tzbef")==null?null:item.getBigDecimal("item_score_tzbef"));
+
+
                 physicalExaminationResultList.add(result);
             }
             if(CollectionUtils.isNotEmpty(physicalExaminationResultList)){
                 physicalExaminationResultMapper.saveBatchResult(physicalExaminationResultList);
             }
+
+            //todo 处理雷同
+
+            /*PhysicalExaminationResultFormMap bigItemQuery = new PhysicalExaminationResultFormMap();
+            bigItemQuery.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
+            List<PhysicalExaminationResultFormMap> bigItems = physicalExaminationResultMapper.findCheckBigItemList(bigItemQuery);
+            if(CollectionUtils.isNotEmpty(bigItems)){
+                for(PhysicalExaminationResultFormMap physicalExaminationResultFormMap:bigItems){
+                    //todo 获取大项中小项等级个数
+                    PhysicalExaminationResultFormMap leveCountQuery = new PhysicalExaminationResultFormMap();
+                    leveCountQuery.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
+                    leveCountQuery.put("bit_item_id",physicalExaminationResultFormMap.getLong("bit_item_id"));
+                    List<PhysicalExaminationResultFormMap> leveCountQueryItems = physicalExaminationResultMapper.findLeveGroupCountOrgLeve(leveCountQuery);
+                    if(CollectionUtils.isNotEmpty(leveCountQueryItems)){
+                        for(PhysicalExaminationResultFormMap leveCountQueryItem:leveCountQueryItems){
+                            if((leveCountQueryItem.getLong("leveCount").doubleValue()/physicalExaminationResultFormMap.getLong("ct").doubleValue())>=0.5){
+                                //todo 获取当前大项下的所有等级相同的小项，随机重新生成
+                                PhysicalExaminationResultFormMap findQuery = new PhysicalExaminationResultFormMap();
+                                findQuery.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
+                                findQuery.put("bit_item_id",physicalExaminationResultFormMap.getLong("bit_item_id"));
+                                findQuery.put("tzed_leve_id",leveCountQueryItem.getLong("leveid"));
+                                List<PhysicalExaminationResultFormMap> list = physicalExaminationResultMapper.findByNames(findQuery);
+                                for(PhysicalExaminationResultFormMap resultFormMap:list){
+                                    resultFormMap.put("bmiorage",4);
+                                    int tzmax = 95*1000;
+                                    int tzmin = 65*1000;
+
+
+                                    int tzScoreRandom = (int) Math.round(Math.random()*(tzmax-tzmin)+tzmin);
+                                    BigDecimal tzB = new BigDecimal(tzScoreRandom/1000d);
+
+                                    //A ? = (100-B)*M+n1
+                                    BigDecimal tzA = new BigDecimal(100).subtract(tzB).multiply(resultFormMap.getBigDecimal("in_value_score")).add(resultFormMap.getBigDecimal("gen_min_value"));
+                                    resultFormMap.put("check_value_tzbef",resultFormMap.getBigDecimal("check_value"));
+                                    resultFormMap.put("item_score_tzbef",resultFormMap.getBigDecimal("item_score"));
+
+                                    resultFormMap.put("check_value",tzA);
+                                    resultFormMap.put("item_score",tzB);
+
+                                    for (CfPingfenLeveFormMap temp : cfPingfenLeveFormMapList) {
+                                        if (temp.getDouble("pingfen_min").doubleValue() <= tzB.doubleValue() && temp.getDouble("pingfen_max").doubleValue() >= tzB.doubleValue()) {
+                                            resultFormMap.put("bmiorage_leve_change",resultFormMap.get("tzed_leve_id"));
+                                            resultFormMap.put("tzed_leve_id",temp.getLong("id"));
+                                            break;
+                                        }
+                                    }
+                                    physicalExaminationResultMapper.editEntity(resultFormMap);
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }*/
         }
 
     }
+
+
+
+    /*public  Map<Long,List<PhysicalExaminationResultFormMap>> staticCount( List<PhysicalExaminationResultFormMap> list)throws Exception{
+        if(CollectionUtils.isEmpty(list)){
+            return null;
+        }
+        Map<Long,List<PhysicalExaminationResultFormMap>> maps = new HashMap<Long, List<PhysicalExaminationResultFormMap>>();
+        for(PhysicalExaminationResultFormMap item:list){
+            List<PhysicalExaminationResultFormMap> itemlist = maps.get(item.getLong("org_leve_id"));
+            if(null == itemlist){
+                itemlist = new ArrayList<PhysicalExaminationResultFormMap>();
+            }
+            itemlist.add(item);
+            maps.put(item.getLong("org_leve_id"),itemlist);
+        }
+        return maps;
+    }*/
 
 
     @Autowired

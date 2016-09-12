@@ -24,6 +24,14 @@ public class PhysicalExaminationResult implements Serializable {
     private Long tzed_leve_id;
 
 
+    private BigDecimal random_max;
+    private BigDecimal random_min;
+    private Integer bmiorage;
+    private Long bmiorage_leve_change;
+    private BigDecimal check_value_tzbef;
+    private BigDecimal item_score_tzbef;
+
+
     public Long getId() {
         return id;
     }
@@ -134,5 +142,53 @@ public class PhysicalExaminationResult implements Serializable {
 
     public void setTzed_leve_id(Long tzed_leve_id) {
         this.tzed_leve_id = tzed_leve_id;
+    }
+
+    public BigDecimal getRandom_max() {
+        return random_max;
+    }
+
+    public void setRandom_max(BigDecimal random_max) {
+        this.random_max = random_max;
+    }
+
+    public BigDecimal getRandom_min() {
+        return random_min;
+    }
+
+    public void setRandom_min(BigDecimal random_min) {
+        this.random_min = random_min;
+    }
+
+    public Integer getBmiorage() {
+        return bmiorage;
+    }
+
+    public void setBmiorage(Integer bmiorage) {
+        this.bmiorage = bmiorage;
+    }
+
+    public Long getBmiorage_leve_change() {
+        return bmiorage_leve_change;
+    }
+
+    public void setBmiorage_leve_change(Long bmiorage_leve_change) {
+        this.bmiorage_leve_change = bmiorage_leve_change;
+    }
+
+    public BigDecimal getCheck_value_tzbef() {
+        return check_value_tzbef;
+    }
+
+    public void setCheck_value_tzbef(BigDecimal check_value_tzbef) {
+        this.check_value_tzbef = check_value_tzbef;
+    }
+
+    public BigDecimal getItem_score_tzbef() {
+        return item_score_tzbef;
+    }
+
+    public void setItem_score_tzbef(BigDecimal item_score_tzbef) {
+        this.item_score_tzbef = item_score_tzbef;
     }
 }
