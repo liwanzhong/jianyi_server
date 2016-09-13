@@ -52,7 +52,7 @@
 					formatter : function(value, row, index) {
 						return (row.max_value - row.min_value).toFixed(3);
 					}
-				},{
+				}/*,{
 					width : '140',
 					title : '实际检测范围最小值',
 					field : 'check_min'
@@ -60,7 +60,7 @@
 					width : '140',
 					title : '实际检测范围最大值',
 					field : 'check_max'
-				},{
+				}*/,{
 					width : '80',
 					title : '权重系数',
 					field : 'quanzhong'
@@ -71,7 +71,7 @@
 				},{
 					field : 'action',
 					title : '操作',
-					width : 350,
+					width : 450,
 					formatter : function(value, row, index) {
 						var str = '';
 						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
@@ -85,6 +85,8 @@
 						str += $.formatString('<a href="javascript:void(0)" onclick="sickRiskConfig(\'{0}\');" >疾病关联</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="checkValueScoreConfig(\'{0}\');" >检测值得分关联范围</a>', row.id);
+						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="releationConfig(\'{0}\');" >关联配置</a>', row.id);
 						return str;
 					}
 				}] ],
@@ -99,6 +101,11 @@
 
 		function sickRiskConfig(id){
 			window.location.href = '${ctx}/instrument/sickRisk/list.shtml?checkItemId='+id+'&checkItemType=2';
+		}
+
+
+		function releationConfig(id){
+			window.location.href = '${ctx}/instrument/checkItemReleationConfig/configRefPage.shtml?checkid='+id+'&checkType=2';
 		}
 
 
