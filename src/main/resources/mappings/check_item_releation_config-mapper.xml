@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.CheckItemReleationConfigMapper">
+	<!--<cache type="org.mybatis.caches.memcached.LoggingMemcachedCache" />-->
+
+	<select id="findAll" resultType="com.lanyuan.entity.CheckItemReleationConfigMap">
+SELECT
+  circ.id,
+  circ.dist_releation_type,
+  circ.dist_check_id,
+  circ.org_releation_type,
+  circ.org_check_id,
+  circ.dist_leve,
+  circ.org_leve
+FROM check_item_releation_config circ
+ORDER BY circ.id DESC;
+	</select>
+
+</mapper>
