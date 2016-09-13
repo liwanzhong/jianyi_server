@@ -342,6 +342,9 @@ public class CheckServiceImpl implements ICheckService {
     @Inject
     private BmiCheckItemConfigMapper bmiCheckItemConfigMapper;
 
+    @Autowired
+    private CheckItemReleationConfigMapper checkItemReleationConfigMapper;
+
 
     /**
      * 生成检测项检测结果
@@ -576,8 +579,64 @@ public class CheckServiceImpl implements ICheckService {
                 physicalExaminationResultMapper.saveBatchResult(physicalExaminationResultList);
             }
 
-            //todo 处理雷同
 
+            //todo 调整关联项
+            //查询所有的关联项
+            List<CheckItemReleationConfigMap> checkItemReleationConfigMapList = checkItemReleationConfigMapper.findAll();
+            if(CollectionUtils.isNotEmpty(checkItemReleationConfigMapList)){
+                List<Long> checkItemIdList = new ArrayList<Long>();
+                for(CheckItemReleationConfigMap checkItemReleationConfigMap:checkItemReleationConfigMapList){
+                    checkItemIdList.add(checkItemReleationConfigMap.getLong("dist_check_id"));
+                    checkItemIdList.add(checkItemReleationConfigMap.getLong("org_check_id"));
+                }
+                if(CollectionUtils.isNotEmpty(checkItemIdList)){
+                    StringBuffer smallItemIds =new StringBuffer("");
+                    for(int i=0;i<checkItemIdList.size();i++){
+                        Long ids =checkItemIdList.get(i);
+                        smallItemIds.append(ids).append(",");
+                    }
+                    //todo 查询列表中的检测项
+                    PhysicalExaminationResultFormMap physicalExaminationResultFormMapWhereCondtion = new PhysicalExaminationResultFormMap();
+
+                    physicalExaminationResultFormMapWhereCondtion.put("where","where examination_record_id="+physicalExaminationRecordFormMap.getLong("id")+" and  small_item_id in ("+smallItemIds.toString().substring(0,smallItemIds.toString().lastIndexOf(","))+") order by id desc");
+                    List<PhysicalExaminationResultFormMap> physicalExaminationResultFormMapRelList = physicalExaminationResultMapper.findByWhere(physicalExaminationResultFormMapWhereCondtion);
+                    if(CollectionUtils.isNotEmpty(physicalExaminationResultFormMapRelList)){
+                        //todo 遍历结果，处理关联项
+                        for(CheckItemReleationConfigMap checkItemReleationConfigMap:checkItemReleationConfigMapList){
+                            Long dist_check_id = checkItemReleationConfigMap.getLong("dist_check_id");
+                            Long org_check_id = checkItemReleationConfigMap.getLong("org_check_id");
+
+                            for(PhysicalExaminationResultFormMap tempDist:physicalExaminationResultFormMapRelList){
+                                if(dist_check_id.longValue() == tempDist.getLong("small_item_id")){
+                                    for(PhysicalExaminationResultFormMap tempOrg:physicalExaminationResultFormMapRelList){
+                                        if(org_check_id.longValue() == tempOrg.getLong("small_item_id")){//todo 调整
+                                            tempOrg.put("bmiorage",5);
+                                            tempOrg.put("bmiorage_leve_change",tempOrg.getLong("tzed_leve_id"));
+                                            tempOrg.put("check_value_tzbef",tempOrg.getBigDecimal("check_value"));
+                                            tempOrg.put("item_score_tzbef",tempOrg.getBigDecimal("item_score"));
+
+
+                                            tempOrg.put("tzed_leve_id",tempDist.getLong("tzed_leve_id"));
+                                            tempOrg.put("item_score",tempDist.getBigDecimal("item_score"));
+
+
+                                            BigDecimal tzA = new BigDecimal(100).subtract(tempDist.getBigDecimal("item_score")).multiply(tempOrg.getBigDecimal("in_value_score")).add(tempOrg.getBigDecimal("gen_min_value"));
+
+                                            tempOrg.put("check_value",tzA);
+                                            physicalExaminationResultMapper.editEntity(tempOrg);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+
+
+            //todo 处理雷同
             /*PhysicalExaminationResultFormMap bigItemQuery = new PhysicalExaminationResultFormMap();
             bigItemQuery.put("examination_record_id",physicalExaminationRecordFormMap.getLong("id"));
             List<PhysicalExaminationResultFormMap> bigItems = physicalExaminationResultMapper.findCheckBigItemList(bigItemQuery);
