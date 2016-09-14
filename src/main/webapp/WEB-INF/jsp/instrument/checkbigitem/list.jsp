@@ -124,7 +124,7 @@
 				}*/,{
 					field : 'action',
 					title : '操作',
-					width : 300,
+					width : 450,
 					formatter : function(value, row, index) {
 						var str = '';
 						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
@@ -138,6 +138,8 @@
 						str += $.formatString('<a href="javascript:void(0)" onclick="sickRiskConfig(\'{0}\');" >疾病关联</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="duanbanConfig(\'{0}\');" >短板配置</a>', row.id);
+						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="leveprocentConfig(\'{0}\');" >等级占比配置</a>', row.id);
 						return str;
 					}
 				}] ],
@@ -206,6 +208,11 @@
 
 		function duanbanConfig(id){
 			window.location.href = '${ctx}/instrument/duanbanconfig/list.shtml?checkItemId='+id;
+		}
+
+
+		function leveprocentConfig(id){
+			window.location.href = '${ctx}/instrument/leveZhanbi/list.shtml?checkItemId='+id+'&checkItemType=2';
 		}
 
 		function editFun(id) {
