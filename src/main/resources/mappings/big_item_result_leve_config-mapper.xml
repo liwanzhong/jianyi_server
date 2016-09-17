@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyuan.mapper.BigItemResultLeveConfigMapper">
+
+	<select id="findPage" resultType="com.lanyuan.entity.BigItemResultLeveConfigFormMap">
+        SELECT
+        birlc.id,
+        birlc.check_item_id,
+        birlc.check_type,
+        birlc.age_min,
+        birlc.age_max,
+        birlc.bmi_min,
+        birlc.bmi_max,
+        cpl.name AS org_leve,
+        birlc.change_score AS change_score
+        FROM big_item_result_leve_config birlc
+        LEFT JOIN cf_pingfen_leve cpl
+        ON birlc.org_leve_id = cpl.id
+        WHERE birlc.check_item_id = ${check_item_id} AND birlc.check_type = ${check_type}
+		<if test="orderby != null">
+			ORDER BY ${orderby}
+		</if>
+	</select>
+
+    <select id="findFixedList" resultType="com.lanyuan.entity.BigItemResultLeveConfigFormMap">
+        SELECT
+        birlc.id,
+        birlc.check_item_id,
+        birlc.check_type,
+        birlc.age_min,
+        birlc.age_max,
+        birlc.bmi_min,
+        birlc.bmi_max,
+        birlc.change_score
+        FROM big_item_result_leve_config birlc
+        WHERE birlc.check_item_id = ${check_item_id} AND birlc.check_type = ${check_type} AND birlc.age_min &lt;= ${age} AND birlc.age_max &gt; ${age} AND birlc.bmi_min &lt;= ${bmi} AND birlc.bmi_max &gt; ${bmi} AND birlc.org_leve_id = ${org_leve_id} ORDER  BY  id DESC LIMIT 1;
+    </select>
+
+
+
+
+</mapper>

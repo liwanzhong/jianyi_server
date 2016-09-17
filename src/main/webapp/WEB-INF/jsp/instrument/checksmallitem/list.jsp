@@ -65,13 +65,9 @@
 					title : '权重系数',
 					field : 'quanzhong'
 				},{
-					width : '360',
-					title : '检测说明',
-					field : 'check_desc'
-				},{
 					field : 'action',
 					title : '操作',
-					width : 450,
+					width : 550,
 					formatter : function(value, row, index) {
 						var str = '';
 						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
@@ -87,6 +83,9 @@
 						str += $.formatString('<a href="javascript:void(0)" onclick="checkValueScoreConfig(\'{0}\');" >检测值得分关联范围</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="releationConfig(\'{0}\');" >关联配置</a>', row.id);
+						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="leveprocentConfig(\'{0}\');" >等级分布配置</a>', row.id);
+
 						return str;
 					}
 				}] ],
@@ -108,6 +107,9 @@
 			window.location.href = '${ctx}/instrument/checkItemReleationConfig/configRefPage.shtml?checkid='+id+'&checkType=2';
 		}
 
+		function leveprocentConfig(id){
+			window.location.href = '${ctx}/instrument/leveZhanbi/list.shtml?checkItemId='+id+'&checkItemType=2';
+		}
 
 		function checkValueScoreConfig(id){
 			window.location.href = '${ctx}/instrument/checkValueScoreIn/list.shtml?smallItemId='+id;

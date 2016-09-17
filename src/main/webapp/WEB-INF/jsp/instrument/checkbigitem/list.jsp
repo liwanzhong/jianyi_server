@@ -124,7 +124,7 @@
 				}*/,{
 					field : 'action',
 					title : '操作',
-					width : 450,
+					width : 500,
 					formatter : function(value, row, index) {
 						var str = '';
 						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
@@ -140,6 +140,8 @@
 						str += $.formatString('<a href="javascript:void(0)" onclick="duanbanConfig(\'{0}\');" >短板配置</a>', row.id);
 						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="leveprocentConfig(\'{0}\');" >等级占比配置</a>', row.id);
+						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="resultLeveConfig(\'{0}\');" >得分等级调整配置</a>', row.id);
 						return str;
 					}
 				}] ],
@@ -212,7 +214,11 @@
 
 
 		function leveprocentConfig(id){
-			window.location.href = '${ctx}/instrument/leveZhanbi/list.shtml?checkItemId='+id+'&checkItemType=2';
+			window.location.href = '${ctx}/instrument/leveZhanbi/list.shtml?checkItemId='+id+'&checkItemType=1';
+		}
+
+		function resultLeveConfig(id){
+			window.location.href = '${ctx}/instrument/bigitemresultleveconfig/list.shtml?checkItemId='+id+'&checkItemType=1';
 		}
 
 		function editFun(id) {

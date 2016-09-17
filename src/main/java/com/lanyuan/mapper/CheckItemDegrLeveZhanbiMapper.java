@@ -10,4 +10,5 @@ public interface CheckItemDegrLeveZhanbiMapper extends BaseMapper{
 
     List<CheckItemDegrLeveZhanbiFormMap> findPage(CheckItemDegrLeveZhanbiFormMap bmiCheckItemConfigFormMap);
 
+    List<CheckItemDegrLeveZhanbiFormMap> findFZhanbiList(CheckItemDegrLeveZhanbiFormMap smallZhanbiCondition);
 }

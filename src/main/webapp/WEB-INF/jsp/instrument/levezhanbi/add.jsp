@@ -31,10 +31,11 @@
 	});
 
 	function procentCount() {
-		var procent = null;
+		var procent = 0;
 		for(var i=1;i<=5;i++){
-			var itemValue = $("input [name = 'checkItemDegrLeveZhanbiFormMap.leve_"+i+"_procent']").val();
-			procent += itemValue==null||itemValue=='undefind'?0:itemValue;
+			var itemValue = $("#leve_"+i+"_procent").val();
+			console.log(itemValue);
+			procent +=Number(itemValue==null||itemValue=='undefind'?0:itemValue);
 		}
 		$("#countProcent").html("等级百分比总计:"+procent/100);
 	}
@@ -78,31 +79,31 @@
 				<tr>
 					<td>正常占比</td>
 					<td colspan="3">
-						<input name="checkItemDegrLeveZhanbiFormMap.leve_1_procent" onchange="procentCount()" placeholder="占比(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="">%
+						<input name="checkItemDegrLeveZhanbiFormMap.leve_1_procent" id="leve_1_procent" onchange="procentCount()" placeholder="占比(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="">%
 					</td>
 				</tr>
 				<tr>
 					<td>未见异常占比</td>
 					<td colspan="3">
-						<input name="checkItemDegrLeveZhanbiFormMap.leve_2_procent" onchange="procentCount()" placeholder="占比(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="">%
+						<input name="checkItemDegrLeveZhanbiFormMap.leve_2_procent" id="leve_2_procent" onchange="procentCount()" placeholder="占比(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="">%
 					</td>
 				</tr>
 				<tr>
 					<td>减弱一级占比</td>
 					<td colspan="3">
-						<input name="checkItemDegrLeveZhanbiFormMap.leve_3_procent" onchange="procentCount()" placeholder="占比(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="">%
+						<input name="checkItemDegrLeveZhanbiFormMap.leve_3_procent" id="leve_3_procent" onchange="procentCount()" placeholder="占比(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="">%
 					</td>
 				</tr>
 				<tr>
 					<td>减弱二级占比</td>
 					<td colspan="3">
-						<input name="checkItemDegrLeveZhanbiFormMap.leve_4_procent" onchange="procentCount()" placeholder="占比(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="">%
+						<input name="checkItemDegrLeveZhanbiFormMap.leve_4_procent" id="leve_4_procent" onchange="procentCount()" placeholder="占比(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="">%
 					</td>
 				</tr>
 				<tr>
 					<td>减弱三级占比</td>
 					<td colspan="3">
-						<input name="checkItemDegrLeveZhanbiFormMap.leve_5_procent" onchange="procentCount()" placeholder="占比(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="">%
+						<input name="checkItemDegrLeveZhanbiFormMap.leve_5_procent" id="leve_5_procent" onchange="procentCount()" placeholder="占比(0-100)" type="text"  style="height: 29px;" class="easyui-validatebox" data-options="required:true" value="">%
 					</td>
 				</tr>
 			</table>

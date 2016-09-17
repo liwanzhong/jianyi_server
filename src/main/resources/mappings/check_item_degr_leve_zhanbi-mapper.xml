@@ -11,34 +11,55 @@
 
 
 	<select id="findPage" resultType="com.lanyuan.entity.CheckItemDegrLeveZhanbiFormMap">
-SELECT
-		bcic.id,
-		bcic.bmi_min,
-		bcic.bmi_max,
-		bcic.age_min,
-		bcic.age_max,
-		(SELECT
-		cpl.name
-		FROM cf_pingfen_leve cpl
-		WHERE cpl.id = bcic.org_leve_id) AS org_leve_id,
-		(SELECT
-		cpl.name
-		FROM cf_pingfen_leve cpl
-		WHERE cpl.id = bcic.tz_leve_id) AS tz_leve_id,
-		bcic.rout,
-		bcic.check_item_id,
-		bcic.check_type
-		FROM bmi_check_item_config bcic
-WHERE 1=1
- <if test="check_item_id != null">
-	AND bcic.check_item_id = ${check_item_id}
- </if>
-<if test="check_type != null">
-	AND bcic.check_type = ${check_type}
-</if>
-<if test="orderby != null">
-	ORDER BY ${orderby}
-</if>
+		SELECT
+		cidlz.id,
+		cidlz.check_id,
+		cidlz.check_type,
+		cidlz.age_min,
+		cidlz.age_max,
+		cidlz.bmi_min,
+		cidlz.bmi_max,
+		cidlz.bodyheight_min,
+		cidlz.bodyheight_max,
+		cidlz.weight_min,
+		cidlz.weight_max,
+		cidlz.leve_1_procent,
+		cidlz.leve_2_procent,
+		cidlz.leve_3_procent,
+		cidlz.leve_4_procent,
+		cidlz.leve_5_procent
+		FROM check_item_degr_leve_zhanbi cidlz
+		WHERE cidlz.check_id = ${check_id} AND cidlz.check_type = ${check_type}
+		<if test="orderby != null">
+			ORDER BY ${orderby}
+		</if>
+	</select>
+
+
+	<select id="findFZhanbiList" resultType="com.lanyuan.entity.CheckItemDegrLeveZhanbiFormMap">
+		SELECT
+		cidlz.id,
+		cidlz.check_id,
+		cidlz.check_type,
+		cidlz.age_min,
+		cidlz.age_max,
+		cidlz.bmi_min,
+		cidlz.bmi_max,
+		cidlz.bodyheight_min,
+		cidlz.bodyheight_max,
+		cidlz.weight_min,
+		cidlz.weight_max,
+		cidlz.leve_1_procent,
+		cidlz.leve_2_procent,
+		cidlz.leve_3_procent,
+		cidlz.leve_4_procent,
+		cidlz.leve_5_procent
+		FROM check_item_degr_leve_zhanbi cidlz
+		WHERE 1=1
+		<if test="check_id != null">
+			AND cidlz.check_id = ${check_id}
+		</if>
+		 AND cidlz.check_type = ${check_type} AND cidlz.age_min &lt;= ${age} AND cidlz.age_max &gt;= ${age} AND cidlz.bmi_min &lt;= ${bmi} AND cidlz.bmi_max &gt;= ${bmi} AND cidlz.bodyheight_min &lt;= ${bodyheight} AND cidlz.bodyheight_max &gt;= ${bodyheight} AND cidlz.weight_min &lt;= ${weight} AND cidlz.weight_max &gt;= ${weight};
 	</select>
 
 

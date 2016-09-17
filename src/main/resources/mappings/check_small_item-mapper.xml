@@ -70,7 +70,9 @@ FROM check_small_item csi
     WHERE !(cbi.withsex = 0 OR cbi.withsex = ${withsex})) notInCheck
     ON notInCheck.id = csi.id
 WHERE lf.ref_checksmall_id IS NULL AND notInCheck.id IS NULL
-
+    <if test="big_item_id != null">
+        AND csi.big_item_id = ${big_item_id}
+    </if>
 	</select>
 
     <select id="findLasyOrderItemCout" resultType="java.lang.Integer">

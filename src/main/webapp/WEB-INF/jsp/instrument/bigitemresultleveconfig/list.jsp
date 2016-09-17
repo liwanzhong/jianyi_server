@@ -8,12 +8,12 @@
 	<jsp:include page="/inc.jsp"></jsp:include>
 	<meta http-equiv="X-UA-Compatible" content="edge" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>检测项管理</title>
+	<title>大项得分等级调整配置</title>
 	<script type="text/javascript">
 		var dataGrid;
 		$(function() {
 			dataGrid = $('#dataGrid').datagrid({
-				url : '${ctx}/instrument/leveZhanbi/dataGrid.shtml?checkItemDegrLeveZhanbiFormMap.check_id=${checkItemId}&checkItemDegrLeveZhanbiFormMap.check_type=${checkItemType}',
+				url : '${ctx}/instrument/bigitemresultleveconfig/dataGrid.shtml?bigItemResultLeveConfigFormMap.check_item_id=${checkItemId}&bigItemResultLeveConfigFormMap.check_type=${checkItemType}',
 				fit : true,
 				striped : true,
 				rownumbers : true,
@@ -24,73 +24,32 @@
 				sortOrder : 'desc',
 				pageSize : 50,
 				pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
-				columns : [ [ {
-					width : '120',
-					title : 'BMI范围',
-					field : 'bmi_min',
-					formatter : function(value, row, index) {
-						return row.bmi_min +'--- '+row.bmi_max;
-					}
-				},{
-					width : '120',
+				columns : [ [{
+					width : '180',
 					title : '年龄范围',
-					field : 'age_min',
+					field : 'age',
 					formatter : function(value, row, index) {
-						return row.age_min +'--- '+row.age_max;
+						return row.age_min+'----'+row.age_max;
 					}
 				},{
-					width : '120',
-					title : '身高范围',
-					field : 'bodyheight_min',
+					width : '180',
+					title : 'bmi范围',
+					field : 'bmi',
 					formatter : function(value, row, index) {
-						return row.bodyheight_min +'--- '+row.bodyheight_max;
+						return row.bmi_min+'----'+row.bmi_max;
 					}
 				},{
-					width : '120',
-					title : '体重范围',
-					field : 'weight_min',
-					formatter : function(value, row, index) {
-						return row.weight_min +'--- '+row.weight_max;
-					}
+					width : '180',
+					title : '原等级',
+					field : 'org_leve'
 				},{
-					width : '120',
-					title : '<正常>占比',
-					field : 'leve_1_procent',
-					formatter : function(value, row, index) {
-						return value+" %";
-					}
-				},{
-					width : '120',
-					title : '<未见异常>占比',
-					field : 'leve_2_procent',
-					formatter : function(value, row, index) {
-						return value+" %";
-					}
-				},{
-					width : '120',
-					title : '<减弱一级>占比',
-					field : 'leve_3_procent',
-					formatter : function(value, row, index) {
-						return value+" %";
-					}
-				},{
-					width : '120',
-					title : '<减弱二级>占比',
-					field : 'leve_4_procent',
-					formatter : function(value, row, index) {
-						return value+" %";
-					}
-				},{
-					width : '120',
-					title : '<减弱三级>占比',
-					field : 'leve_5_procent',
-					formatter : function(value, row, index) {
-						return value+" %";
-					}
+					width : '180',
+					title : '加减分',
+					field : 'change_score'
 				},{
 					field : 'action',
 					title : '操作',
-					width : 180,
+					width : 350,
 					formatter : function(value, row, index) {
 						var str = '';
 						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
@@ -113,8 +72,8 @@
 			parent.$.modalDialog({
 				title : '添加',
 				width : '60%',
-				height : '80%',
-				href : '${ctx}/instrument/leveZhanbi/addPage.shtml?checkItemId=${checkItemId}&checkItemType=${checkItemType}',
+				height : '60%',
+				href : '${ctx}/instrument/bigitemresultleveconfig/addPage.shtml?checkItemId=${checkItemId}&checkItemType=${checkItemType}',
 				buttons : [ {
 					text : '添加',
 					handler : function() {
@@ -136,8 +95,8 @@
 			parent.$.messager.confirm('询问', '是否需要删除当前项？', function(b) {
 				if (b) {
 					progressLoad();
-					$.post('${ctx}/instrument/leveZhanbi/delete.shtml', {
-						'checkItemDegrLeveZhanbiFormMap.id' : id
+					$.post('${ctx}/instrument/bigitemresultleveconfig/delete.shtml', {
+						'bigItemResultLeveConfigFormMap.id' : id
 					}, function(result) {
 						if (result.status == 1) {
 							parent.$.messager.alert('提示', result.msg, 'info');
@@ -162,8 +121,8 @@
 			parent.$.modalDialog({
 				title : '编辑',
 				width : '60%',
-				height : '80%',
-				href : '${ctx}/instrument/leveZhanbi/editPage.shtml?id=' + id,
+				height : '60%',
+				href : '${ctx}/instrument/bigitemresultleveconfig/editPage.shtml?id=' + id,
 				buttons : [ {
 					text : '编辑',
 					handler : function() {
@@ -175,13 +134,19 @@
 			});
 		}
 
-
+		function searchFun() {
+			dataGrid.datagrid('load', $.serializeObject($('#searchForm')));
+		}
+		function cleanFun() {
+			$('#searchForm input').val('');
+			dataGrid.datagrid('load', {});
+		}
 	</script>
 </head>
 <body class="easyui-layout" data-options="fit:true,border:false">
 <div data-options="region:'north',border:false" style="height: 30px; overflow: hidden;background-color: #fff">
 </div>
-<div data-options="region:'center',border:true,title:'检测项等级占比配置'" >
+<div data-options="region:'center',border:true,title:'短板配置(${checkBigItemFormMap.name})'" >
 	<table id="dataGrid" data-options="fit:true,border:false"></table>
 </div>
 <div id="toolbar" style="display: none;">
