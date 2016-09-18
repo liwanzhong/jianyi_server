@@ -358,7 +358,7 @@ public class CheckServiceImpl implements ICheckService {
                 zhanbiFormMapList =checkItemDegrLeveZhanbiMapper.findFZhanbiList(smallZhanbiCondition);
             }
             if(CollectionUtils.isEmpty(zhanbiFormMapList)){
-                throw new Exception("没有找到匹配的占比，无法完成计算!");
+                throw new Exception("没有找到匹配的占比，无法完成计算!"+checkBigItemFormMap.toString());
             }
 
             // 在占比配置随机一种占比方案，此大项下的所有小项跟随这个占比配置

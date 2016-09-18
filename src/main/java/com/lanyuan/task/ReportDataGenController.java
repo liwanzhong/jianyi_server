@@ -42,7 +42,7 @@ public class ReportDataGenController {
 	private static final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
-	@Scheduled(cron = "0 0/5 * * * ? ")
+//	@Scheduled(cron = "0 0/5 * * * ? ")
 	public void task() throws Exception {
 		logger.info("======================================生成报告数据================start==============================================================");
 		// 获取没有生成的列表
