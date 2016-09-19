@@ -340,7 +340,8 @@
 					<ul class="clearfix">
 						<li><em></em>${item.name}</li>
 						<li class="font-color"><span><fmt:formatNumber value="${item.item_score}" pattern="#0.00"/></span>分</li>
-						<li><fmt:formatNumber value="${item.check_value}" pattern="#0.00"/>|<fmt:formatNumber value="${item.min_value}" pattern="#0.00"/>-<fmt:formatNumber value="${item.max_value}" pattern="#0.00"/></li>
+						<%--<li><fmt:formatNumber value="${item.check_value}" pattern="#0.00"/>|<fmt:formatNumber value="${item.min_value}" pattern="#0.00"/>-<fmt:formatNumber value="${item.max_value}" pattern="#0.00"/></li>--%>
+						<li><fmt:formatNumber value="${item.check_value}" pattern="#0.00"/>|<fmt:formatNumber value="${item.min_value+item.in_value_score*0}" pattern="#0.00"/>-<fmt:formatNumber value="${item.min_value+item.in_value_score*20}" pattern="#0.00"/></li>
 						<li>${item.check_desc}</li>
 					</ul>
 				</c:forEach>
