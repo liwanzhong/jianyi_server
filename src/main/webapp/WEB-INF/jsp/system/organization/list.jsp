@@ -72,13 +72,9 @@
 					width : 120,
 					formatter : function(value, row, index) {
 						var str = '&nbsp;';
-						if ($.canEdit) {
-							str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
-						}
-						if ($.canDelete) {
-							str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-							str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >删除</a>', row.id);
-						}
+						str += $.formatString('<a href="javascript:void(0)" onclick="editFun(\'{0}\');" >编辑</a>', row.id);
+						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >删除</a>', row.id);
 						return str;
 					}
 				} ] ],
@@ -88,15 +84,15 @@
 
 		function editFun(id) {
 			if (id != undefined) {
-					treeGrid.treegrid('select', id);
-				}
-				var node = treeGrid.treegrid('getSelected');
-				if (node) {
-					parent.$.modalDialog({
-						title : '编辑',
-						width : 500,
-						height : 300,
-						href : '${ctx}/organization/editPage.shtml?id=' + node.id,
+				treeGrid.treegrid('select', id);
+			}
+			var node = treeGrid.treegrid('getSelected');
+			if (node) {
+				parent.$.modalDialog({
+					title : '编辑',
+					width : 500,
+					height : 300,
+					href : '${ctx}/organization/editPage.shtml?id=' + node.id,
 					buttons : [ {
 						text : '编辑',
 						handler : function() {
@@ -162,7 +158,7 @@
 		<%--<c:if test="${fn:contains(sessionScope.RESOURCES_SESSION_KEY, '/organization/add')}">
 			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'">添加</a>
 		</c:if>--%>
-			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'">添加</a>
+		<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'">添加</a>
 	</div>
 </div>
 </body>

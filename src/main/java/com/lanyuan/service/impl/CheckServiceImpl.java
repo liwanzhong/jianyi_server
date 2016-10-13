@@ -344,15 +344,16 @@ public class CheckServiceImpl implements ICheckService {
             smallZhanbiCondition.put("check_id",checkBigItemFormMap.getLong("id"));
             smallZhanbiCondition.put("check_type",1);
             smallZhanbiCondition.put("age",age);
-            smallZhanbiCondition.put("bmi",bmi);
+            smallZhanbiCondition.put("bmi",new BigDecimal(bmi).setScale(1,BigDecimal.ROUND_HALF_UP));
             smallZhanbiCondition.put("bodyheight",height);
             smallZhanbiCondition.put("weight",weight);
             List<CheckItemDegrLeveZhanbiFormMap> zhanbiFormMapList =checkItemDegrLeveZhanbiMapper.findFZhanbiList(smallZhanbiCondition);
             if(CollectionUtils.isEmpty(zhanbiFormMapList)){//获取总的占比配置
+                logger.error("没有找到匹配的占比，无法完成计算!检测大项：" + checkBigItemFormMap.toString() + "用户:" + customInfoFormMap.toString() + "年龄：" + age + "bmi:" + new BigDecimal(bmi).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue() + "身高:" + height + "体重:" + weight);
                 smallZhanbiCondition = new CheckItemDegrLeveZhanbiFormMap();
                 smallZhanbiCondition.put("check_type",0);
                 smallZhanbiCondition.put("age",age);
-                smallZhanbiCondition.put("bmi",bmi);
+                smallZhanbiCondition.put("bmi",new BigDecimal(bmi).setScale(1,BigDecimal.ROUND_HALF_UP));
                 smallZhanbiCondition.put("bodyheight",height);
                 smallZhanbiCondition.put("weight",weight);
                 zhanbiFormMapList =checkItemDegrLeveZhanbiMapper.findFZhanbiList(smallZhanbiCondition);
@@ -428,10 +429,10 @@ public class CheckServiceImpl implements ICheckService {
                         checkItemDegrLeveZhanbiFormMapConditonSmall.put("check_id",checkSmallItemFormMap.getLong("id"));
                         checkItemDegrLeveZhanbiFormMapConditonSmall.put("check_type",2);
                         checkItemDegrLeveZhanbiFormMapConditonSmall.put("age",age);
-                        checkItemDegrLeveZhanbiFormMapConditonSmall.put("bmi",bmi);
+                        checkItemDegrLeveZhanbiFormMapConditonSmall.put("bmi",new BigDecimal(bmi).setScale(1,BigDecimal.ROUND_HALF_UP));
                         checkItemDegrLeveZhanbiFormMapConditonSmall.put("bodyheight",height);
                         checkItemDegrLeveZhanbiFormMapConditonSmall.put("weight",weight);
-                        List<CheckItemDegrLeveZhanbiFormMap> smallZhanbiList = checkItemDegrLeveZhanbiMapper.findByNames(checkItemDegrLeveZhanbiFormMapConditonSmall);
+                        List<CheckItemDegrLeveZhanbiFormMap> smallZhanbiList = checkItemDegrLeveZhanbiMapper.findFZhanbiList(checkItemDegrLeveZhanbiFormMapConditonSmall);
                         boolean needTZ = false;
                         CheckItemDegrLeveZhanbiFormMap checkItemDegrLeveZhanbiFormMapTemp =null;
                         if(CollectionUtils.isNotEmpty(smallZhanbiList)){

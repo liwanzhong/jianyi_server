@@ -139,8 +139,8 @@
 					width : 300,
 					formatter : function(value, row, index) {
 						var str = '';
-						str += $.formatString('<a href="javascript:void(0)" onclick="genTestData(\'{0}\');" >生成测试数据</a>', row.id);
-						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+//						str += $.formatString('<a href="javascript:void(0)" onclick="genTestData(\'{0}\');" >生成测试数据</a>', row.id);
+//						str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
 						str += $.formatString('<a href="javascript:void(0)" onclick="deleteFun(\'{0}\');" >删除</a>', row.id);
 						return str;
 					}
